@@ -140,7 +140,8 @@ Public Class Thumbnail
         New ThumbnailService("PicPlz", AddressOf PicPlz_GetUrl, AddressOf PicPlz_CreateImage),
         New ThumbnailService("FourSquare", AddressOf Foursquare_GetUrl, AddressOf Foursquare_CreateImage),
         New ThumbnailService("TINAMI", AddressOf Tinami_GetUrl, AddressOf Tinami_CreateImage),
-        New ThumbnailService("Twimg", AddressOf Twimg_GetUrl, AddressOf Twimg_CreateImage)
+        New ThumbnailService("Twimg", AddressOf Twimg_GetUrl, AddressOf Twimg_CreateImage),
+        New ThumbnailService("TwitrPix", SimpleUrlCreator("^http://twitrpix\.com/(\w+)$", "http://img.twitrpix.com/thumb/$1"), SimpleImageCreator())
         }
 
     Public Sub New(ByVal Owner As TweenMain)
@@ -2657,4 +2658,33 @@ Public Class Thumbnail
     End Function
 
 #End Region
+
+    Private Function SimpleUrlCreator(ByVal pattern As String, ByVal replacement As String, Optional ByVal options As RegexOptions = RegexOptions.IgnoreCase) As UrlCreatorDelegate
+        Return Function(args As GetUrlArgs) As Boolean
+                   Dim mc As Match = Regex.Match(If(String.IsNullOrEmpty(args.extended), args.url, args.extended), pattern, options)
+                   If mc.Success Then
+                       args.imglist.Add(New KeyValuePair(Of String, String)(args.url, mc.Result(replacement)))
+                       Return True
+                   Else
+                       Return False
+                   End If
+               End Function
+    End Function
+
+    Private Function SimpleImageCreator(Optional ByVal conn As HttpVarious = Nothing) As ImageCreatorDelegate
+        Return Function(args As CreateImageArgs) As Boolean
+                   If conn Is Nothing Then
+                       conn = New HttpVarious()
+                   End If
+
+                   Dim img As Image = conn.GetImage(args.url.Value, args.url.Key, 10000, args.errmsg)
+                   If img Is Nothing Then
+                       Return False
+                   End If
+                   ' 成功した場合はURLに対応する画像、ツールチップテキストを登録
+                   args.pics.Add(New KeyValuePair(Of String, Image)(args.url.Key, img))
+                   args.tooltipText.Add(New KeyValuePair(Of String, String)(args.url.Key, ""))
+                   Return True
+               End Function
+    End Function
 End Class
