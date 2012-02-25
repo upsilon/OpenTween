@@ -36,6 +36,7 @@ using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Collections.Specialized;
+using XSpect.Yacq;
 
 namespace Tween
 {
@@ -668,8 +669,18 @@ namespace Tween
 
         private bool IsValidLambdaExp(string text)
         {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
+            if (text == "") return true;
+            try
+            {
+                Expression<Func<PostClass, bool>> expr;
+                expr = YacqServices.ParseLambda<Func<PostClass, bool>>(text);
+            }
+            catch (ParseException ex)
+            {
+                MessageBox.Show(Properties.Resources.IsValidLambdaExpText1 + ex.Message,
+                                Properties.Resources.IsValidLambdaExpText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            return true;
         }
 
         private bool IsValidRegexp(string text)

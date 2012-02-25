@@ -591,7 +591,6 @@
             this.MinimizeBox = false;
             this.Name = "FilterDialog";
             this.ShowInTaskbar = false;
-            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FilterDialog_FormClosed);
             this.Shown += new System.EventHandler(this.FilterDialog_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterDialog_KeyDown);

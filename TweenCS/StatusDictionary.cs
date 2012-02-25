@@ -33,6 +33,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using XSpect.Yacq;
 
 namespace Tween
 {
@@ -2861,10 +2862,10 @@ namespace Tween
         private bool _exuseLambda = false;
 
         // ラムダ式コンパイルキャッシュ
-        private LambdaExpression _lambdaExp = null;
-        private Delegate _lambdaExpDelegate = null;
-        private LambdaExpression _exlambdaExp = null;
-        private Delegate _exlambdaExpDelegate = null;
+        private Expression<Func<PostClass, bool>> _lambdaExp = null;
+        private Func<PostClass, bool> _lambdaExpDelegate = null;
+        private Expression<Func<PostClass, bool>> _exlambdaExp = null;
+        private Func<PostClass, bool> _exlambdaExpDelegate = null;
 
         public FiltersClass() {}
 
@@ -3307,14 +3308,22 @@ namespace Tween
 
         public bool ExecuteLambdaExpression(string expr, PostClass post)
         {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
+            if (_lambdaExp == null || _lambdaExpDelegate == null)
+            {
+                _lambdaExp = YacqServices.ParseLambda<Func<PostClass, bool>>(expr);
+                _lambdaExpDelegate = _lambdaExp.Compile();
+            }
+            return (bool)_lambdaExpDelegate(post);
         }
 
         public bool ExecuteExLambdaExpression(string expr, PostClass post)
         {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
+            if (_exlambdaExp == null || _exlambdaExpDelegate == null)
+            {
+                _exlambdaExp = YacqServices.ParseLambda<Func<PostClass, bool>>(expr);
+                _exlambdaExpDelegate = _exlambdaExp.Compile();
+            }
+            return (bool)_exlambdaExpDelegate(post);
         }
 
         public MyCommon.HITRESULT IsHit(PostClass post)
