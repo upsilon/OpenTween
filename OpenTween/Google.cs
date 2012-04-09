@@ -314,7 +314,7 @@ namespace OpenTween
             int zoom = AppendSettingDialog.Instance.FoursquarePreviewZoom;
             string location = lat.ToString() + "," + lng.ToString();
 
-            return "http://maps.google.com/maps/api/staticmap?center=" + location + "&size=" + width + "x" + height + "&zoom=" + zoom + "&markers=" + location + "&sensor=false";
+            return "http://staticmap.openstreetmap.de/staticmap.php?center=" + location + "&size=" + width + "x" + height + "&zoom=" + zoom + "&markers=" + location;
         }
 
         public string CreateGoogleMapsUri(GlobalLocation locate)
@@ -325,9 +325,8 @@ namespace OpenTween
         public string CreateGoogleMapsUri(double lat, double lng)
         {
             int zoom = AppendSettingDialog.Instance.FoursquarePreviewZoom;
-            string location = lat.ToString() + "," + lng.ToString();
 
-            return "http://maps.google.com/maps?ll=" + location + "&z=" + zoom + "&q=" + location;
+            return "http://www.openstreetmap.org/index.html?lat=" + lat.ToString() + "&lon=" + lng.ToString() + "&zoom=" + zoom + "&mlat=" + lat.ToString() + "&mlon=" + lng.ToString();
         }
 
         public class GlobalLocation

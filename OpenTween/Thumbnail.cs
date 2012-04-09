@@ -2937,10 +2937,9 @@ namespace OpenTween
                 // static版 http://maps.google.com/maps/api/staticmap?center=35.16959869,136.93813205&size=300x300&zoom=15&markers=35.16959869,136.93813205&sensor=false
                 // 通常URL  http://maps.google.com/maps?ll=35.16959869,136.93813205&size=300x300&zoom=15&markers=35.16959869,136.93813205&sensor=false
 
-                url = url.Replace("/maps/api/staticmap?center=", "?ll=");
-                url = url.Replace("&markers=", "&q=");
+                url = Regex.Replace(url, @"http://staticmap\.openstreetmap\.de/staticmap\.php\?center=(\d+.\d+),(\d+.\d+)", "http://www.openstreetmap.org/?lat=$1&lon=$2");
+                url = Regex.Replace(url, @"&markers=(\d+.\d+),(\d+.\d+)", "&mlat=$1&mlon=$2");
                 url = Regex.Replace(url, @"&size=\d+x\d+&zoom=\d+", "");
-                url = url.Replace("&sensor=false", "");
             }
             catch(Exception)
             {

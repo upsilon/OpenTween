@@ -4071,9 +4071,6 @@
   <data name="Label32.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="FoursquareGroupBox.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="Label6.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
