@@ -244,7 +244,13 @@
     <Compile Include="Connection\HttpConnection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AppendSettingDialog.ja.resx">
+      <DependentUpon>AppendSettingDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AuthDialog.en.resx">
+      <DependentUpon>AuthDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AuthDialog.ja.resx">
       <DependentUpon>AuthDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AuthDialog.resx">
@@ -356,6 +362,7 @@
     <EmbeddedResource Include="Properties\Resources.zh-CHS.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.ja.resx" />
     <EmbeddedResource Include="SearchWord.en.resx">
       <DependentUpon>SearchWord.cs</DependentUpon>
     </EmbeddedResource>
@@ -364,6 +371,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SearchWord.zh-CHS.resx">
       <DependentUpon>SearchWord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShowUserInfo.ja.resx">
+      <DependentUpon>ShowUserInfo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TabsDialog.resx">
       <DependentUpon>TabsDialog.cs</DependentUpon>

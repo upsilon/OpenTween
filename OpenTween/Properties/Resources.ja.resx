@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ButtonBlockDestroy_ClickText3" xml:space="preserve">
+    <value>エラーが発生しました。成功してゐるかどうかWebでご確認ください。</value>
+  </data>
+  <data name="ButtonBlockDestroy_ClickText4" xml:space="preserve">
+    <value>ブロック解除を行ひました。成功してゐるかどうかWebでご確認ください。</value>
+  </data>
+  <data name="ButtonBlock_ClickText3" xml:space="preserve">
+    <value>エラーが発生しました。成功してゐるかどうかWebでご確認ください。</value>
+  </data>
+  <data name="ButtonBlock_ClickText4" xml:space="preserve">
+    <value>ブロックを行ひました。成功してゐるかどうかWebでご確認ください。</value>
+  </data>
+  <data name="ButtonDelete_ClickText3" xml:space="preserve">
+    <value>選択されてゐる{0}件のルールを削除してもよろしいですか？</value>
+  </data>
+  <data name="ButtonReportSpam_ClickText1" xml:space="preserve">
+    <value>をブロックしスパム報告を行ひます。よろしいですか？</value>
+  </data>
+  <data name="ButtonReportSpam_ClickText3" xml:space="preserve">
+    <value>エラーが発生しました。成功してゐるかどうかWebでご確認ください。</value>
+  </data>
+  <data name="ButtonReportSpam_ClickText4" xml:space="preserve">
+    <value>ブロックしスパム報告を行ひました。成功してゐるかどうかWebでご確認ください。</value>
+  </data>
+  <data name="ChangeIconToolStripMenuItem_ClickText4" xml:space="preserve">
+    <value>注意：Twitterの仕様により、エラーが発生してもアイコンが変更できてゐる場合があります。次回発言の際にご確認ください。</value>
+  </data>
+  <data name="CheckNewVersionText10" xml:space="preserve">
+    <value>更新版のバージョン取得に失敗しました。しばらく待つてから再度お試しください。</value>
+  </data>
+  <data name="CheckNewVersionText3" xml:space="preserve">
+    <value>新しいバージョン {0} が公開されてゐます。更新しますか？</value>
+  </data>
+  <data name="CheckNewVersionText4" xml:space="preserve">
+    <value>アップデーターのダウンロードに失敗しました。しばらく待つてから再度お試しください。</value>
+  </data>
+  <data name="CheckNewVersionText5" xml:space="preserve">
+    <value>最新版が公開されてゐますが、ダウンロードに失敗しました。しばらく待つてから再度お試しください。</value>
+  </data>
+  <data name="CheckNewVersionText6" xml:space="preserve">
+    <value>新しいバージョンは見つかりません。 {0} が公開されてゐます。強制的に更新しますか？</value>
+  </data>
+  <data name="CheckNewVersionText7" xml:space="preserve">
+    <value>最新版をお使ひです。更新の必要はありませんでした。使用中Ver：</value>
+  </data>
+  <data name="ContextMenuStrip3_OpeningText1" xml:space="preserve">
+    <value>(アイコンが取得できてゐません)</value>
+  </data>
+  <data name="CopyStotText1" xml:space="preserve">
+    <value>警告：Protected発言はコピーされてゐません。</value>
+  </data>
+  <data name="DeleteHashtagsMessage1" xml:space="preserve">
+    <value>選択してゐるハッシュタグを削除してもよろしいですか？</value>
+  </data>
+  <data name="DeleteStripMenuItem_ClickText1" xml:space="preserve">
+    <value>選択されてゐる自発言(またはDM)を削除してもよろしいですか？{0}注意　：　Twitterサーバからも削除されます！{0}　タブからIDを削除する場合は、「IDを移動」を使つてください。{0}　タブを削除する場合は、「タブを削除」を使つてください。{0}{0}削除処理を中止するには、「キャンセル」ボタンを押してください。</value>
+  </data>
+  <data name="DoTabSearchText1" xml:space="preserve">
+    <value>正規表現パターンが間違つてゐます。</value>
+  </data>
+  <data name="FollowCommandText1" xml:space="preserve">
+    <value>フォローしてゐます・・・</value>
+  </data>
+  <data name="GetFriendshipInfo1" xml:space="preserve">
+    <value>&gt;&gt;&gt; ◯ フォローしてゐます</value>
+  </data>
+  <data name="GetFriendshipInfo2" xml:space="preserve">
+    <value>&gt;&gt;&gt; × フォローしてゐません</value>
+  </data>
+  <data name="GetFriendshipInfo3" xml:space="preserve">
+    <value>&lt;&lt;&lt; ◯ フォローされてゐます</value>
+  </data>
+  <data name="GetFriendshipInfo4" xml:space="preserve">
+    <value>&lt;&lt;&lt; × フォローされてゐません</value>
+  </data>
+  <data name="ListsGetting" xml:space="preserve">
+    <value>リスト情報を取得してゐます。しばらくお待ちください...</value>
+  </data>
+  <data name="MenuItemSearchNext_ClickText1" xml:space="preserve">
+    <value>正規表現パターンが間違つてゐます。</value>
+  </data>
+  <data name="MenuItemSearchPrev_ClickText1" xml:space="preserve">
+    <value>正規表現パターンが間違つてゐます。</value>
+  </data>
+  <data name="PostButton_Click1" xml:space="preserve">
+    <value>編集されてゐないため、公式RTとして投稿します。　よろしいですか？{0}[はい：公式RTで投稿]{0}[いいえ：非公式RTで投稿]{0}[キャンセル：投稿しない]</value>
+  </data>
+  <data name="PostLengthOverMessage1" xml:space="preserve">
+    <value>140文字を越えてゐます。URL短縮、フッタ除去、末尾カットを行つて投稿しますか？</value>
+  </data>
+  <data name="PostPictureWarn1" xml:space="preserve">
+    <value>投稿する画像または投稿先サービスが選択されてゐません。</value>
+  </data>
+  <data name="RegistrationEmail2" xml:space="preserve">
+    <value>登録ありがたうございます。</value>
+  </data>
+  <data name="RemoveCommandText1" xml:space="preserve">
+    <value>フォローを解除してゐます・・・</value>
+  </data>
+  <data name="RtCountText1" xml:space="preserve">
+    <value>回Retweetされてゐます</value>
+  </data>
+  <data name="SaveLogMenuItem_ClickText1" xml:space="preserve">
+    <value>選択中タブの全発言を保存しますか？{0}　「はい」　　　：全発言を保存する{0}　「いいえ」　　：選択してゐる発言のみ保存する{0}　「キャンセル」：保存処理をキャンセル{0}（タブ区切りのテキストファイル形式で保存します）</value>
+  </data>
+  <data name="SaveLogMenuItem_ClickText5" xml:space="preserve">
+    <value>現在のタブに表示されてゐるイベントログを保存しますか？{0}　「はい」　　：現在タブに表示されてゐるイベントログを保存する{0}　「いいえ」　：全てのイベントログを保存する{0}「キャンセル」：保存処理をキャンセル{0}（タブ区切りのテキストファイル形式で保存します）</value>
+  </data>
+  <data name="SettingSave_ClickText1" xml:space="preserve">
+    <value>IDとAPIキーの組み合はせが違います。IDと同時に設定するのはパスワードではなくAPIキーです。ご確認ください。</value>
+  </data>
+  <data name="ShowYourProfileText1" xml:space="preserve">
+    <value>まだあなたのプロフィール情報を取得してゐません。投稿後に再度お試しください。</value>
+  </data>
+  <data name="StartupText1" xml:space="preserve">
+    <value>%AppName%は既に起動されてゐます。2重起動する場合は、別フォルダの{0}.exeを実行してください。</value>
+  </data>
+  <data name="TraceOutText1" xml:space="preserve">
+    <value>このファイルの内容を {0} まで送つていただけると助かります。</value>
+  </data>
+  <data name="UnhandledExceptionText2" xml:space="preserve">
+    <value>このファイルの内容を {0} まで送つていただけると助かります。</value>
+  </data>
+  <data name="UnhandledExceptionText9" xml:space="preserve">
+    <value>エラーが発生しました。ごめんなさい。ログをexeファイルのある場所に {0} として作つたので、{1}まで送つていただけると助かります。{3}ご面倒なら{2}までお知らせ頂くだけでも助かります。{3}「はい」ボタンをクリックするとログを開きます。ログを開かない場合は「いいえ」、このまま終了する場合は「キャンセル」ボタンをクリックしてください。</value>
+  </data>
+</root>
