@@ -1,7 +1,11 @@
 language: c#
 
 install:
-  - sudo apt-get install -qq nunit-console mono-devel
+  # for Mono 3.0
+  - echo "deb http://debian.meebey.net/experimental/mono /" | sudo tee -a /etc/apt/sources.list
+
+  - sudo apt-get update
+  - sudo apt-get install --allow-unauthenticated mono-devel=3.0.1+dfsg-1~exp1~pre1 nunit-console
   # Install NUnit 2.6
   - wget -q http://de.archive.ubuntu.com/ubuntu/pool/main/n/nunit/libnunit2.6-cil_2.6.0.12051+dfsg-2_all.deb http://de.archive.ubuntu.com/ubuntu/pool/universe/n/nunit/nunit-console_2.6.0.12051+dfsg-2_all.deb
   - sudo dpkg -i libnunit2.6-cil_2.6.0.12051+dfsg-2_all.deb nunit-console_2.6.0.12051+dfsg-2_all.deb
