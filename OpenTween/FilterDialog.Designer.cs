@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FilterDialog));
             this.Label5 = new System.Windows.Forms.Label();
             this.ButtonClose = new System.Windows.Forms.Button();
@@ -95,6 +96,7 @@
             this.MSG1 = new System.Windows.Forms.TextBox();
             this.MSG2 = new System.Windows.Forms.TextBox();
             this.GroupBox1 = new System.Windows.Forms.GroupBox();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.GroupTab.SuspendLayout();
             this.GroupBox2.SuspendLayout();
             this.EditFilterGroup.SuspendLayout();
@@ -152,6 +154,7 @@
             // 
             resources.ApplyResources(this.CheckLambda, "CheckLambda");
             this.CheckLambda.Name = "CheckLambda";
+            this.toolTip.SetToolTip(this.CheckLambda, resources.GetString("CheckLambda.ToolTip"));
             this.CheckLambda.UseVisualStyleBackColor = true;
             // 
             // ButtonRuleUp
@@ -241,8 +244,8 @@
             // 
             // ListTabs
             // 
-            resources.ApplyResources(this.ListTabs, "ListTabs");
             this.ListTabs.FormattingEnabled = true;
+            resources.ApplyResources(this.ListTabs, "ListTabs");
             this.ListTabs.Name = "ListTabs";
             this.ListTabs.SelectedIndexChanged += new System.EventHandler(this.ListTabs_SelectedIndexChanged);
             // 
@@ -295,7 +298,6 @@
             // 
             // GroupTab
             // 
-            resources.ApplyResources(this.GroupTab, "GroupTab");
             this.GroupTab.Controls.Add(this.CheckProtected);
             this.GroupTab.Controls.Add(this.LabelTabType);
             this.GroupTab.Controls.Add(this.Label13);
@@ -309,6 +311,7 @@
             this.GroupTab.Controls.Add(this.ComboSound);
             this.GroupTab.Controls.Add(this.CheckManageRead);
             this.GroupTab.Controls.Add(this.CheckNotifyNew);
+            resources.ApplyResources(this.GroupTab, "GroupTab");
             this.GroupTab.Name = "GroupTab";
             this.GroupTab.TabStop = false;
             // 
@@ -376,8 +379,8 @@
             // 
             // ListFilters
             // 
-            resources.ApplyResources(this.ListFilters, "ListFilters");
             this.ListFilters.FormattingEnabled = true;
+            resources.ApplyResources(this.ListFilters, "ListFilters");
             this.ListFilters.Name = "ListFilters";
             this.ListFilters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.ListFilters.SelectedIndexChanged += new System.EventHandler(this.ListFilters_SelectedIndexChanged);
@@ -402,7 +405,6 @@
             // 
             // GroupExclude
             // 
-            resources.ApplyResources(this.GroupExclude, "GroupExclude");
             this.GroupExclude.Controls.Add(this.CheckExLambDa);
             this.GroupExclude.Controls.Add(this.TextExSource);
             this.GroupExclude.Controls.Add(this.Label12);
@@ -419,6 +421,7 @@
             this.GroupExclude.Controls.Add(this.ExUID);
             this.GroupExclude.Controls.Add(this.ExMSG1);
             this.GroupExclude.Controls.Add(this.ExMSG2);
+            resources.ApplyResources(this.GroupExclude, "GroupExclude");
             this.GroupExclude.Name = "GroupExclude";
             this.GroupExclude.TabStop = false;
             // 
@@ -426,6 +429,7 @@
             // 
             resources.ApplyResources(this.CheckExLambDa, "CheckExLambDa");
             this.CheckExLambDa.Name = "CheckExLambDa";
+            this.toolTip.SetToolTip(this.CheckExLambDa, resources.GetString("CheckExLambDa.ToolTip"));
             this.CheckExLambDa.UseVisualStyleBackColor = true;
             // 
             // TextExSource
@@ -499,9 +503,9 @@
             // 
             // ExUID
             // 
-            resources.ApplyResources(this.ExUID, "ExUID");
             this.ExUID.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.ExUID.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            resources.ApplyResources(this.ExUID, "ExUID");
             this.ExUID.Name = "ExUID";
             // 
             // ExMSG1
@@ -520,7 +524,6 @@
             // 
             // GroupMatch
             // 
-            resources.ApplyResources(this.GroupMatch, "GroupMatch");
             this.GroupMatch.Controls.Add(this.CheckLambda);
             this.GroupMatch.Controls.Add(this.TextSource);
             this.GroupMatch.Controls.Add(this.Label5);
@@ -537,6 +540,7 @@
             this.GroupMatch.Controls.Add(this.UID);
             this.GroupMatch.Controls.Add(this.MSG1);
             this.GroupMatch.Controls.Add(this.MSG2);
+            resources.ApplyResources(this.GroupMatch, "GroupMatch");
             this.GroupMatch.Name = "GroupMatch";
             this.GroupMatch.TabStop = false;
             // 
@@ -557,9 +561,9 @@
             // 
             // UID
             // 
-            resources.ApplyResources(this.UID, "UID");
             this.UID.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.UID.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            resources.ApplyResources(this.UID, "UID");
             this.UID.Name = "UID";
             // 
             // MSG1
@@ -578,17 +582,17 @@
             // 
             // GroupBox1
             // 
-            resources.ApplyResources(this.GroupBox1, "GroupBox1");
             this.GroupBox1.Controls.Add(this.CheckMark);
             this.GroupBox1.Controls.Add(this.OptCopy);
             this.GroupBox1.Controls.Add(this.OptMove);
+            resources.ApplyResources(this.GroupBox1, "GroupBox1");
             this.GroupBox1.Name = "GroupBox1";
             this.GroupBox1.TabStop = false;
             // 
             // FilterDialog
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.ButtonClose;
             this.ControlBox = false;
             this.Controls.Add(this.ButtonClose);
@@ -686,5 +690,6 @@
         internal System.Windows.Forms.TextBox MSG2;
         internal System.Windows.Forms.GroupBox GroupBox1;
         internal System.Windows.Forms.CheckBox CheckProtected;
+        private System.Windows.Forms.ToolTip toolTip;
     }
 }

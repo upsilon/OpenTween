@@ -57,6 +57,14 @@ namespace OpenTween
         public FilterDialog()
         {
             InitializeComponent();
+
+            if (YacqHelper.CheckCanUse())
+            {
+                this.CheckLambda.Enabled = true;
+                this.CheckExLambDa.Enabled = true;
+                this.toolTip.SetToolTip(this.CheckLambda, "");
+                this.toolTip.SetToolTip(this.CheckExLambDa, "");
+            }
         }
 
         private void SetFilters(string tabName)
@@ -677,8 +685,18 @@ namespace OpenTween
 
         private bool IsValidLambdaExp(string text)
         {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
+            if (text == "") return true;
+            try
+            {
+                var expr = YacqHelper.ParseLambda<Func<PostClass, bool>>(text, "it");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(Properties.Resources.IsValidLambdaExpText1 + ex.Message,
+                    Properties.Resources.IsValidLambdaExpText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return false;
+            }
         }
 
         private bool IsValidRegexp(string text)

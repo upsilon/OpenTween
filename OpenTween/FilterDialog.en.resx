@@ -125,7 +125,7 @@
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="CheckRetweet.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 16</value>
+    <value>120, 19</value>
   </data>
   <data name="CheckRetweet.Text" xml:space="preserve">
     <value>ReTweet Only</value>
@@ -134,19 +134,22 @@
     <value>Copy</value>
   </data>
   <data name="CheckLambda.Size" type="System.Drawing.Size, System.Drawing">
-    <value>122, 16</value>
+    <value>149, 19</value>
   </data>
   <data name="CheckLambda.Text" xml:space="preserve">
     <value>Lambda expression</value>
   </data>
+  <data name="CheckLambda.ToolTip" xml:space="preserve">
+    <value>To use this feature, you'll need to place Yacq.dll and its depends to same directory as OpenTween.exe.</value>
+  </data>
   <data name="CheckCaseSensitive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 16</value>
+    <value>93, 19</value>
   </data>
   <data name="CheckCaseSensitive.Text" xml:space="preserve">
     <value>CaseSens</value>
   </data>
   <data name="CheckMark.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>87, 19</value>
   </data>
   <data name="CheckMark.Text" xml:space="preserve">
     <value>Mark this</value>
@@ -155,49 +158,49 @@
     <value>Cancel</value>
   </data>
   <data name="OptCopy.Size" type="System.Drawing.Size, System.Drawing">
-    <value>116, 16</value>
+    <value>145, 19</value>
   </data>
   <data name="OptCopy.Text" xml:space="preserve">
     <value>Copy from Recent</value>
   </data>
   <data name="OptMove.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 16</value>
+    <value>147, 19</value>
   </data>
   <data name="OptMove.Text" xml:space="preserve">
     <value>Move from Recent</value>
   </data>
   <data name="RadioAND.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 16</value>
+    <value>82, 19</value>
   </data>
   <data name="RadioAND.Text" xml:space="preserve">
     <value>Complex</value>
   </data>
   <data name="Label8.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 12</value>
+    <value>84, 15</value>
   </data>
   <data name="Label8.Text" xml:space="preserve">
     <value>Tweet Body</value>
   </data>
   <data name="CheckURL.Location" type="System.Drawing.Point, System.Drawing">
-    <value>299, 41</value>
+    <value>374, 51</value>
   </data>
   <data name="CheckURL.Size" type="System.Drawing.Size, System.Drawing">
-    <value>91, 16</value>
+    <value>113, 19</value>
   </data>
   <data name="CheckURL.Text" xml:space="preserve">
     <value>Search &amp;URLs</value>
   </data>
   <data name="RadioPLUS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 16</value>
+    <value>69, 19</value>
   </data>
   <data name="RadioPLUS.Text" xml:space="preserve">
     <value>Simple</value>
   </data>
   <data name="CheckRegex.Location" type="System.Drawing.Point, System.Drawing">
-    <value>299, 19</value>
+    <value>374, 24</value>
   </data>
   <data name="CheckRegex.Size" type="System.Drawing.Size, System.Drawing">
-    <value>110, 16</value>
+    <value>133, 19</value>
   </data>
   <data name="CheckRegex.Text" xml:space="preserve">
     <value>&amp;Regular Express.</value>
@@ -212,7 +215,7 @@
     <value>Remove Tab</value>
   </data>
   <data name="Label10.Size" type="System.Drawing.Size, System.Drawing">
-    <value>70, 12</value>
+    <value>88, 15</value>
   </data>
   <data name="Label10.Text" xml:space="preserve">
     <value>Notify sound</value>
@@ -220,32 +223,41 @@
   <data name="ButtonRenameTab.Text" xml:space="preserve">
     <value>Rename Tab</value>
   </data>
+  <data name="GroupTab.Text" xml:space="preserve">
+    <value>Tabs</value>
+  </data>
+  <data name="CheckProtected.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 457</value>
+  </data>
   <data name="CheckProtected.Size" type="System.Drawing.Size, System.Drawing">
-    <value>73, 16</value>
+    <value>92, 19</value>
   </data>
   <data name="CheckProtected.Text" xml:space="preserve">
     <value>Protected</value>
   </data>
   <data name="Label13.Size" type="System.Drawing.Size, System.Drawing">
-    <value>61, 12</value>
+    <value>76, 15</value>
   </data>
   <data name="Label13.Text" xml:space="preserve">
     <value>Kind of tab</value>
   </data>
+  <data name="CheckManageRead.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 484</value>
+  </data>
   <data name="CheckManageRead.Size" type="System.Drawing.Size, System.Drawing">
-    <value>104, 16</value>
+    <value>127, 19</value>
   </data>
   <data name="CheckManageRead.Text" xml:space="preserve">
     <value>Manage reading</value>
   </data>
+  <data name="CheckNotifyNew.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 512</value>
+  </data>
   <data name="CheckNotifyNew.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 16</value>
+    <value>110, 19</value>
   </data>
   <data name="CheckNotifyNew.Text" xml:space="preserve">
     <value>Alert Popups</value>
-  </data>
-  <data name="GroupTab.Text" xml:space="preserve">
-    <value>Tabs</value>
   </data>
   <data name="ButtonEdit.Text" xml:space="preserve">
     <value>&amp;Edit</value>
@@ -253,95 +265,98 @@
   <data name="ButtonDelete.Text" xml:space="preserve">
     <value>&amp;Delete</value>
   </data>
+  <data name="GroupBox2.Text" xml:space="preserve">
+    <value>Distribution Rules</value>
+  </data>
+  <data name="EditFilterGroup.Text" xml:space="preserve">
+    <value>Rule</value>
+  </data>
   <data name="Label11.Text" xml:space="preserve">
     <value>If only the [ExcludingRule] is set, it becomes excluding set to the this tab. </value>
   </data>
+  <data name="GroupExclude.Text" xml:space="preserve">
+    <value>ExcludingRule</value>
+  </data>
   <data name="CheckExLambDa.Size" type="System.Drawing.Size, System.Drawing">
-    <value>122, 16</value>
+    <value>149, 19</value>
   </data>
   <data name="CheckExLambDa.Text" xml:space="preserve">
     <value>Lambda expression</value>
   </data>
+  <data name="CheckExLambDa.ToolTip" xml:space="preserve">
+    <value>To use this feature, you'll need to place Yacq.dll and its depends to same directory as OpenTween.exe.</value>
+  </data>
   <data name="CheckExRetweet.Size" type="System.Drawing.Size, System.Drawing">
-    <value>96, 16</value>
+    <value>120, 19</value>
   </data>
   <data name="CheckExRetweet.Text" xml:space="preserve">
     <value>ReTweet Only</value>
   </data>
   <data name="CheckExCaseSensitive.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 16</value>
+    <value>93, 19</value>
   </data>
   <data name="CheckExCaseSensitive.Text" xml:space="preserve">
     <value>CaseSens</value>
   </data>
   <data name="RadioExAnd.Size" type="System.Drawing.Size, System.Drawing">
-    <value>67, 16</value>
+    <value>82, 19</value>
   </data>
   <data name="RadioExAnd.Text" xml:space="preserve">
     <value>Complex</value>
   </data>
   <data name="Label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>66, 12</value>
+    <value>84, 15</value>
   </data>
   <data name="Label1.Text" xml:space="preserve">
     <value>Tweet Body</value>
   </data>
   <data name="CheckExURL.Size" type="System.Drawing.Size, System.Drawing">
-    <value>91, 16</value>
+    <value>113, 19</value>
   </data>
   <data name="CheckExURL.Text" xml:space="preserve">
     <value>Search &amp;URLs</value>
   </data>
   <data name="RadioExPLUS.Size" type="System.Drawing.Size, System.Drawing">
-    <value>57, 16</value>
+    <value>69, 19</value>
   </data>
   <data name="RadioExPLUS.Text" xml:space="preserve">
     <value>Simple</value>
   </data>
   <data name="CheckExRegex.Size" type="System.Drawing.Size, System.Drawing">
-    <value>110, 16</value>
+    <value>133, 19</value>
   </data>
   <data name="CheckExRegex.Text" xml:space="preserve">
     <value>&amp;Regular Express.</value>
   </data>
   <data name="Label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 12</value>
+    <value>156, 15</value>
   </data>
   <data name="Label2.Text" xml:space="preserve">
     <value>User ID or Tweet Body</value>
   </data>
   <data name="Label4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 12</value>
+    <value>56, 15</value>
   </data>
   <data name="Label4.Text" xml:space="preserve">
-    <value>User ID</value>
-  </data>
-  <data name="GroupExclude.Text" xml:space="preserve">
-    <value>ExcludingRule</value>
-  </data>
-  <data name="Label9.Size" type="System.Drawing.Size, System.Drawing">
-    <value>123, 12</value>
-  </data>
-  <data name="Label9.Text" xml:space="preserve">
-    <value>User ID or Tweet Body</value>
-  </data>
-  <data name="Label6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 12</value>
-  </data>
-  <data name="Label6.Text" xml:space="preserve">
     <value>User ID</value>
   </data>
   <data name="GroupMatch.Text" xml:space="preserve">
     <value>MatchingRule</value>
   </data>
+  <data name="Label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>156, 15</value>
+  </data>
+  <data name="Label9.Text" xml:space="preserve">
+    <value>User ID or Tweet Body</value>
+  </data>
+  <data name="Label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 15</value>
+  </data>
+  <data name="Label6.Text" xml:space="preserve">
+    <value>User ID</value>
+  </data>
   <data name="GroupBox1.Text" xml:space="preserve">
     <value>Additional Action (&amp;E):</value>
-  </data>
-  <data name="EditFilterGroup.Text" xml:space="preserve">
-    <value>Rule</value>
-  </data>
-  <data name="GroupBox2.Text" xml:space="preserve">
-    <value>Distribution Rules</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Filtering Rules</value>

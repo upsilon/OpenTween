@@ -2644,6 +2644,12 @@ namespace OpenTween
         private bool _useLambda = false;
         private bool _exuseLambda = false;
 
+        // ラムダ式コンパイルキャッシュ
+        private Expression<Func<PostClass, bool>> _lambdaExp = null;
+        private Func<PostClass, bool> _lambdaExpDelegate = null;
+        private Expression<Func<PostClass, bool>> _exlambdaExp = null;
+        private Func<PostClass, bool> _exlambdaExpDelegate = null;
+
         public FiltersClass() {}
 
         //フィルタ一覧に表示する文言生成
@@ -2829,6 +2835,8 @@ namespace OpenTween
             }
             set
             {
+                this._lambdaExp = null;
+                this._lambdaExpDelegate = null;
                 _body = value;
             }
         }
@@ -2858,6 +2866,8 @@ namespace OpenTween
             }
             set
             {
+                _lambdaExp = null;
+                _lambdaExpDelegate = null;
                 _exbody = value;
             }
         }
@@ -2982,6 +2992,8 @@ namespace OpenTween
             }
             set
             {
+                _lambdaExp = null;
+                _lambdaExpDelegate = null;
                 _useLambda = value;
             }
         }
@@ -2994,6 +3006,8 @@ namespace OpenTween
             }
             set
             {
+                _lambdaExp = null;
+                _lambdaExpDelegate = null;
                 _exuseLambda = value;
             }
         }
@@ -3077,14 +3091,38 @@ namespace OpenTween
 
         public bool ExecuteLambdaExpression(string expr, PostClass post)
         {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
+            if (this._lambdaExpDelegate == null)
+            {
+                if (YacqHelper.CheckCanUse())
+                {
+                    this._lambdaExp = YacqHelper.ParseLambda<Func<PostClass, bool>>(expr, "it");
+                    this._lambdaExpDelegate = this._lambdaExp.Compile();
+                }
+                else
+                {
+                    this._lambdaExpDelegate = x => false;
+                }
+            }
+
+            return this._lambdaExpDelegate(post);
         }
 
         public bool ExecuteExLambdaExpression(string expr, PostClass post)
         {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
+            if (this._exlambdaExpDelegate == null)
+            {
+                if (YacqHelper.CheckCanUse())
+                {
+                    this._exlambdaExp = YacqHelper.ParseLambda<Func<PostClass, bool>>(expr, "it");
+                    this._exlambdaExpDelegate = this._exlambdaExp.Compile();
+                }
+                else
+                {
+                    this._exlambdaExpDelegate = x => false;
+                }
+            }
+
+            return this._exlambdaExpDelegate(post);
         }
 
         public MyCommon.HITRESULT IsHit(PostClass post)
