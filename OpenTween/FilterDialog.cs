@@ -395,18 +395,18 @@ namespace OpenTween
             if (ListFilters.SelectedIndex > -1)
             {
                 FiltersClass fc = (FiltersClass)ListFilters.SelectedItem;
-                if (fc.SearchBoth)
+                if (fc.UseNameField)
                 {
                     RadioAND.Checked = true;
                     RadioPLUS.Checked = false;
                     UID.Enabled = true;
                     MSG1.Enabled = true;
                     MSG2.Enabled = false;
-                    UID.Text = fc.NameFilter;
+                    UID.Text = fc.FilterName;
                     UID.SelectAll();
                     MSG1.Text = "";
                     MSG2.Text = "";
-                    foreach (string bf in fc.BodyFilter)
+                    foreach (string bf in fc.FilterBody)
                     {
                         MSG1.Text += bf + " ";
                     }
@@ -423,32 +423,32 @@ namespace OpenTween
                     UID.Text = "";
                     MSG1.Text = "";
                     MSG2.Text = "";
-                    foreach (string bf in fc.BodyFilter)
+                    foreach (string bf in fc.FilterBody)
                     {
                         MSG2.Text += bf + " ";
                     }
                     MSG2.Text = MSG2.Text.Trim();
                     MSG2.SelectAll();
                 }
-                TextSource.Text = fc.Source;
+                TextSource.Text = fc.FilterSource;
                 CheckRegex.Checked = fc.UseRegex;
-                CheckURL.Checked = fc.SearchUrl;
+                CheckURL.Checked = fc.FilterByUrl;
                 CheckCaseSensitive.Checked = fc.CaseSensitive;
-                CheckRetweet.Checked = fc.IsRt;
+                CheckRetweet.Checked = fc.FilterRt;
                 CheckLambda.Checked = fc.UseLambda;
 
-                if (fc.ExSearchBoth)
+                if (fc.ExUseNameField)
                 {
                     RadioExAnd.Checked = true;
                     RadioExPLUS.Checked = false;
                     ExUID.Enabled = true;
                     ExMSG1.Enabled = true;
                     ExMSG2.Enabled = false;
-                    ExUID.Text = fc.ExNameFilter;
+                    ExUID.Text = fc.ExFilterName;
                     ExUID.SelectAll();
                     ExMSG1.Text = "";
                     ExMSG2.Text = "";
-                    foreach (string bf in fc.ExBodyFilter)
+                    foreach (string bf in fc.ExFilterBody)
                     {
                         ExMSG1.Text += bf + " ";
                     }
@@ -465,21 +465,21 @@ namespace OpenTween
                     ExUID.Text = "";
                     ExMSG1.Text = "";
                     ExMSG2.Text = "";
-                    foreach (string bf in fc.ExBodyFilter)
+                    foreach (string bf in fc.ExFilterBody)
                     {
                         ExMSG2.Text += bf + " ";
                     }
                     ExMSG2.Text = ExMSG2.Text.Trim();
                     ExMSG2.SelectAll();
                 }
-                TextExSource.Text = fc.ExSource;
+                TextExSource.Text = fc.ExFilterSource;
                 CheckExRegex.Checked = fc.ExUseRegex;
-                CheckExURL.Checked = fc.ExSearchUrl;
+                CheckExURL.Checked = fc.ExFilterByUrl;
                 CheckExCaseSensitive.Checked = fc.ExCaseSensitive;
-                CheckExRetweet.Checked = fc.IsExRt;
+                CheckExRetweet.Checked = fc.ExFilterRt;
                 CheckExLambDa.Checked = fc.ExUseLambda;
 
-                if (fc.MoveFrom)
+                if (fc.MoveMatches)
                 {
                     OptMove.Checked = true;
                 }
@@ -487,7 +487,7 @@ namespace OpenTween
                 {
                     OptCopy.Checked = true;
                 }
-                CheckMark.Checked = fc.SetMark;
+                CheckMark.Checked = fc.MarkMatches;
 
                 ButtonEdit.Enabled = true;
                 ButtonDelete.Enabled = true;
@@ -569,82 +569,80 @@ namespace OpenTween
 
             ft = new FiltersClass();
 
-            ft.MoveFrom = OptMove.Checked;
-            ft.SetMark = CheckMark.Checked;
+            ft.MoveMatches = OptMove.Checked;
+            ft.MarkMatches = CheckMark.Checked;
 
             string bdy = "";
             if (RadioAND.Checked)
             {
-                ft.NameFilter = UID.Text;
+                ft.FilterName = UID.Text;
                 TweenMain owner = (TweenMain)this.Owner;
                 int cnt = owner.AtIdSupl.ItemCount;
-                owner.AtIdSupl.AddItem("@" + ft.NameFilter);
+                owner.AtIdSupl.AddItem("@" + ft.FilterName);
                 if (cnt != owner.AtIdSupl.ItemCount)
                 {
                     owner.ModifySettingAtId = true;
                 }
-                ft.SearchBoth = true;
+                ft.UseNameField = true;
                 bdy = MSG1.Text;
             }
             else
             {
-                ft.NameFilter = "";
-                ft.SearchBoth = false;
+                ft.FilterName = "";
+                ft.UseNameField = false;
                 bdy = MSG2.Text;
             }
-            ft.Source = TextSource.Text.Trim();
+            ft.FilterSource = TextSource.Text.Trim();
 
             if (CheckRegex.Checked || CheckLambda.Checked)
             {
-                ft.BodyFilter.Add(bdy);
+                ft.FilterBody = new[] { bdy };
             }
             else
             {
-                string[] bf = bdy.Trim().Split((char)32);
-                foreach (string bfs in bf)
-                {
-                    if (!string.IsNullOrEmpty(bfs)) ft.BodyFilter.Add(bfs.Trim());
-                }
+                ft.FilterBody = bdy.Split((char)32)
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToArray();
             }
 
             ft.UseRegex = CheckRegex.Checked;
-            ft.SearchUrl = CheckURL.Checked;
+            ft.FilterByUrl = CheckURL.Checked;
             ft.CaseSensitive = CheckCaseSensitive.Checked;
-            ft.IsRt = CheckRetweet.Checked;
+            ft.FilterRt = CheckRetweet.Checked;
             ft.UseLambda = CheckLambda.Checked;
 
             bdy = "";
             if (RadioExAnd.Checked)
             {
-                ft.ExNameFilter = ExUID.Text;
-                ft.ExSearchBoth = true;
+                ft.ExFilterName = ExUID.Text;
+                ft.ExUseNameField = true;
                 bdy = ExMSG1.Text;
             }
             else
             {
-                ft.ExNameFilter = "";
-                ft.ExSearchBoth = false;
+                ft.ExFilterName = "";
+                ft.ExUseNameField = false;
                 bdy = ExMSG2.Text;
             }
-            ft.ExSource = TextExSource.Text.Trim();
+            ft.ExFilterSource = TextExSource.Text.Trim();
 
             if (CheckExRegex.Checked || CheckExLambDa.Checked)
             {
-                ft.ExBodyFilter.Add(bdy);
+                ft.ExFilterBody = new[] { bdy };
             }
             else
             {
-                string[] bf = bdy.Trim().Split((char)32);
-                foreach (string bfs in bf)
-                {
-                    if (!string.IsNullOrEmpty(bfs)) ft.ExBodyFilter.Add(bfs.Trim());
-                }
+                ft.ExFilterBody = bdy.Split((char)32)
+                    .Select(x => x.Trim())
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .ToArray();
             }
 
             ft.ExUseRegex = CheckExRegex.Checked;
-            ft.ExSearchUrl = CheckExURL.Checked;
+            ft.ExFilterByUrl = CheckExURL.Checked;
             ft.ExCaseSensitive = CheckExCaseSensitive.Checked;
-            ft.IsExRt = CheckExRetweet.Checked;
+            ft.ExFilterRt = CheckExRetweet.Checked;
             ft.ExUseLambda = CheckExLambDa.Checked;
 
             if (_mode == EDITMODE.AddNew)
@@ -1134,7 +1132,7 @@ namespace OpenTween
 
                 foreach (int idx in ListFilters.SelectedIndices)
                 {
-                    filters.Add(_sts.Tabs[tabname].Filters[idx].CopyTo(new FiltersClass()));
+                    filters.Add(_sts.Tabs[tabname].Filters[idx].Clone());
                 }
                 foreach (var tb in selectedTabs)
                 {
@@ -1143,7 +1141,7 @@ namespace OpenTween
                     foreach (FiltersClass flt in filters)
                     {
                         if (!tb.Filters.Contains(flt))
-                            tb.AddFilter(flt.CopyTo(new FiltersClass()));
+                            tb.AddFilter(flt.Clone());
                     }
                 }
                 SetFilters(tabname);
@@ -1169,7 +1167,7 @@ namespace OpenTween
 
                 foreach (int idx in ListFilters.SelectedIndices)
                 {
-                    filters.Add(_sts.Tabs[tabname].Filters[idx].CopyTo(new FiltersClass()));
+                    filters.Add(_sts.Tabs[tabname].Filters[idx].Clone());
                 }
                 if (selectedTabs.Length == 1 && selectedTabs[0].TabName == tabname) return;
                 foreach (var tb in selectedTabs)
@@ -1179,7 +1177,7 @@ namespace OpenTween
                     foreach (FiltersClass flt in filters)
                     {
                         if (!tb.Filters.Contains(flt))
-                            tb.AddFilter(flt.CopyTo(new FiltersClass()));
+                            tb.AddFilter(flt.Clone());
                     }
                 }
                 for (int idx = ListFilters.Items.Count - 1; idx >= 0; idx--)

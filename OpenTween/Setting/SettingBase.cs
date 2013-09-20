@@ -65,7 +65,7 @@ namespace OpenTween
             {
                 return new T();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 string backupFile = Path.Combine(
                         Path.Combine(

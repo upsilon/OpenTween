@@ -9062,17 +9062,17 @@ namespace OpenTween
                     ids.Add(post.ScreenName);
                     if (post.RetweetedId == null)
                     {
-                        fc.NameFilter = post.ScreenName;
+                        fc.FilterName = post.ScreenName;
                     }
                     else
                     {
-                        fc.NameFilter = post.RetweetedBy;
+                        fc.FilterName = post.RetweetedBy;
                     }
-                    fc.SearchBoth = true;
-                    fc.MoveFrom = mv;
-                    fc.SetMark = mk;
+                    fc.UseNameField = true;
+                    fc.MoveMatches = mv;
+                    fc.MarkMatches = mk;
                     fc.UseRegex = false;
-                    fc.SearchUrl = false;
+                    fc.FilterByUrl = false;
                     _statuses.Tabs[tabName].AddFilter(fc);
                 }
             }
@@ -11621,12 +11621,12 @@ namespace OpenTween
                 MoveOrCopy(ref mv, ref mk);
 
                 FiltersClass fc = new FiltersClass();
-                fc.NameFilter = name;
-                fc.SearchBoth = true;
-                fc.MoveFrom = mv;
-                fc.SetMark = mk;
+                fc.FilterName = name;
+                fc.UseNameField = true;
+                fc.MoveMatches = mv;
+                fc.MarkMatches = mk;
                 fc.UseRegex = false;
-                fc.SearchUrl = false;
+                fc.FilterByUrl = false;
                 _statuses.Tabs[tabName].AddFilter(fc);
 
                 try
