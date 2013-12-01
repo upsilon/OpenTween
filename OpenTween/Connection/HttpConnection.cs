@@ -641,7 +641,6 @@ namespace OpenTween
                 string proxyPassword)
         {
             isInitialize = true;
-            ServicePointManager.Expect100Continue = false;
             DefaultTimeout = timeout * 1000;     //s -> ms
             switch (proxyType)
             {
@@ -658,14 +657,6 @@ namespace OpenTween
                     break;
             }
             proxyKind = proxyType;
-
-            // Windows 8.1 Previewの場合SecurityProtocolを明確に指定する必要がある  
-            // Preview 版使用期限の 2014 年 1 月を過ぎたら消すよ
-            var osVersion = Environment.OSVersion.Version;  
-            if (osVersion.Major == 6 && osVersion.Minor == 3)  
-            {  
-                ServicePointManager.SecurityProtocol |= SecurityProtocolType.Ssl3;  
-            }  
 
             Win32Api.SetProxy(proxyType, proxyAddress, proxyPort, proxyUser, proxyPassword);
         }

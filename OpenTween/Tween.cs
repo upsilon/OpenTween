@@ -955,6 +955,12 @@ namespace OpenTween
             }
 
             //Twitter用通信クラス初期化
+            HttpAsync.Initialize();
+            HttpAsync.DefaultTimeout = TimeSpan.FromSeconds(SettingDialog.DefaultTimeOut);
+            HttpAsync.SetProxy(SettingDialog.SelectedProxyType,
+                SettingDialog.ProxyAddress, SettingDialog.ProxyPort,
+                SettingDialog.ProxyUser, SettingDialog.ProxyPassword);
+
             HttpConnection.InitializeConnection(SettingDialog.DefaultTimeOut,
                                                 SettingDialog.SelectedProxyType,
                                                 SettingDialog.ProxyAddress,
@@ -3913,6 +3919,12 @@ namespace OpenTween
                     ShortUrl.BitlyId = SettingDialog.BitlyUser;
                     ShortUrl.BitlyKey = SettingDialog.BitlyPwd;
                     HttpTwitter.TwitterUrl = _cfgCommon.TwitterUrl;
+
+                    HttpAsync.Initialize();
+                    HttpAsync.DefaultTimeout = TimeSpan.FromSeconds(SettingDialog.DefaultTimeOut);
+                    HttpAsync.SetProxy(SettingDialog.SelectedProxyType,
+                        SettingDialog.ProxyAddress, SettingDialog.ProxyPort,
+                        SettingDialog.ProxyUser, SettingDialog.ProxyPassword);
 
                     HttpConnection.InitializeConnection(SettingDialog.DefaultTimeOut,
                                                         SettingDialog.SelectedProxyType,

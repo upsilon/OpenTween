@@ -131,6 +131,24 @@ namespace OpenTween
         }
 
         /// <summary>
+        /// 指定された Stream から非同期に MemoryImage を作成します。
+        /// </summary>
+        /// <remarks>
+        /// ストリームの内容はメモリ上に展開した後に使用されるため、
+        /// 引数に指定した Stream を MemoryImage より先に破棄しても問題ありません。
+        /// </remarks>
+        /// <param name="stream">読み込む対象となる Stream</param>
+        /// <returns>作成された MemoryImage を持つタスク</returns>
+        public static async Task<MemoryImage> CopyFromStreamAsync(Stream stream)
+        {
+            var memstream = new MemoryStream();
+
+            await stream.CopyToAsync(memstream);
+
+            return new MemoryImage(memstream);
+        }
+
+        /// <summary>
         /// 指定されたバイト列から MemoryImage を作成します。
         /// </summary>
         /// <param name="bytes">読み込む対象となるバイト列</param>

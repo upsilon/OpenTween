@@ -1694,6 +1694,9 @@ namespace OpenTween
             string ppw = TextProxyPassword.Text.Trim();
 
             //通信基底クラス初期化
+            HttpAsync.Initialize();
+            HttpAsync.DefaultTimeout = TimeSpan.FromSeconds(20);
+            HttpAsync.SetProxy(ptype, padr, pport, pusr, ppw);
             HttpConnection.InitializeConnection(20, ptype, padr, pport, pusr, ppw);
             HttpTwitter.TwitterUrl = TwitterAPIText.Text.Trim();
             tw.Initialize("", "", "", 0);

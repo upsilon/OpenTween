@@ -13,6 +13,8 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile Condition="'$(OS)' == 'Windows_NT'">Client</TargetFrameworkProfile>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -44,6 +46,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AsyncBridge.Portable">
+      <HintPath>..\packages\AsyncBridge.Portable.0.2.0\lib\AsyncBridge.Portable.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -63,6 +68,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ApplicationSettings.cs" />
+    <Compile Include="AsyncBackports.cs" />
     <Compile Include="AtIdSupplement.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +88,9 @@
       <DependentUpon>AuthDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Bing.cs" />
+    <Compile Include="Connection\HttpAsync.cs" />
+    <Compile Include="Connection\HttpExtensions.cs" />
+    <Compile Include="Connection\HttpMethod.cs" />
     <Compile Include="Connection\HttpOAuthApiProxy.cs" />
     <Compile Include="Connection\HttpTwitter.cs">
       <SubType>Code</SubType>
@@ -462,6 +471,7 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\3b.ico" />
@@ -493,4 +503,5 @@
   <Target Name="AfterBuild">
     <SGen BuildAssemblyName="$(TargetFileName)" BuildAssemblyPath="$(TargetDir)" ShouldGenerateSerializer="true" UseProxyTypes="false" Condition="'$(OS)' == 'Windows_NT'" />
   </Target>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>
