@@ -62,6 +62,9 @@
     <Compile Include="Api\ApiLimitTest.cs" />
     <Compile Include="Api\TwitterApiStatusTest.cs" />
     <Compile Include="BingTest.cs" />
+    <Compile Include="Connection\OAuthUtilTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MyApplicationTest.cs" />
     <Compile Include="PostFilterRuleTest.cs" />
     <Compile Include="FoursquareTest.cs" />

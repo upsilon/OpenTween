@@ -92,6 +92,8 @@
     <Compile Include="Connection\HttpExtensions.cs" />
     <Compile Include="Connection\HttpMethod.cs" />
     <Compile Include="Connection\HttpOAuthApiProxy.cs" />
+    <Compile Include="Connection\HttpOAuthAsync.cs" />
+    <Compile Include="Connection\HttpOAuthEchoAsync.cs" />
     <Compile Include="Connection\HttpTwitter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -101,6 +103,7 @@
     <Compile Include="Connection\IHttpConnection.cs" />
     <Compile Include="Connection\imgly.cs" />
     <Compile Include="Connection\IMultimediaShareService.cs" />
+    <Compile Include="Connection\OAuthUtil.cs" />
     <Compile Include="Connection\ProxyType.cs" />
     <Compile Include="Connection\TwipplePhoto.cs" />
     <Compile Include="EventViewerDialog.cs">
