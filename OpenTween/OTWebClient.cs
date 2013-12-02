@@ -27,6 +27,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
 using System.ComponentModel;
+using OpenTween.Connection;
 
 namespace OpenTween
 {
@@ -52,7 +53,7 @@ namespace OpenTween
                 hreq.Timeout = this.Timeout;
             }
 
-            if (HttpConnection.proxyKind != HttpConnection.ProxyType.IE)
+            if (HttpConnection.proxyKind != ProxyType.IE)
                 req.Proxy = HttpConnection.proxy;
 
             return req;

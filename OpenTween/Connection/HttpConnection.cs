@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.IO.Compression;
 using System.Drawing;
+using OpenTween.Connection;
 
 ///<summary>
 ///HttpWebRequest,HttpWebResponseを使用した基本的な通信機能を提供する
@@ -58,13 +59,6 @@ namespace OpenTween
         ///初期化済みフラグ
         ///</summary>
         private static bool isInitialize = false;
-
-        public enum ProxyType
-        {
-            None,
-            IE,
-            Specified,
-        }
 
         /// <summary>
         /// リクエスト間で Cookie を保持するか否か
