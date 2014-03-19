@@ -5077,16 +5077,28 @@ namespace OpenTween
             //if (Post.InReplyToStatusId != null) mk.Append("⇒");
             if (Post.FavoritedCount > 0) mk.Append("+" + Post.FavoritedCount.ToString());
             ImageListViewItem itm;
-            if (Post.RetweetedId == null)
+            if (Post.RetweetedId != null)
             {
                 string[] sitem= {"",
                                  Post.Nickname,
                                  Post.IsDeleted ? "(DELETED)" : Post.TextSingleLine,
                                  Post.CreatedAt.ToString(this._cfgCommon.DateTimeFormat),
-                                 Post.ScreenName,
+                                 Post.ScreenName + Environment.NewLine + "(RT:" + Post.RetweetedBy + ")",
                                  "",
                                  mk.ToString(),
                                  Post.Source};
+                itm = new ImageListViewItem(sitem, this.IconCache, Post.ImageUrl);
+            }
+            else if (Post.FavoritedId != null)
+            {
+                string[] sitem = {"",
+                                  Post.Nickname,
+                                  Post.IsDeleted ? "(DELETED)" : Post.TextSingleLine,
+                                  Post.CreatedAt.ToString(this._cfgCommon.DateTimeFormat),
+                                  Post.ScreenName + Environment.NewLine + "(Fav:" + Post.FavoritedBy + ")",
+                                  "",
+                                  mk.ToString(),
+                                  Post.Source};
                 itm = new ImageListViewItem(sitem, this.IconCache, Post.ImageUrl);
             }
             else
@@ -5095,7 +5107,7 @@ namespace OpenTween
                                   Post.Nickname,
                                   Post.IsDeleted ? "(DELETED)" : Post.TextSingleLine,
                                   Post.CreatedAt.ToString(this._cfgCommon.DateTimeFormat),
-                                  Post.ScreenName + Environment.NewLine + "(RT:" + Post.RetweetedBy + ")",
+                                  Post.ScreenName,
                                   "",
                                   mk.ToString(),
                                   Post.Source};

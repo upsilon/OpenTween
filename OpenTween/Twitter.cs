@@ -3484,6 +3484,8 @@ namespace OpenTween
                 this.NewPostFromStream(this, EventArgs.Empty);
         }
 
+        private readonly DateTime TwitterEpoch = new DateTime(2010, 11, 4, 1, 42, 54, DateTimeKind.Unspecified);
+
         private void CreateEventFromJson(string content)
         {
             TwitterStreamEvent eventData = null;
@@ -3498,6 +3500,18 @@ namespace OpenTween
             catch(Exception ex)
             {
                 MyCommon.TraceOut(ex, "Event Exception!" + Environment.NewLine + content);
+            }
+
+            if (eventData.Event == "favorite")
+            {
+                var post = this.CreatePostsFromStatusData(eventData.TargetObject);
+                post.FavoritedBy = eventData.Source.ScreenName;
+                post.FavoritedId = eventData.Source.Id;
+
+                // 適当にIDを生成する
+                post.StatusId = ((long)(MyCommon.DateTimeParse(eventData.CreatedAt).ToUniversalTime() - TwitterEpoch).TotalMilliseconds) << 22;
+
+                TabInformations.GetInstance().AddPost(post);
             }
 
             var evt = new FormattedEvent();

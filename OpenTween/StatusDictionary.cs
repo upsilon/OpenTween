@@ -80,6 +80,8 @@ namespace OpenTween
         public bool FilterHit { get; set; }
         public string RetweetedBy { get; set; }
         public long? RetweetedId { get; set; }
+        public string FavoritedBy { get; set; }
+        public long? FavoritedId { get; set; }
         private bool _IsDeleted = false;
         private StatusGeo _postGeo = new StatusGeo();
         public int RetweetedCount { get; set; }
