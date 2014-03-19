@@ -933,6 +933,8 @@ namespace OpenTween
             if (!string.IsNullOrEmpty(trackwords))
                 param.Add("track", trackwords);
 
+            param["include_followings_activity"] = "true";
+
             return httpCon.GetContent(GetMethod,
                 this.CreateTwitterUserStreamUri("/1.1/user.json"),
                 param,
