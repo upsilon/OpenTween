@@ -2345,6 +2345,9 @@ namespace OpenTween
                     }
 
                     post.IsDm = false;
+
+                    post.FavoritedBy = this.Username;
+                    post.FavoritedId = this.UserId;
                 }
                 catch(Exception ex)
                 {
