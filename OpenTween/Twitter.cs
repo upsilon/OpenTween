@@ -3471,8 +3471,8 @@ namespace OpenTween
                 }
                 else
                 {
-                    long dummy = 0;
-                    CreatePostsFromJson("[" + line + "]", MyCommon.WORKERTYPE.Timeline, null, false, 0, ref dummy);
+                    //long dummy = 0;
+                    //CreatePostsFromJson("[" + line + "]", MyCommon.WORKERTYPE.Timeline, null, false, 0, ref dummy);
                 }
             }
             catch(NullReferenceException)
@@ -3504,7 +3504,8 @@ namespace OpenTween
 
             if (eventData.Event == "favorite")
             {
-                var post = this.CreatePostsFromStatusData(eventData.TargetObject);
+                var tweetEvent = TwitterStreamEvent<TwitterStatus>.ParseJson(content);
+                var post = this.CreatePostsFromStatusData(tweetEvent.TargetObject);
                 post.FavoritedBy = eventData.Source.ScreenName;
                 post.FavoritedId = eventData.Source.Id;
 

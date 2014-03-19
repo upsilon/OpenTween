@@ -1236,7 +1236,6 @@ namespace OpenTween
 
         private IntervalChangedEventArgs ResetTimers = new IntervalChangedEventArgs();
 
-        private static int homeCounter = 0;
         private static int mentionCounter = 0;
         private static int dmCounter = 0;
         private static int pubSearchCounter = 0;
@@ -1248,7 +1247,6 @@ namespace OpenTween
 
         private void TimerTimeline_Elapsed(object sender, EventArgs e)
         {
-            if (homeCounter > 0) Interlocked.Decrement(ref homeCounter);
             if (mentionCounter > 0) Interlocked.Decrement(ref mentionCounter);
             if (dmCounter > 0) Interlocked.Decrement(ref dmCounter);
             if (pubSearchCounter > 0) Interlocked.Decrement(ref pubSearchCounter);
@@ -1258,12 +1256,6 @@ namespace OpenTween
             Interlocked.Increment(ref refreshFollowers);
 
             ////タイマー初期化
-            if (ResetTimers.Timeline || homeCounter <= 0 && this._cfgCommon.TimelinePeriod > 0)
-            {
-                Interlocked.Exchange(ref homeCounter, this._cfgCommon.TimelinePeriod);
-                if (!tw.IsUserstreamDataReceived && !ResetTimers.Timeline) GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
-                ResetTimers.Timeline = false;
-            }
             if (ResetTimers.Reply || mentionCounter <= 0 && this._cfgCommon.ReplyPeriod > 0)
             {
                 Interlocked.Exchange(ref mentionCounter, this._cfgCommon.ReplyPeriod);
@@ -1314,7 +1306,6 @@ namespace OpenTween
                 {
                     osResumed = false;
                     Interlocked.Exchange(ref ResumeWait, 0);
-                    GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
                     GetTimeline(MyCommon.WORKERTYPE.Reply, 1, "");
                     GetTimeline(MyCommon.WORKERTYPE.DirectMessegeRcv, 1, "");
                     GetTimeline(MyCommon.WORKERTYPE.PublicSearch, 1, "");
@@ -2910,10 +2901,6 @@ namespace OpenTween
                         {
                             RefreshTimeline(true);
                         }
-                        else
-                        {
-                            GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
-                        }
                     }
                     break;
                 case MyCommon.WORKERTYPE.Retweet:
@@ -2928,7 +2915,6 @@ namespace OpenTween
                                 _postTimestamps.RemoveAt(i);
                             }
                         }
-                        if (!_isActiveUserstream && this._cfgCommon.PostAndGet) GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
                     }
                     break;
                 case MyCommon.WORKERTYPE.Follower:
@@ -3713,13 +3699,8 @@ namespace OpenTween
                         GetTimeline(MyCommon.WORKERTYPE.List, 1, _curTab.Text);
                         break;
                     default:
-                        GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
                         break;
                 }
-            }
-            else
-            {
-                GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
             }
         }
 
@@ -3758,13 +3739,8 @@ namespace OpenTween
                         GetTimeline(MyCommon.WORKERTYPE.List, -1, _curTab.Text);
                         break;
                     default:
-                        GetTimeline(MyCommon.WORKERTYPE.Timeline, -1, "");
                         break;
                 }
-            }
-            else
-            {
-                GetTimeline(MyCommon.WORKERTYPE.Timeline, -1, "");
             }
         }
 
@@ -10639,8 +10615,6 @@ namespace OpenTween
                 }
                 GetTimeline(MyCommon.WORKERTYPE.Configuration, 0, "");
                 StartUserStream();
-                _waitTimeline = true;
-                GetTimeline(MyCommon.WORKERTYPE.Timeline, 1, "");
                 _waitReply = true;
                 GetTimeline(MyCommon.WORKERTYPE.Reply, 1, "");
                 _waitDm = true;
