@@ -24,8 +24,8 @@ after_test:
   - npm install codecov --save
   - ./node_modules/.bin/codecov -f coverage.xml
 
-  - del %APPVEYOR_BUILD_FOLDER%\OpenTween\bin\Debug\OpenTween.pdb
-  - 7z a OpenTween_dev-%APPVEYOR_BUILD_NUMBER%.zip %APPVEYOR_BUILD_FOLDER%\OpenTween\bin\Debug\*
+  - del %APPVEYOR_BUILD_FOLDER%\OpenTween\bin\Debug\net451\OpenTween.pdb
+  - 7z a OpenTween_dev-%APPVEYOR_BUILD_NUMBER%.zip %APPVEYOR_BUILD_FOLDER%\OpenTween\bin\Debug\net451\*
 
 artifacts:
   - name: OpenTween.zip

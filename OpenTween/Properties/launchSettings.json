@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OpenTween": {
+      "commandName": "Executable",
+      "executablePath": "$(TargetPath)"
+    }
+  }
+}
