@@ -112,7 +112,7 @@ namespace OpenTween
             if (userAccountIdx != -1)
             {
                 var u = settingCommon.UserAccounts[userAccountIdx];
-                this.tw.Initialize(u.Token, u.TokenSecret, u.Username, u.UserId);
+                this.tw.Initialize(u.AccessToken, u.AccessSecretPlain, u.Username, u.UserId);
             }
             else
             {
@@ -293,8 +293,8 @@ namespace OpenTween
             {
                 Username = accessTokenResponse["screen_name"],
                 UserId = long.Parse(accessTokenResponse["user_id"]),
-                Token = accessTokenResponse["oauth_token"],
-                TokenSecret = accessTokenResponse["oauth_token_secret"],
+                AccessToken = accessTokenResponse["oauth_token"],
+                AccessSecretPlain = accessTokenResponse["oauth_token_secret"],
             };
         }
 
