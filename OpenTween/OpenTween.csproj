@@ -119,9 +119,11 @@
     </Compile>
     <Compile Include="Bing.cs" />
     <Compile Include="Connection\IApiConnection.cs" />
+    <Compile Include="Connection\IMastodonApiConnection.cs" />
     <Compile Include="Connection\IMediaUploadService.cs" />
     <Compile Include="Connection\Imgur.cs" />
     <Compile Include="Connection\LazyJson.cs" />
+    <Compile Include="Connection\MastodonApiConnection.cs" />
     <Compile Include="Connection\Mobypicture.cs" />
     <Compile Include="Connection\Networking.cs" />
     <Compile Include="Connection\OAuthEchoHandler.cs" />
