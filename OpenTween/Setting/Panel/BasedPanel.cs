@@ -34,6 +34,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using OpenTween;
 
 namespace OpenTween.Setting.Panel
 {
@@ -44,15 +45,30 @@ namespace OpenTween.Setting.Panel
 
         public void LoadConfig(SettingCommon settingCommon)
         {
+            var accounts = settingCommon.UserAccounts;
+
             using (ControlTransaction.Update(this.AuthUserCombo))
             {
                 this.AuthUserCombo.Items.Clear();
-                this.AuthUserCombo.Items.AddRange(settingCommon.UserAccounts.ToArray());
+                this.AuthUserCombo.Items.AddRange(accounts.ToArray());
+
+                var primaryIndex = accounts.FindIndex(x => x.Primary);
+                if (primaryIndex != -1)
+                    this.AuthUserCombo.SelectedIndex = primaryIndex;
             }
         }
 
         public void SaveConfig(SettingCommon settingCommon)
-            => settingCommon.UserAccounts = this.AuthUserCombo.Items.Cast<UserAccount>().ToList();
+        {
+            var accounts = this.AuthUserCombo.Items.Cast<UserAccount>().ToList();
+
+            var selectedIndex = this.AuthUserCombo.SelectedIndex;
+            var index = 0;
+            foreach (var account in accounts)
+                account.Primary = selectedIndex == index++;
+
+            settingCommon.UserAccounts = accounts;
+        }
 
         private void AuthClearButton_Click(object sender, EventArgs e)
         {

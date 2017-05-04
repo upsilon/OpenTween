@@ -872,10 +872,6 @@ namespace OpenTween
             TwitterApiConnection.RestApiHost = SettingManager.Common.TwitterApiHost;
             this.tw = new Twitter(this.twitterApi);
 
-            //認証関連
-            if (MyCommon.IsNullOrEmpty(SettingManager.Common.Token)) SettingManager.Common.UserName = "";
-            tw.Initialize(SettingManager.Common.Token, SettingManager.Common.TokenSecret, SettingManager.Common.UserName, SettingManager.Common.UserId);
-
             _initial = true;
 
             Networking.Initialize();
@@ -883,20 +879,32 @@ namespace OpenTween
             var saveRequired = false;
             var firstRun = false;
 
-            //ユーザー名、パスワードが未設定なら設定画面を表示（初回起動時など）
-            if (MyCommon.IsNullOrEmpty(tw.Username))
+            // 認証情報が未設定なら設定画面を表示（初回起動時など）
+            var primaryAccount = SettingManager.Common.PrimaryAccount;
+            if (primaryAccount == null)
             {
                 saveRequired = true;
                 firstRun = true;
 
-                //設定せずにキャンセルされたか、設定されたが依然ユーザー名が未設定ならプログラム終了
-                if (ShowSettingDialog(showTaskbarIcon: true) != DialogResult.OK ||
-                    MyCommon.IsNullOrEmpty(tw.Username))
+                // 設定せずにキャンセルされた場合はプログラム終了
+                if (ShowSettingDialog(showTaskbarIcon: true) != DialogResult.OK)
                 {
                     Application.Exit();  //強制終了
                     return;
                 }
+
+                primaryAccount = SettingManager.Common.PrimaryAccount;
+
+                // 認証情報が未設定ならプログラム終了
+                if (primaryAccount == null)
+                {
+                    Application.Exit(); // 強制終了
+                    return;
+                }
             }
+
+            //認証関連
+            tw.Initialize(primaryAccount.AccessToken, primaryAccount.AccessSecretPlain, primaryAccount.Username, primaryAccount.UserId);
 
             //Twitter用通信クラス初期化
             Networking.DefaultTimeout = TimeSpan.FromSeconds(SettingManager.Common.DefaultTimeOut);
@@ -3550,6 +3558,17 @@ namespace OpenTween
             {
                 lock (_syncObject)
                 {
+                    var primaryAccount = SettingManager.Common.PrimaryAccount;
+                    if (primaryAccount != null)
+                    {
+                        this.tw.Initialize(primaryAccount.AccessToken, primaryAccount.AccessSecretPlain, primaryAccount.Username, primaryAccount.UserId);
+                    }
+                    else
+                    {
+                        this.tw.ClearAuthInfo();
+                        this.tw.Initialize("", "", "", 0);
+                    }
+
                     tw.RestrictFavCheck = SettingManager.Common.RestrictFavCheck;
                     tw.ReadOwnPost = SettingManager.Common.ReadOwnPost;
                     ShortUrl.Instance.DisableExpanding = !SettingManager.Common.TinyUrlResolve;

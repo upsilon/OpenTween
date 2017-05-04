@@ -82,12 +82,6 @@ namespace OpenTween
             this.CooperatePanel.LoadConfig(settingCommon);
             this.ConnectionPanel.LoadConfig(settingCommon);
             this.NotifyPanel.LoadConfig(settingCommon);
-
-            var activeUser = settingCommon.UserAccounts.FirstOrDefault(x => x.UserId == this.tw.UserId);
-            if (activeUser != null)
-            {
-                this.BasedPanel.AuthUserCombo.SelectedItem = activeUser;
-            }
         }
 
         public void SaveConfig(SettingCommon settingCommon, SettingLocal settingLocal)
@@ -107,18 +101,6 @@ namespace OpenTween
             this.CooperatePanel.SaveConfig(settingCommon);
             this.ConnectionPanel.SaveConfig(settingCommon);
             this.NotifyPanel.SaveConfig(settingCommon);
-
-            var userAccountIdx = this.BasedPanel.AuthUserCombo.SelectedIndex;
-            if (userAccountIdx != -1)
-            {
-                var u = settingCommon.UserAccounts[userAccountIdx];
-                this.tw.Initialize(u.AccessToken, u.AccessSecretPlain, u.Username, u.UserId);
-            }
-            else
-            {
-                this.tw.ClearAuthInfo();
-                this.tw.Initialize("", "", "", 0);
-            }
         }
 
         private void TreeViewSetting_BeforeSelect(object sender, TreeViewCancelEventArgs e)
