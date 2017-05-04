@@ -69,6 +69,14 @@
     <Compile Include="Api\ApiLimit.cs" />
     <Compile Include="Api\BitlyApi.cs" />
     <Compile Include="Api\DataModel\GeoJson.cs" />
+    <Compile Include="Api\DataModel\MastodonAccount.cs" />
+    <Compile Include="Api\DataModel\MastodonApplication.cs" />
+    <Compile Include="Api\DataModel\MastodonAttachment.cs" />
+    <Compile Include="Api\DataModel\MastodonError.cs" />
+    <Compile Include="Api\DataModel\MastodonInstance.cs" />
+    <Compile Include="Api\DataModel\MastodonMention.cs" />
+    <Compile Include="Api\DataModel\MastodonStatus.cs" />
+    <Compile Include="Api\DataModel\MastodonTag.cs" />
     <Compile Include="Api\DataModel\TwitterConfiguration.cs" />
     <Compile Include="Api\DataModel\TwitterEntity.cs" />
     <Compile Include="Api\DataModel\TwitterError.cs" />
