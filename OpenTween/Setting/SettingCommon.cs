@@ -45,62 +45,19 @@ namespace OpenTween
         #endregion
 
         public List<UserAccount> UserAccounts = new List<UserAccount>();
+
+        public long UserId = 0;
         public string UserName = "";
-
-        [XmlIgnore]
-        public string Password = "";
-        public string EncryptPassword
-        {
-            get => Encrypt(Password);
-            set => Password = Decrypt(value);
-        }
-
         public string Token = "";
+
         [XmlIgnore]
         public string TokenSecret = "";
         public string EncryptTokenSecret
         {
-            get => Encrypt(TokenSecret);
-            set => TokenSecret = Decrypt(value);
+            get => string.IsNullOrEmpty(this.TokenSecret) ? "" : MyCommon.EncryptString(this.TokenSecret);
+            set => this.TokenSecret = string.IsNullOrEmpty(value) ? "" : MyCommon.DecryptString(value);
         }
 
-        private string Encrypt(string password)
-        {
-            if (MyCommon.IsNullOrEmpty(password)) password = "";
-            if (password.Length > 0)
-            {
-                try
-                {
-                    return MyCommon.EncryptString(password);
-                }
-                catch (Exception)
-                {
-                    return "";
-                }
-            }
-            else
-            {
-                return "";
-            }
-        }
-        private string Decrypt(string password)
-        {
-            if (MyCommon.IsNullOrEmpty(password)) password = "";
-            if (password.Length > 0)
-            {
-                try
-                {
-                    password = MyCommon.DecryptString(password);
-                }
-                catch (Exception)
-                {
-                    password = "";
-                }
-            }
-            return password;
-        }
-
-        public long UserId = 0;
         public List<string> TabList = new List<string>();
         public int TimelinePeriod = 90;
         public int ReplyPeriod = 180;
