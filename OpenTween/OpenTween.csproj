@@ -97,6 +97,7 @@
     <Compile Include="Api\DataModel\TwitterUser.cs" />
     <Compile Include="Api\DataModel\TwitterApiAccessLevel.cs" />
     <Compile Include="Api\JsonUtils.cs" />
+    <Compile Include="Api\MastodonApi.cs" />
     <Compile Include="Api\MicrosoftTranslatorApi.cs" />
     <Compile Include="Api\TwitterApi.cs" />
     <Compile Include="Api\TwitterApiException.cs" />
@@ -159,6 +160,7 @@
     <Compile Include="LoginDialog.Designer.cs">
       <DependentUpon>LoginDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Mastodon.cs" />
     <Compile Include="MediaItem.cs" />
     <Compile Include="Models\ComparerMode.cs" />
     <Compile Include="Models\DirectMessagesTabModel.cs" />
@@ -169,6 +171,7 @@
     <Compile Include="Models\IReadOnlyTabCollection.cs" />
     <Compile Include="Models\ListTimelineTabModel.cs" />
     <Compile Include="Models\LocalSearchTabModel.cs" />
+    <Compile Include="Models\MastodonHomeTab.cs" />
     <Compile Include="Models\MediaInfo.cs" />
     <Compile Include="Models\MentionsTabModel.cs" />
     <Compile Include="Models\MuteTabModel.cs" />
