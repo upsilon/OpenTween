@@ -142,6 +142,8 @@ namespace OpenTween
         private readonly TwitterApi twitterApi = new TwitterApi();
         private Twitter tw = null!;
 
+        private Mastodon mastodon;
+
         //Growl呼び出し部
         private readonly GrowlHelper gh = new GrowlHelper(ApplicationSettings.ApplicationName);
 
@@ -906,6 +908,13 @@ namespace OpenTween
             //認証関連
             tw.Initialize(primaryAccount.AccessToken, primaryAccount.AccessSecretPlain, primaryAccount.Username, primaryAccount.UserId);
 
+            var mastodonAccount = SettingManager.Common.MastodonPrimaryAccount;
+            if (mastodonAccount != null)
+            {
+                this.mastodon = new Mastodon();
+                this.mastodon.Initialize(mastodonAccount);
+            }
+
             //Twitter用通信クラス初期化
             Networking.DefaultTimeout = TimeSpan.FromSeconds(SettingManager.Common.DefaultTimeOut);
             Networking.UploadImageTimeout = TimeSpan.FromSeconds(SettingManager.Common.UploadImageTimeout);
@@ -1151,6 +1160,9 @@ namespace OpenTween
             if (this._statuses.MuteTab == null)
                 this._statuses.AddTab(new MuteTabModel());
 
+            if (this.mastodon != null)
+                this._statuses.AddTab(new MastodonHomeTab(this.mastodon, "Mastodon"));
+
             foreach (var tab in _statuses.Tabs)
             {
                 if (!AddNewTab(tab, startup: true))
@@ -1207,7 +1219,11 @@ namespace OpenTween
 
             //タイマー設定
 
-            this.timelineScheduler.UpdateHome = () => this.InvokeAsync(() => this.RefreshTabAsync<HomeTabModel>());
+            this.timelineScheduler.UpdateHome = () => this.InvokeAsync(() => Task.WhenAll(new[]
+            {
+                this.RefreshTabAsync<HomeTabModel>(),
+                this.RefreshTabAsync<MastodonHomeTab>(),
+            }));
             this.timelineScheduler.UpdateMention = () => this.InvokeAsync(() => this.RefreshTabAsync<MentionsTabModel>());
             this.timelineScheduler.UpdateDm = () => this.InvokeAsync(() => this.RefreshTabAsync<DirectMessagesTabModel>());
             this.timelineScheduler.UpdatePublicSearch = () => this.InvokeAsync(() => this.RefreshTabAsync<PublicSearchTabModel>());
@@ -9606,6 +9622,7 @@ namespace OpenTween
                     this.RefreshTabAsync<PublicSearchTabModel>(),
                     this.RefreshTabAsync<UserTimelineTabModel>(),
                     this.RefreshTabAsync<ListTimelineTabModel>(),
+                    this.RefreshTabAsync<MastodonHomeTab>(),
                 };
 
                 if (SettingManager.Common.StartupFollowers)
