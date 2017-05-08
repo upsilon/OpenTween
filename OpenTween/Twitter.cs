@@ -639,7 +639,7 @@ namespace OpenTween
 
         private PostClass CreatePostsFromStatusData(TwitterStatus status, bool favTweet)
         {
-            var post = new PostClass();
+            var post = new TwitterStatusPost(this);
             TwitterEntities entities;
             string sourceHtml;
 
@@ -1097,7 +1097,7 @@ namespace OpenTween
         {
             foreach (var message in item)
             {
-                var post = new PostClass();
+                var post = new TwitterDmPost(this);
                 try
                 {
                     post.StatusId = message.Id;

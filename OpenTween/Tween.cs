@@ -2403,26 +2403,7 @@ namespace OpenTween
 
                 try
                 {
-                    try
-                    {
-                        await this.twitterApi.FavoritesCreate(post.RetweetedId ?? post.StatusId)
-                            .IgnoreResponse()
-                            .ConfigureAwait(false);
-                    }
-                    catch (TwitterApiException ex)
-                        when (ex.Errors.All(x => x.Code == TwitterErrorCode.AlreadyFavorited))
-                    {
-                        // エラーコード 139 のみの場合は成功と見なす
-                    }
-
-                    if (SettingManager.Common.RestrictFavCheck)
-                    {
-                        var status = await this.twitterApi.StatusesShow(post.RetweetedId ?? post.StatusId)
-                            .ConfigureAwait(false);
-
-                        if (status.Favorited != true)
-                            throw new WebApiException("NG(Restricted?)");
-                    }
+                    await post.FavoriteAsync().ConfigureAwait(false);
 
                     this._favTimestamps.Add(DateTimeUtc.Now);
 
@@ -2531,9 +2512,7 @@ namespace OpenTween
 
                     try
                     {
-                        await this.twitterApi.FavoritesDestroy(post.RetweetedId ?? post.StatusId)
-                            .IgnoreResponse()
-                            .ConfigureAwait(false);
+                        await post.UnfavoriteAsync().ConfigureAwait(false);
                     }
                     catch (WebApiException)
                     {
@@ -2743,7 +2722,7 @@ namespace OpenTween
             }
         }
 
-        private async Task RetweetAsync(IReadOnlyList<long> statusIds)
+        private async Task RetweetAsync(IReadOnlyList<PostClass> posts)
         {
             await this.workerSemaphore.WaitAsync();
 
@@ -2752,7 +2731,7 @@ namespace OpenTween
                 var progress = new Progress<string>(x => this.StatusLabel.Text = x);
 
                 this.RefreshTasktrayIcon();
-                await this.RetweetAsyncInternal(progress, this.workerCts.Token, statusIds);
+                await this.RetweetAsyncInternal(progress, this.workerCts.Token, posts);
             }
             catch (WebApiException ex)
             {
@@ -2765,7 +2744,7 @@ namespace OpenTween
             }
         }
 
-        private async Task RetweetAsyncInternal(IProgress<string> p, CancellationToken ct, IReadOnlyList<long> statusIds)
+        private async Task RetweetAsyncInternal(IProgress<string> p, CancellationToken ct, IReadOnlyList<PostClass> posts)
         {
             if (ct.IsCancellationRequested)
                 return;
@@ -2773,24 +2752,16 @@ namespace OpenTween
             if (!CheckAccountValid())
                 throw new WebApiException("Auth error. Check your account");
 
-            bool read;
-            if (!SettingManager.Common.UnreadManage)
-                read = true;
-            else
-                read = this._initial && SettingManager.Common.Read;
-
             p.Report("Posting...");
 
-            var posts = new List<PostClass>();
+            var retweetedPosts = new List<PostClass>();
 
-            await Task.Run(async () =>
+            foreach (var post in posts)
             {
-                foreach (var statusId in statusIds)
-                {
-                    var post = await this.tw.PostRetweet(statusId, read).ConfigureAwait(false);
-                    if (post != null) posts.Add(post);
-                }
-            });
+                var retweetedPost = await post.RetweetAsync().ConfigureAwait(false);
+                if (retweetedPost != null)
+                    retweetedPosts.Add(retweetedPost);
+            }
 
             if (ct.IsCancellationRequested)
                 return;
@@ -2811,7 +2782,7 @@ namespace OpenTween
             {
                 // 自分のRTはTLの更新では取得できない場合があるので、
                 // 投稿時取得の有無に関わらず追加しておく
-                posts.ForEach(post => this._statuses.AddPost(post));
+                retweetedPosts.ForEach(post => this._statuses.AddPost(post));
 
                 if (SettingManager.Common.PostAndGet)
                     await this.RefreshTabAsync<HomeTabModel>();
@@ -3357,36 +3328,7 @@ namespace OpenTween
 
                     try
                     {
-                        if (post.IsDm)
-                        {
-                            await this.twitterApi.DirectMessagesEventsDestroy(post.StatusId.ToString(CultureInfo.InvariantCulture));
-                        }
-                        else
-                        {
-                            if (post.RetweetedByUserId == this.tw.UserId)
-                            {
-                                // 自分が RT したツイート (自分が RT した自分のツイートも含む)
-                                //   => RT を取り消し
-                                await this.twitterApi.StatusesDestroy(post.StatusId)
-                                    .IgnoreResponse();
-                            }
-                            else
-                            {
-                                if (post.UserId == this.tw.UserId)
-                                {
-                                    if (post.RetweetedId != null)
-                                        // 他人に RT された自分のツイート
-                                        //   => RT 元の自分のツイートを削除
-                                        await this.twitterApi.StatusesDestroy(post.RetweetedId.Value)
-                                            .IgnoreResponse();
-                                    else
-                                        // 自分のツイート
-                                        //   => ツイートを削除
-                                        await this.twitterApi.StatusesDestroy(post.StatusId)
-                                            .IgnoreResponse();
-                                }
-                            }
-                        }
+                        await post.DeleteAsync();
                     }
                     catch (WebApiException ex)
                     {
@@ -9755,9 +9697,7 @@ namespace OpenTween
                     }
                 }
 
-                var statusIds = selectedPosts.Select(x => x.StatusId).ToList();
-
-                await this.RetweetAsync(statusIds);
+                await this.RetweetAsync(selectedPosts);
             }
         }
 

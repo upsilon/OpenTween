@@ -169,6 +169,8 @@
     <Compile Include="Models\TabModel.cs" />
     <Compile Include="Models\TabInformations.cs" />
     <Compile Include="Models\TabUsageTypeExt.cs" />
+    <Compile Include="Models\TwitterDmPost.cs" />
+    <Compile Include="Models\TwitterStatusPost.cs" />
     <Compile Include="Models\UserTimelineTabModel.cs" />
     <Compile Include="MouseWheelMessageFilter.cs" />
     <Compile Include="NotifyPropertyChangedBase.cs" />
