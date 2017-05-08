@@ -172,6 +172,7 @@
     <Compile Include="Models\ListTimelineTabModel.cs" />
     <Compile Include="Models\LocalSearchTabModel.cs" />
     <Compile Include="Models\MastodonHomeTab.cs" />
+    <Compile Include="Models\MastodonPost.cs" />
     <Compile Include="Models\MediaInfo.cs" />
     <Compile Include="Models\MentionsTabModel.cs" />
     <Compile Include="Models\MuteTabModel.cs" />
