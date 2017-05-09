@@ -38,5 +38,6 @@ namespace OpenTween
         public bool AutoPopulateReplyMetadata { get; set; }
         public IReadOnlyList<long> ExcludeReplyUserIds { get; set; } = Array.Empty<long>();
         public string? AttachmentUrl { get; set; }
+        public bool PostToMastodon { get; set; } = false;
     }
 }

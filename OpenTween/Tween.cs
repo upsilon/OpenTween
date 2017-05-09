@@ -2268,6 +2268,9 @@ namespace OpenTween
                 await this.OpenUriInBrowserAsync(tmp);
             }
 
+            // 表示中のタブが Mastodon であれば投稿先を Mastodon にする
+            status.PostToMastodon = this.CurrentTab is MastodonHomeTab;
+
             await this.PostMessageAsync(status, uploadService, uploadItems);
         }
 
@@ -2639,8 +2642,16 @@ namespace OpenTween
                             .ConfigureAwait(false);
                     }
 
-                    post = await this.tw.PostStatus(postParamsWithMedia)
-                        .ConfigureAwait(false);
+                    if (postParams.PostToMastodon)
+                    {
+                        post = await this.mastodon.PostStatusAsync(postParamsWithMedia)
+                            .ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        post = await this.tw.PostStatus(postParamsWithMedia)
+                            .ConfigureAwait(false);
+                    }
                 });
 
                 p.Report(Properties.Resources.PostWorker_RunWorkerCompletedText4);
