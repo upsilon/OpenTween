@@ -142,7 +142,7 @@ namespace OpenTween
         private readonly TwitterApi twitterApi = new TwitterApi();
         private Twitter tw = null!;
 
-        private Mastodon mastodon;
+        private Mastodon mastodon = new Mastodon();
 
         //Growl呼び出し部
         private readonly GrowlHelper gh = new GrowlHelper(ApplicationSettings.ApplicationName);
@@ -1160,14 +1160,13 @@ namespace OpenTween
             if (this._statuses.MuteTab == null)
                 this._statuses.AddTab(new MuteTabModel());
 
-            if (this.mastodon != null)
-                this._statuses.AddTab(new MastodonHomeTab(this.mastodon, "Mastodon"));
-
             foreach (var tab in _statuses.Tabs)
             {
                 if (!AddNewTab(tab, startup: true))
                     throw new TabException(Properties.Resources.TweenMain_LoadText1);
             }
+
+            this.ReloadMastodonHomeTab(startup: true);
 
             this._statuses.SelectTab(this.ListTab.SelectedTab.Text);
 
@@ -3516,10 +3515,24 @@ namespace OpenTween
             return result;
         }
 
+        private void ReloadMastodonHomeTab(bool startup = false)
+        {
+            var currentTab = this._statuses.GetTabByType<MastodonHomeTab>();
+            if (currentTab != null)
+                this.RemoveSpecifiedTab(currentTab.TabName, false);
+
+            var tabName = currentTab?.TabName ?? "Mastodon";
+
+            var newTab = new MastodonHomeTab(this.mastodon, tabName);
+            this._statuses.AddTab(newTab);
+            this.AddNewTab(newTab, startup);
+        }
+
         private async void SettingStripMenuItem_Click(object sender, EventArgs e)
         {
             // 設定画面表示前のユーザー情報
             var oldUser = new { tw.AccessToken, tw.AccessTokenSecret, tw.Username, tw.UserId };
+            var oldMastodonUser = SettingManager.Common.MastodonPrimaryAccount;
 
             var oldIconSz = SettingManager.Common.IconSize;
 
@@ -3536,6 +3549,13 @@ namespace OpenTween
                     {
                         this.tw.ClearAuthInfo();
                         this.tw.Initialize("", "", "", 0);
+                    }
+
+                    var primaryMastodonAccount = SettingManager.Common.MastodonPrimaryAccount;
+                    if (primaryMastodonAccount != null && primaryMastodonAccount != oldMastodonUser)
+                    {
+                        this.mastodon.Initialize(primaryMastodonAccount);
+                        this.ReloadMastodonHomeTab();
                     }
 
                     tw.RestrictFavCheck = SettingManager.Common.RestrictFavCheck;
@@ -3771,6 +3791,9 @@ namespace OpenTween
 
             if (tw.UserId != oldUser.UserId)
                 await this.doGetFollowersMenu();
+
+            if (SettingManager.Common.MastodonPrimaryAccount != oldMastodonUser)
+                await this.RefreshTabAsync<MastodonHomeTab>();
         }
 
         /// <summary>
