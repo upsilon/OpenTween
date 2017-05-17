@@ -115,6 +115,20 @@ namespace OpenTween
         public const string TwitterConsumerSecret = "prTAs2fqLv12nHxlMoLQZT8AkpZt0yYb8A7ktGS2VYeRj0TddS";
 
         //=====================================================================
+        // Mastodon
+
+        /// <summary>
+        /// Mastodon インスタンス毎に事前に発行した client_id, client_secret の組
+        /// </summary>
+        /// <remarks>
+        /// ここに含まれていないインスタンスでは <see cref="Api.MastodonApi.AppsRegister"/> によって
+        /// アプリケーションの登録を都度行います
+        /// </remarks>
+        public static readonly IReadOnlyDictionary<string, Tuple<string, string>> MastodonClientIds = new Dictionary<string, Tuple<string, string>>
+        {
+        };
+
+        //=====================================================================
         // Foursquare
         // https://developer.foursquare.com/ から取得できます。
 
