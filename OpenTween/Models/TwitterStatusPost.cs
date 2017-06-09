@@ -40,7 +40,7 @@ namespace OpenTween.Models
 
         public override async Task FavoriteAsync()
         {
-            var statusId = this.RetweetedId ?? this.StatusId;
+            var statusId = this.IsRetweet ? this.RetweetedId : this.StatusId;
 
             try
             {
@@ -68,7 +68,7 @@ namespace OpenTween.Models
 
         public override async Task UnfavoriteAsync()
         {
-            var statusId = this.RetweetedId ?? this.StatusId;
+            var statusId = this.IsRetweet ? this.RetweetedId : this.StatusId;
 
             await this.twitter.Api.FavoritesDestroy(statusId)
                 .IgnoreResponse()
@@ -79,7 +79,7 @@ namespace OpenTween.Models
 
         public override Task<PostClass?> RetweetAsync()
         {
-            var statusId = this.RetweetedId ?? this.StatusId;
+            var statusId = this.IsRetweet ? this.RetweetedId : this.StatusId;
 
             var read = !SettingManager.Common.UnreadManage || SettingManager.Common.Read;
 
@@ -88,7 +88,7 @@ namespace OpenTween.Models
 
         public override Task DeleteAsync()
         {
-            if (this.RetweetedByUserId == this.twitter.UserId)
+            if (this.IsRetweet && this.RetweetedByUserId == this.twitter.UserId)
             {
                 // 自分が RT したツイート (自分が RT した自分のツイートも含む)
                 //   => RT を取り消し
@@ -100,10 +100,10 @@ namespace OpenTween.Models
                 if (this.UserId != this.twitter.UserId)
                     throw new InvalidOperationException();
 
-                if (this.RetweetedId != null)
+                if (this.IsRetweet)
                     // 他人に RT された自分のツイート
                     //   => RT 元の自分のツイートを削除
-                    return this.twitter.Api.StatusesDestroy(this.RetweetedId.Value)
+                    return this.twitter.Api.StatusesDestroy(this.RetweetedId)
                         .IgnoreResponse();
                 else
                     // 自分のツイート

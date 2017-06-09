@@ -385,7 +385,7 @@ namespace OpenTween
             if (post == null)
                 throw new WebApiException("Err:Target isn't found.");
 
-            var target = post.RetweetedId ?? id;  //再RTの場合は元発言をRT
+            var target = post.IsRetweet ? post.RetweetedId : id;  //再RTの場合は元発言をRT
 
             var response = await this.Api.StatusesRetweet(target)
                 .ConfigureAwait(false);
@@ -768,7 +768,7 @@ namespace OpenTween
             this.ExtractEntities(entities, post.ReplyToList, post.Media);
 
             post.QuoteStatusIds = GetQuoteTweetStatusIds(entities, quotedStatusLink)
-                .Where(x => x != post.StatusId && x != post.RetweetedId)
+                .Where(x => x != post.StatusId && !(post.IsRetweet && x == post.RetweetedId))
                 .Distinct().ToArray();
 
             post.ExpandedUrls = entities.OfType<TwitterEntityUrl>()
@@ -785,14 +785,15 @@ namespace OpenTween
             post.ScreenName = string.Intern(post.ScreenName);
             post.Nickname = string.Intern(post.Nickname);
             post.ImageUrl = string.Intern(post.ImageUrl);
-            post.RetweetedBy = post.RetweetedBy != null ? string.Intern(post.RetweetedBy) : null;
+            if (post.IsRetweet)
+                post.RetweetedBy = string.Intern(post.RetweetedBy);
 
             //Source整形
             var (sourceText, sourceUri) = ParseSource(sourceHtml);
             post.Source = string.Intern(sourceText);
             post.SourceUri = sourceUri;
 
-            post.IsReply = post.RetweetedId == null && post.ReplyToList.Any(x => x.UserId == this.UserId);
+            post.IsReply = !post.IsRetweet && post.ReplyToList.Any(x => x.UserId == this.UserId);
             post.IsExcludeReply = false;
 
             if (post.IsMe)

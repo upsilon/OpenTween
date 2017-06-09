@@ -111,12 +111,9 @@ namespace OpenTween.Models
         public bool IsDm { get; set; }
         public long UserId { get; set; }
         public bool FilterHit { get; set; }
-        public string? RetweetedBy { get; set; }
-        public long? RetweetedId { get; set; }
         private bool _IsDeleted = false;
         private StatusGeo? _postGeo = null;
         public int RetweetedCount { get; set; }
-        public long? RetweetedByUserId { get; set; }
         public long? InReplyToUserId { get; set; }
         public List<MediaInfo> Media { get; set; }
         public long[] QuoteStatusIds { get; set; }
@@ -178,6 +175,31 @@ namespace OpenTween.Models
 
         public int FavoritedCount { get; set; }
 
+        private long? retweetedId;
+        private long? retweetedByUserId;
+        private string? retweetedBy;
+
+        public bool IsRetweet
+            => this.retweetedId != null;
+
+        public long RetweetedId
+        {
+            get => this.retweetedId ?? throw new InvalidOperationException();
+            set => this.retweetedId = value;
+        }
+
+        public long RetweetedByUserId
+        {
+            get => this.retweetedByUserId ?? throw new InvalidOperationException();
+            set => this.retweetedByUserId = value;
+        }
+
+        public string RetweetedBy
+        {
+            get => this.retweetedBy ?? throw new InvalidOperationException();
+            set => this.retweetedBy = value;
+        }
+
         private States _states = States.None;
         private bool expandComplatedAll = false;
 
@@ -206,7 +228,7 @@ namespace OpenTween.Models
         {
             get
             {
-                if (this.RetweetedId != null)
+                if (this.IsRetweet)
                 {
                     var post = this.RetweetSource;
                     if (post != null)
@@ -220,7 +242,7 @@ namespace OpenTween.Models
             set
             {
                 _IsFav = value;
-                if (this.RetweetedId != null)
+                if (this.IsRetweet)
                 {
                     var post = this.RetweetSource;
                     if (post != null)
@@ -290,7 +312,7 @@ namespace OpenTween.Models
         }
 
         protected virtual PostClass? RetweetSource
-            => this.RetweetedId != null ? TabInformations.GetInstance().RetweetSource(this.RetweetedId.Value) : null;
+            => this.IsRetweet ? TabInformations.GetInstance().RetweetSource(this.RetweetedId) : null;
 
         public StatusGeo? PostGeo
         {
@@ -341,7 +363,7 @@ namespace OpenTween.Models
                 return true;
 
             // 自分が RT したツイート
-            if (this.RetweetedByUserId == selfUserId)
+            if (this.IsRetweet && this.RetweetedByUserId == selfUserId)
                 return true;
 
             return false;
@@ -367,15 +389,15 @@ namespace OpenTween.Models
 
         public PostClass ConvertToOriginalPost()
         {
-            if (this.RetweetedId == null)
+            if (!this.IsRetweet)
                 throw new InvalidOperationException();
 
             var originalPost = this.Clone();
 
-            originalPost.StatusId = this.RetweetedId.Value;
-            originalPost.RetweetedId = null;
-            originalPost.RetweetedBy = "";
-            originalPost.RetweetedByUserId = null;
+            originalPost.retweetedId = null;
+            originalPost.retweetedBy = "";
+            originalPost.retweetedByUserId = null;
+            originalPost.StatusId = this.RetweetedId;
             originalPost.RetweetedCount = 1;
 
             return originalPost;
@@ -473,8 +495,8 @@ namespace OpenTween.Models
                     (this.IsDm == other.IsDm) &&
                     (this.UserId == other.UserId) &&
                     (this.FilterHit == other.FilterHit) &&
-                    (this.RetweetedBy == other.RetweetedBy) &&
-                    (this.RetweetedId == other.RetweetedId) &&
+                    (this.retweetedBy == other.retweetedBy) &&
+                    (this.retweetedId == other.retweetedId) &&
                     (this.IsDeleted == other.IsDeleted) &&
                     (this.InReplyToUserId == other.InReplyToUserId);
 

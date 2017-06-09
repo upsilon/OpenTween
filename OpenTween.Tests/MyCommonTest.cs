@@ -185,7 +185,7 @@ namespace OpenTween
         public static readonly TheoryData<PostClass, string> GetStatusUrlTest1_TestCase = new TheoryData<PostClass, string>
         {
             {
-                new PostClass { StatusId = 249493863826350080L, ScreenName = "Favstar_LM", RetweetedId = null, RetweetedBy = null },
+                new PostClass { StatusId = 249493863826350080L, ScreenName = "Favstar_LM" },
                 "https://twitter.com/Favstar_LM/status/249493863826350080"
             },
             {
