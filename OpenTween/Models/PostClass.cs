@@ -102,8 +102,6 @@ namespace OpenTween.Models
         private bool _IsProtect;
         public bool IsOwl { get; set; }
         private bool _IsMark;
-        public string? InReplyToUser { get; set; }
-        private long? _InReplyToStatusId;
         public string Source { get; set; } = "";
         public Uri? SourceUri { get; set; }
         public List<(long UserId, string ScreenName)> ReplyToList { get; set; }
@@ -114,7 +112,6 @@ namespace OpenTween.Models
         private bool _IsDeleted = false;
         private StatusGeo? _postGeo = null;
         public int RetweetedCount { get; set; }
-        public long? InReplyToUserId { get; set; }
         public List<MediaInfo> Media { get; set; }
         public long[] QuoteStatusIds { get; set; }
         public ExpandedUrlInfo[] ExpandedUrls { get; set; }
@@ -175,9 +172,38 @@ namespace OpenTween.Models
 
         public int FavoritedCount { get; set; }
 
+        private long? inReplyToStatusId;
+        private long? inReplyToUserId;
+        private string? inReplyToUser;
+
         private long? retweetedId;
         private long? retweetedByUserId;
         private string? retweetedBy;
+
+        public bool HasInReplyTo
+            => this.inReplyToStatusId != null;
+
+        public long InReplyToStatusId
+        {
+            get => this.inReplyToStatusId ?? throw new InvalidOperationException();
+            set
+            {
+                this._states |= States.Reply;
+                this.inReplyToStatusId = value;
+            }
+        }
+
+        public long InReplyToUserId
+        {
+            get => this.inReplyToUserId ?? throw new InvalidOperationException();
+            set => this.inReplyToUserId = value;
+        }
+
+        public string InReplyToUser
+        {
+            get => this.inReplyToUser ?? throw new InvalidOperationException();
+            set => this.inReplyToUser = value;
+        }
 
         public bool IsRetweet
             => this.retweetedId != null;
@@ -279,19 +305,6 @@ namespace OpenTween.Models
                 _IsMark = value;
             }
         }
-        public long? InReplyToStatusId
-        {
-            get => this._InReplyToStatusId;
-            set
-            {
-                if (value != null)
-                    _states |= States.Reply;
-                else
-                    _states &= ~States.Reply;
-
-                _InReplyToStatusId = value;
-            }
-        }
 
         public bool IsDeleted
         {
@@ -300,9 +313,9 @@ namespace OpenTween.Models
             {
                 if (value)
                 {
-                    this.InReplyToStatusId = null;
-                    this.InReplyToUser = "";
-                    this.InReplyToUserId = null;
+                    this.inReplyToStatusId = null;
+                    this.inReplyToUser = "";
+                    this.inReplyToUserId = null;
                     this.IsReply = false;
                     this.ReplyToList = new List<(long, string)>();
                     this._states = States.None;
@@ -486,8 +499,9 @@ namespace OpenTween.Models
                     (this.IsProtect == other.IsProtect) &&
                     (this.IsOwl == other.IsOwl) &&
                     (this.IsMark == other.IsMark) &&
-                    (this.InReplyToUser == other.InReplyToUser) &&
-                    (this.InReplyToStatusId == other.InReplyToStatusId) &&
+                    (this.inReplyToUser == other.inReplyToUser) &&
+                    (this.inReplyToUserId == other.inReplyToUserId) &&
+                    (this.inReplyToStatusId == other.inReplyToStatusId) &&
                     (this.Source == other.Source) &&
                     (this.SourceUri == other.SourceUri) &&
                     (this.ReplyToList.SequenceEqual(other.ReplyToList)) &&
@@ -497,8 +511,7 @@ namespace OpenTween.Models
                     (this.FilterHit == other.FilterHit) &&
                     (this.retweetedBy == other.retweetedBy) &&
                     (this.retweetedId == other.retweetedId) &&
-                    (this.IsDeleted == other.IsDeleted) &&
-                    (this.InReplyToUserId == other.InReplyToUserId);
+                    (this.IsDeleted == other.IsDeleted);
 
         }
 
