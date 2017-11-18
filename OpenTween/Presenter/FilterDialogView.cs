@@ -49,13 +49,6 @@ namespace OpenTween.Presenter
         private string _cur;
         private List<string> idlist = new List<string>();
 
-        private enum EnableButtonMode
-        {
-            NotSelected,
-            Enable,
-            Disable,
-        }
-
         [Flags]
         private enum MultiSelectionState
         {
@@ -63,21 +56,6 @@ namespace OpenTween.Presenter
             MoveSelected = 1,
             SelectAll = 2,
         }
-
-        private EnableButtonMode RuleEnableButtonMode
-        {
-            get { return this._ruleEnableButtonMode; }
-            set
-            {
-                this._ruleEnableButtonMode = value;
-
-                this.buttonRuleToggleEnabled.Text = value == FilterDialogView.EnableButtonMode.Enable
-                    ? Properties.Resources.EnableButtonCaption
-                    : Properties.Resources.DisableButtonCaption;
-                this.buttonRuleToggleEnabled.Enabled = value != EnableButtonMode.NotSelected;
-            }
-        }
-        private EnableButtonMode _ruleEnableButtonMode = FilterDialogView.EnableButtonMode.NotSelected;
 
         public FilterDialogView()
         {
@@ -88,6 +66,7 @@ namespace OpenTween.Presenter
             this.model.FilterEditModeChanged += this.FilterEditModeChanged;
             this.model.MatchRuleComplexChanged += this.MatchRuleComplexChanged;
             this.model.ExcludeRuleComplexChanged += this.ExcludeRuleComplexChanged;
+            this.model.FilterEnabledButtonStateChanged += this.FilterEnabledButtonStateChanged;
 
             this.ListTabs.OnSelectedIndexChanged(_ => this.model.SetSelectedTabName(this.ListTabs.SelectedItem?.ToString()));
             this.ListFilters.OnSelectedIndexChanged(x => this.model.SetSelectedFiltersIndex(x));
@@ -112,20 +91,6 @@ namespace OpenTween.Presenter
                 return;
 
             ShowDetail();
-
-            var selectedCount = this.model.SelectedFilters.Length;
-            if (selectedCount == 0)
-            {
-                this.RuleEnableButtonMode = EnableButtonMode.NotSelected;
-            }
-            else
-            {
-                if (selectedCount == 1 || this.RuleEnableButtonMode == EnableButtonMode.NotSelected)
-                {
-                    var topItem = this.model.SelectedFilters.First();
-                    this.RuleEnableButtonMode = topItem.Enabled ? EnableButtonMode.Disable : EnableButtonMode.Enable;
-                }
-            }
         }
 
         private void FilterEditModeChanged(object sender, EventArgs e)
@@ -167,6 +132,26 @@ namespace OpenTween.Presenter
             ExUID.Enabled = complex;
             ExMSG1.Enabled = complex;
             ExMSG2.Enabled = !complex;
+        }
+
+        private void FilterEnabledButtonStateChanged(object sender, EventArgs e)
+        {
+            switch (this.model.FilterEnabledButtonState)
+            {
+                case FilterDialog.EnabledButtonState.Enable:
+                    this.buttonRuleToggleEnabled.Text = Properties.Resources.EnableButtonCaption;
+                    this.buttonRuleToggleEnabled.Enabled = true;
+                    break;
+                case FilterDialog.EnabledButtonState.Disable:
+                    this.buttonRuleToggleEnabled.Text = Properties.Resources.DisableButtonCaption;
+                    this.buttonRuleToggleEnabled.Enabled = true;
+                    break;
+                case FilterDialog.EnabledButtonState.NotSelected:
+                default:
+                    this.buttonRuleToggleEnabled.Text = Properties.Resources.DisableButtonCaption;
+                    this.buttonRuleToggleEnabled.Enabled = false;
+                    break;
+            }
         }
 
         private void SetFilters(string tabName)
@@ -1213,10 +1198,10 @@ namespace OpenTween.Presenter
 
         private void buttonRuleToggleEnabled_Click(object sender, EventArgs e)
         {
-            if (this.RuleEnableButtonMode == EnableButtonMode.NotSelected)
+            if (this.model.FilterEnabledButtonState == FilterDialog.EnabledButtonState.NotSelected)
                 return;
 
-            var enabled = this.RuleEnableButtonMode == EnableButtonMode.Enable;
+            var enabled = this.model.FilterEnabledButtonState == FilterDialog.EnabledButtonState.Enable;
 
             foreach (var idx in this.ListFilters.SelectedIndices.Cast<int>())
             {
@@ -1230,7 +1215,7 @@ namespace OpenTween.Presenter
                 }
             }
 
-            this.RuleEnableButtonMode = enabled ? EnableButtonMode.Disable : EnableButtonMode.Enable;
+            this.model.SetFilterEnabledButtonState(enabled ? FilterDialog.EnabledButtonState.Disable : FilterDialog.EnabledButtonState.Enable);
         }
 
         private void ButtonRuleCopy_Click(object sender, EventArgs e)

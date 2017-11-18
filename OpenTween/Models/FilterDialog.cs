@@ -42,12 +42,14 @@ namespace OpenTween.Models
         public EDITMODE FilterEditMode { get; private set; }
         public bool MatchRuleComplex { get; private set; }
         public bool ExcludeRuleComplex { get; private set; }
+        public EnabledButtonState FilterEnabledButtonState { get; private set; }
 
         public event EventHandler SelectedTabChanged;
         public event EventHandler SelectedFiltersChanged;
         public event EventHandler FilterEditModeChanged;
         public event EventHandler MatchRuleComplexChanged;
         public event EventHandler ExcludeRuleComplexChanged;
+        public event EventHandler FilterEnabledButtonStateChanged;
 
         public void SetSelectedTabName(string selectedTabName)
         {
@@ -77,6 +79,12 @@ namespace OpenTween.Models
             }
 
             this.SelectedFiltersChanged?.Invoke(this, EventArgs.Empty);
+
+            var firstFilter = this.SelectedFilters.FirstOrDefault();
+            if (firstFilter == null)
+                this.SetFilterEnabledButtonState(EnabledButtonState.NotSelected);
+            else
+                this.SetFilterEnabledButtonState(firstFilter.Enabled ? EnabledButtonState.Disable : EnabledButtonState.Enable);
         }
 
         public void SetFilterEditMode(EDITMODE editMode)
@@ -97,11 +105,24 @@ namespace OpenTween.Models
             this.ExcludeRuleComplexChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        public void SetFilterEnabledButtonState(EnabledButtonState mode)
+        {
+            this.FilterEnabledButtonState = mode;
+            this.FilterEnabledButtonStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         public enum EDITMODE
         {
             AddNew,
             Edit,
             None,
+        }
+
+        public enum EnabledButtonState
+        {
+            NotSelected,
+            Enable,
+            Disable,
         }
     }
 }
