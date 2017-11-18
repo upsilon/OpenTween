@@ -44,18 +44,10 @@ namespace OpenTween.Presenter
     {
         private FilterDialog model = new FilterDialog();
 
-        private EDITMODE _mode;
         private bool _directAdd;
         private MultiSelectionState _multiSelState = MultiSelectionState.None;
         private string _cur;
         private List<string> idlist = new List<string>();
-
-        private enum EDITMODE
-        {
-            AddNew,
-            Edit,
-            None,
-        }
 
         private enum EnableButtonMode
         {
@@ -93,6 +85,7 @@ namespace OpenTween.Presenter
 
             this.model.SelectedTabChanged += this.SelectedTabChanged;
             this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
+            this.model.FilterEditModeChanged += this.FilterEditModeChanged;
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
@@ -126,6 +119,10 @@ namespace OpenTween.Presenter
                     this.RuleEnableButtonMode = topItem.Enabled ? EnableButtonMode.Disable : EnableButtonMode.Enable;
                 }
             }
+        }
+
+        private void FilterEditModeChanged(object sender, EventArgs e)
+        {
         }
 
         private void SetFilters(string tabName)
@@ -336,7 +333,8 @@ namespace OpenTween.Presenter
             OptCopy.Checked = true;
             CheckMark.Checked = true;
             UID.Focus();
-            _mode = EDITMODE.AddNew;
+
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.AddNew);
             _directAdd = true;
         }
 
@@ -390,7 +388,8 @@ namespace OpenTween.Presenter
             OptCopy.Checked = true;
             CheckMark.Checked = true;
             UID.Focus();
-            _mode = EDITMODE.AddNew;
+
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.AddNew);
         }
 
         private void ButtonEdit_Click(object sender, EventArgs e)
@@ -417,7 +416,7 @@ namespace OpenTween.Presenter
             ListTabs.Enabled = false;
             GroupTab.Enabled = false;
 
-            _mode = EDITMODE.Edit;
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.Edit);
         }
 
         private void ButtonDelete_Click(object sender, EventArgs e)
@@ -650,7 +649,7 @@ namespace OpenTween.Presenter
             int i = ListFilters.SelectedIndex;
 
             PostFilterRule ft;
-            if (_mode == EDITMODE.AddNew)
+            if (this.model.FilterEditMode == FilterDialog.EDITMODE.AddNew)
                 ft = new PostFilterRule();
             else
                 ft = (PostFilterRule)this.ListFilters.SelectedItem;
@@ -737,7 +736,7 @@ namespace OpenTween.Presenter
             ft.ExFilterRt = CheckExRetweet.Checked;
             ft.ExUseLambda = CheckExLambDa.Checked;
 
-            if (_mode == EDITMODE.AddNew)
+            if (this.model.FilterEditMode == FilterDialog.EDITMODE.AddNew)
             {
                 if (!tab.AddFilter(ft))
                     MessageBox.Show(Properties.Resources.ButtonOK_ClickText4, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -745,7 +744,7 @@ namespace OpenTween.Presenter
 
             SetFilters(tab.TabName);
             ListFilters.SelectedIndex = -1;
-            if (_mode == EDITMODE.AddNew)
+            if (this.model.FilterEditMode == FilterDialog.EDITMODE.AddNew)
             {
                 ListFilters.SelectedIndex = ListFilters.Items.Count - 1;
             }
@@ -753,7 +752,7 @@ namespace OpenTween.Presenter
             {
                 ListFilters.SelectedIndex = i;
             }
-            _mode = EDITMODE.None;
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
 
             if (_directAdd)
             {
