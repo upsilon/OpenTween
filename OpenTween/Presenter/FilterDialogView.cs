@@ -40,7 +40,7 @@ using OpenTween.Models;
 
 namespace OpenTween.Presenter
 {
-    public partial class FilterDialog : OTBaseForm
+    public partial class FilterDialogView : OTBaseForm
     {
         private EDITMODE _mode;
         private bool _directAdd;
@@ -78,15 +78,15 @@ namespace OpenTween.Presenter
             {
                 this._ruleEnableButtonMode = value;
 
-                this.buttonRuleToggleEnabled.Text = value == FilterDialog.EnableButtonMode.Enable
+                this.buttonRuleToggleEnabled.Text = value == FilterDialogView.EnableButtonMode.Enable
                     ? Properties.Resources.EnableButtonCaption
                     : Properties.Resources.DisableButtonCaption;
                 this.buttonRuleToggleEnabled.Enabled = value != EnableButtonMode.NotSelected;
             }
         }
-        private EnableButtonMode _ruleEnableButtonMode = FilterDialog.EnableButtonMode.NotSelected;
+        private EnableButtonMode _ruleEnableButtonMode = FilterDialogView.EnableButtonMode.NotSelected;
 
-        public FilterDialog()
+        public FilterDialogView()
         {
             InitializeComponent();
         }

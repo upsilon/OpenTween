@@ -1,6 +1,6 @@
 ﻿namespace OpenTween.Presenter
 {
-    partial class FilterDialog
+    partial class FilterDialogView
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FilterDialog));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FilterDialogView));
             this.Label5 = new System.Windows.Forms.Label();
             this.ButtonClose = new System.Windows.Forms.Button();
             this.ButtonRuleMove = new System.Windows.Forms.Button();
