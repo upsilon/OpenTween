@@ -86,6 +86,8 @@ namespace OpenTween.Presenter
             this.model.SelectedTabChanged += this.SelectedTabChanged;
             this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
             this.model.FilterEditModeChanged += this.FilterEditModeChanged;
+            this.model.MatchRuleComplexChanged += this.MatchRuleComplexChanged;
+            this.model.ExcludeRuleComplexChanged += this.ExcludeRuleComplexChanged;
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
@@ -144,6 +146,22 @@ namespace OpenTween.Presenter
                     ButtonClose.Enabled = true;
                     break;
             }
+        }
+
+        private void MatchRuleComplexChanged(object sender, EventArgs e)
+        {
+            var complex = this.model.MatchRuleComplex;
+            UID.Enabled = complex;
+            MSG1.Enabled = complex;
+            MSG2.Enabled = !complex;
+        }
+
+        private void ExcludeRuleComplexChanged(object sender, EventArgs e)
+        {
+            var complex = this.model.ExcludeRuleComplex;
+            ExUID.Enabled = complex;
+            ExMSG1.Enabled = complex;
+            ExMSG2.Enabled = !complex;
         }
 
         private void SetFilters(string tabName)
@@ -304,9 +322,6 @@ namespace OpenTween.Presenter
             MSG2.Text = id + msg;
             MSG2.SelectAll();
             TextSource.Text = "";
-            UID.Enabled = true;
-            MSG1.Enabled = true;
-            MSG2.Enabled = false;
             CheckRegex.Checked = false;
             CheckURL.Checked = false;
             CheckCaseSensitive.Checked = false;
@@ -322,9 +337,6 @@ namespace OpenTween.Presenter
             ExMSG2.Text = "";
             ExMSG2.SelectAll();
             TextExSource.Text = "";
-            ExUID.Enabled = true;
-            ExMSG1.Enabled = true;
-            ExMSG2.Enabled = false;
             CheckExRegex.Checked = false;
             CheckExURL.Checked = false;
             CheckExCaseSensitive.Checked = false;
@@ -347,9 +359,6 @@ namespace OpenTween.Presenter
             MSG1.Text = "";
             MSG2.Text = "";
             TextSource.Text = "";
-            UID.Enabled = true;
-            MSG1.Enabled = true;
-            MSG2.Enabled = false;
             CheckRegex.Checked = false;
             CheckURL.Checked = false;
             CheckCaseSensitive.Checked = false;
@@ -362,9 +371,6 @@ namespace OpenTween.Presenter
             ExMSG1.Text = "";
             ExMSG2.Text = "";
             TextExSource.Text = "";
-            ExUID.Enabled = true;
-            ExMSG1.Enabled = true;
-            ExMSG2.Enabled = false;
             CheckExRegex.Checked = false;
             CheckExURL.Checked = false;
             CheckExCaseSensitive.Checked = false;
@@ -449,9 +455,6 @@ namespace OpenTween.Presenter
                 {
                     RadioAND.Checked = true;
                     RadioPLUS.Checked = false;
-                    UID.Enabled = true;
-                    MSG1.Enabled = true;
-                    MSG2.Enabled = false;
                     UID.Text = fc.FilterName;
                     UID.SelectAll();
                     MSG1.Text = string.Join(" ", fc.FilterBody);
@@ -462,9 +465,6 @@ namespace OpenTween.Presenter
                 {
                     RadioPLUS.Checked = true;
                     RadioAND.Checked = false;
-                    UID.Enabled = false;
-                    MSG1.Enabled = false;
-                    MSG2.Enabled = true;
                     UID.Text = "";
                     MSG1.Text = "";
                     MSG2.Text = string.Join(" ", fc.FilterBody);
@@ -481,9 +481,6 @@ namespace OpenTween.Presenter
                 {
                     RadioExAnd.Checked = true;
                     RadioExPLUS.Checked = false;
-                    ExUID.Enabled = true;
-                    ExMSG1.Enabled = true;
-                    ExMSG2.Enabled = false;
                     ExUID.Text = fc.ExFilterName;
                     ExUID.SelectAll();
                     ExMSG1.Text = string.Join(" ", fc.ExFilterBody);
@@ -494,9 +491,6 @@ namespace OpenTween.Presenter
                 {
                     RadioExPLUS.Checked = true;
                     RadioExAnd.Checked = false;
-                    ExUID.Enabled = false;
-                    ExMSG1.Enabled = false;
-                    ExMSG2.Enabled = true;
                     ExUID.Text = "";
                     ExMSG1.Text = "";
                     ExMSG2.Text = string.Join(" ", fc.ExFilterBody);
@@ -531,9 +525,6 @@ namespace OpenTween.Presenter
             {
                 RadioAND.Checked = true;
                 RadioPLUS.Checked = false;
-                UID.Enabled = true;
-                MSG1.Enabled = true;
-                MSG2.Enabled = false;
                 UID.Text = "";
                 MSG1.Text = "";
                 MSG2.Text = "";
@@ -546,9 +537,6 @@ namespace OpenTween.Presenter
 
                 RadioExAnd.Checked = true;
                 RadioExPLUS.Checked = false;
-                ExUID.Enabled = true;
-                ExMSG1.Enabled = true;
-                ExMSG2.Enabled = false;
                 ExUID.Text = "";
                 ExMSG1.Text = "";
                 ExMSG2.Text = "";
@@ -574,10 +562,7 @@ namespace OpenTween.Presenter
 
         private void RadioAND_CheckedChanged(object sender, EventArgs e)
         {
-            bool flg = RadioAND.Checked;
-            UID.Enabled = flg;
-            MSG1.Enabled = flg;
-            MSG2.Enabled = !flg;
+            this.model.SetMatchRuleComplex(this.RadioAND.Checked);
         }
 
         private void ButtonOK_Click(object sender, EventArgs e)
@@ -614,7 +599,7 @@ namespace OpenTween.Presenter
             }
 
             string bdy = "";
-            if (RadioAND.Checked)
+            if (this.model.MatchRuleComplex)
             {
                 ft.FilterName = UID.Text;
                 TweenMain owner = (TweenMain)this.Owner;
@@ -653,7 +638,7 @@ namespace OpenTween.Presenter
             ft.UseLambda = CheckLambda.Checked;
 
             bdy = "";
-            if (RadioExAnd.Checked)
+            if (this.model.ExcludeRuleComplex)
             {
                 ft.ExFilterName = ExUID.Text;
                 ft.ExUseNameField = true;
@@ -731,7 +716,7 @@ namespace OpenTween.Presenter
         private bool CheckMatchRule(out bool isBlank)
         {
             isBlank = false;
-            if (RadioAND.Checked)
+            if (this.model.MatchRuleComplex)
             {
                 if (string.IsNullOrEmpty(UID.Text) && string.IsNullOrEmpty(MSG1.Text) && string.IsNullOrEmpty(TextSource.Text) && CheckRetweet.Checked == false)
                 {
@@ -788,7 +773,7 @@ namespace OpenTween.Presenter
         private bool CheckExcludeRule(out bool isBlank)
         {
             isBlank = false;
-            if (RadioExAnd.Checked)
+            if (this.model.ExcludeRuleComplex)
             {
                 if (string.IsNullOrEmpty(ExUID.Text) && string.IsNullOrEmpty(ExMSG1.Text) && string.IsNullOrEmpty(TextExSource.Text) && CheckExRetweet.Checked == false)
                 {
@@ -1162,10 +1147,7 @@ namespace OpenTween.Presenter
 
         private void RadioExAnd_CheckedChanged(object sender, EventArgs e)
         {
-            bool flg = RadioExAnd.Checked;
-            ExUID.Enabled = flg;
-            ExMSG1.Enabled = flg;
-            ExMSG2.Enabled = !flg;
+            this.model.SetExcludeRuleComplex(this.RadioExAnd.Checked);
         }
 
         private void OptMove_CheckedChanged(object sender, EventArgs e)

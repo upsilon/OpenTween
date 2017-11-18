@@ -14,10 +14,14 @@ namespace OpenTween.Models
         public TabModel SelectedTab { get; private set; }
         public PostFilterRule[] SelectedFilters { get; private set; }
         public EDITMODE FilterEditMode { get; private set; }
+        public bool MatchRuleComplex { get; private set; }
+        public bool ExcludeRuleComplex { get; private set; }
 
         public event EventHandler SelectedTabChanged;
         public event EventHandler SelectedFiltersChanged;
         public event EventHandler FilterEditModeChanged;
+        public event EventHandler MatchRuleComplexChanged;
+        public event EventHandler ExcludeRuleComplexChanged;
 
         public void SetSelectedTabName(string selectedTabName)
         {
@@ -48,6 +52,18 @@ namespace OpenTween.Models
         {
             this.FilterEditMode = editMode;
             this.FilterEditModeChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetMatchRuleComplex(bool isComplex)
+        {
+            this.MatchRuleComplex = isComplex;
+            this.MatchRuleComplexChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetExcludeRuleComplex(bool isComplex)
+        {
+            this.ExcludeRuleComplex = isComplex;
+            this.ExcludeRuleComplexChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public enum EDITMODE
