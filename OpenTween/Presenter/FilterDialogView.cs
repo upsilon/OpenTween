@@ -92,6 +92,7 @@ namespace OpenTween.Presenter
             InitializeComponent();
 
             this.model.SelectedTabChanged += this.SelectedTabChanged;
+            this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
@@ -103,6 +104,28 @@ namespace OpenTween.Presenter
                 return;
             }
             this.SetFilters(tab.TabName);
+        }
+
+        private void SelectedFiltersChanged(object sender, EventArgs e)
+        {
+            if (_multiSelState != MultiSelectionState.None)  //複数選択処理中は無視する
+                return;
+
+            ShowDetail();
+
+            var selectedCount = this.model.SelectedFilters.Length;
+            if (selectedCount == 0)
+            {
+                this.RuleEnableButtonMode = EnableButtonMode.NotSelected;
+            }
+            else
+            {
+                if (selectedCount == 1 || this.RuleEnableButtonMode == EnableButtonMode.NotSelected)
+                {
+                    var topItem = this.model.SelectedFilters.First();
+                    this.RuleEnableButtonMode = topItem.Enabled ? EnableButtonMode.Disable : EnableButtonMode.Enable;
+                }
+            }
         }
 
         private void SetFilters(string tabName)
@@ -875,25 +898,7 @@ namespace OpenTween.Presenter
 
         private void ListFilters_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_multiSelState != MultiSelectionState.None)  //複数選択処理中は無視する
-                return;
-
-            ShowDetail();
-
-            var selectedCount = this.ListFilters.SelectedIndices.Count;
-            if (selectedCount == 0)
-            {
-                this.RuleEnableButtonMode = EnableButtonMode.NotSelected;
-            }
-            else
-            {
-                if (selectedCount == 1 ||
-                    this.RuleEnableButtonMode == EnableButtonMode.NotSelected)
-                {
-                    var topItem = (PostFilterRule)this.ListFilters.SelectedItem;
-                    this.RuleEnableButtonMode = topItem.Enabled ? EnableButtonMode.Disable : EnableButtonMode.Enable;
-                }
-            }
+            this.model.SetSelectedFiltersIndex(this.ListFilters.SelectedIndices.Cast<int>());
         }
 
         private void ButtonClose_Click(object sender, EventArgs e)

@@ -12,8 +12,10 @@ namespace OpenTween.Models
             => TabInformations.GetInstance();
 
         public TabModel SelectedTab { get; private set; }
+        public PostFilterRule[] SelectedFilters { get; private set; }
 
         public event EventHandler SelectedTabChanged;
+        public event EventHandler SelectedFiltersChanged;
 
         public void SetSelectedTabName(string selectedTabName)
         {
@@ -23,6 +25,21 @@ namespace OpenTween.Models
 
             this.SelectedTab = tab;
             this.SelectedTabChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void SetSelectedFiltersIndex(IEnumerable<int> selectedIndexes)
+        {
+            if (this.SelectedTab is FilterTabModel filterTab)
+            {
+                var filters = filterTab.FilterArray;
+                this.SelectedFilters = selectedIndexes.Select(x => filters[x]).ToArray();
+            }
+            else
+            {
+                this.SelectedFilters = new PostFilterRule[0];
+            }
+
+            this.SelectedFiltersChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }
