@@ -42,10 +42,11 @@ namespace OpenTween.Presenter
 {
     public partial class FilterDialogView : OTBaseForm
     {
+        private FilterDialog model = new FilterDialog();
+
         private EDITMODE _mode;
         private bool _directAdd;
         private MultiSelectionState _multiSelState = MultiSelectionState.None;
-        private TabInformations _sts;
         private string _cur;
         private List<string> idlist = new List<string>();
 
@@ -97,7 +98,7 @@ namespace OpenTween.Presenter
 
             ListFilters.Items.Clear();
 
-            var tab = _sts.Tabs[tabName];
+            var tab = this.model.TabInfo.Tabs[tabName];
 
             if (tab is FilterTabModel filterTab)
                 ListFilters.Items.AddRange(filterTab.GetFilters());
@@ -403,7 +404,7 @@ namespace OpenTween.Presenter
             if (rslt == DialogResult.Cancel) return;
 
             var indices = ListFilters.SelectedIndices.Cast<int>().Reverse().ToArray();  // 後ろの要素から削除
-            var tab = (FilterTabModel)_sts.Tabs[ListTabs.SelectedItem.ToString()];
+            var tab = (FilterTabModel)this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()];
 
             using (ControlTransaction.Update(ListFilters))
             {
@@ -609,7 +610,7 @@ namespace OpenTween.Presenter
                 return;
             }
 
-            var tab = (FilterTabModel)this._sts.Tabs[(string)this.ListTabs.SelectedItem];
+            var tab = (FilterTabModel)this.model.TabInfo.Tabs[(string)this.ListTabs.SelectedItem];
             int i = ListFilters.SelectedIndex;
 
             PostFilterRule ft;
@@ -916,9 +917,8 @@ namespace OpenTween.Presenter
 
         private void FilterDialog_Shown(object sender, EventArgs e)
         {
-            _sts = TabInformations.GetInstance();
             ListTabs.Items.Clear();
-            foreach (var tab in this._sts.Tabs.Values)
+            foreach (var tab in this.model.TabInfo.Tabs.Values)
             {
                 if (tab.TabType == MyCommon.TabUsageType.Mute)
                     continue;
@@ -926,7 +926,7 @@ namespace OpenTween.Presenter
                 this.ListTabs.Items.Add(tab.TabName);
             }
 
-            var muteTab = this._sts.GetTabByType(MyCommon.TabUsageType.Mute);
+            var muteTab = this.model.TabInfo.GetTabByType(MyCommon.TabUsageType.Mute);
             if (muteTab != null)
                 this.ListTabs.Items.Add(muteTab.TabName);
 
@@ -985,7 +985,7 @@ namespace OpenTween.Presenter
             MyCommon.TabUsageType tabType;
             using (InputTabName inputName = new InputTabName())
             {
-                inputName.TabName = _sts.MakeTabName("MyTab");
+                inputName.TabName = this.model.TabInfo.MakeTabName("MyTab");
                 inputName.IsShowUsage = true;
                 inputName.ShowDialog();
                 if (inputName.DialogResult == DialogResult.Cancel) return;
@@ -1039,7 +1039,7 @@ namespace OpenTween.Presenter
                         return;
                 }
 
-                if (!_sts.AddTab(tab) || !((TweenMain)this.Owner).AddNewTab(tab, startup: false))
+                if (!this.model.TabInfo.AddTab(tab) || !((TweenMain)this.Owner).AddNewTab(tab, startup: false))
                 {
                     string tmp = string.Format(Properties.Resources.AddTabMenuItem_ClickText1, tabName);
                     MessageBox.Show(tmp, Properties.Resources.AddTabMenuItem_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1052,7 +1052,7 @@ namespace OpenTween.Presenter
                     // 末尾のタブを取得する
                     var lastIdx = this.ListTabs.Items.Count - 1;
                     var lastTab = lastIdx != -1
-                        ? this._sts.Tabs[(string)this.ListTabs.Items[lastIdx]]
+                        ? this.model.TabInfo.Tabs[(string)this.ListTabs.Items[lastIdx]]
                         : null;
 
                     // 末尾がミュートタブであればその手前に追加する
@@ -1112,10 +1112,10 @@ namespace OpenTween.Presenter
                 return;
 
             var selectedTabName = (string)this.ListTabs.SelectedItem;
-            var selectedTab = this._sts.Tabs[selectedTabName];
+            var selectedTab = this.model.TabInfo.Tabs[selectedTabName];
 
             var targetTabName = (string)this.ListTabs.Items[this.ListTabs.SelectedIndex - 1];
-            var targetTab = this._sts.Tabs[targetTabName];
+            var targetTab = this.model.TabInfo.Tabs[targetTabName];
 
             // ミュートタブは移動禁止
             if (selectedTab.TabType == MyCommon.TabUsageType.Mute || targetTab.TabType == MyCommon.TabUsageType.Mute)
@@ -1137,10 +1137,10 @@ namespace OpenTween.Presenter
                 return;
 
             var selectedTabName = (string)this.ListTabs.SelectedItem;
-            var selectedTab = this._sts.Tabs[selectedTabName];
+            var selectedTab = this.model.TabInfo.Tabs[selectedTabName];
 
             var targetTabName = (string)this.ListTabs.Items[this.ListTabs.SelectedIndex + 1];
-            var targetTab = this._sts.Tabs[targetTabName];
+            var targetTab = this.model.TabInfo.Tabs[targetTabName];
 
             // ミュートタブは移動禁止
             if (selectedTab.TabType == MyCommon.TabUsageType.Mute || targetTab.TabType == MyCommon.TabUsageType.Mute)
@@ -1160,7 +1160,7 @@ namespace OpenTween.Presenter
         {
             if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
             {
-                _sts.Tabs[ListTabs.SelectedItem.ToString()].Protected = CheckProtected.Checked;
+                this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()].Protected = CheckProtected.Checked;
                 ButtonDeleteTab.Enabled = !CheckProtected.Checked;
             }
         }
@@ -1169,7 +1169,7 @@ namespace OpenTween.Presenter
         {
             if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
             {
-                _sts.Tabs[ListTabs.SelectedItem.ToString()].Notify = CheckNotifyNew.Checked;
+                this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()].Notify = CheckNotifyNew.Checked;
             }
         }
 
@@ -1179,7 +1179,7 @@ namespace OpenTween.Presenter
             {
                 string filename = "";
                 if (ComboSound.SelectedIndex > -1) filename = ComboSound.SelectedItem.ToString();
-                _sts.Tabs[ListTabs.SelectedItem.ToString()].SoundFile = filename;
+                this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()].SoundFile = filename;
             }
         }
 
@@ -1228,7 +1228,7 @@ namespace OpenTween.Presenter
             }
 
             var lastSelIdx = indices[0] + diff;
-            var tab = (FilterTabModel)_sts.Tabs[ListTabs.Items[tabIdx].ToString()];
+            var tab = (FilterTabModel)this.model.TabInfo.Tabs[ListTabs.Items[tabIdx].ToString()];
 
             try
             {
@@ -1292,7 +1292,7 @@ namespace OpenTween.Presenter
             if (ListTabs.SelectedIndex > -1 && ListFilters.SelectedItem != null)
             {
                 TabModel[] selectedTabs;
-                using (TabsDialog dialog = new TabsDialog(_sts))
+                using (TabsDialog dialog = new TabsDialog(this.model.TabInfo))
                 {
                     dialog.MultiSelect = true;
                     dialog.Text = Properties.Resources.ButtonRuleCopy_ClickText1;
@@ -1307,7 +1307,7 @@ namespace OpenTween.Presenter
 
                 foreach (int idx in ListFilters.SelectedIndices)
                 {
-                    var tab = (FilterTabModel)_sts.Tabs[tabname];
+                    var tab = (FilterTabModel)this.model.TabInfo.Tabs[tabname];
                     filters.Add(tab.FilterArray[idx].Clone());
                 }
                 foreach (var tb in selectedTabs.Cast<FilterTabModel>())
@@ -1329,7 +1329,7 @@ namespace OpenTween.Presenter
             if (ListTabs.SelectedIndex > -1 && ListFilters.SelectedItem != null)
             {
                 TabModel[] selectedTabs;
-                using (var dialog = new TabsDialog(_sts))
+                using (var dialog = new TabsDialog(this.model.TabInfo))
                 {
                     dialog.MultiSelect = true;
                     dialog.Text = Properties.Resources.ButtonRuleMove_ClickText1;
@@ -1343,7 +1343,7 @@ namespace OpenTween.Presenter
 
                 foreach (int idx in ListFilters.SelectedIndices)
                 {
-                    var tab = (FilterTabModel)_sts.Tabs[tabname];
+                    var tab = (FilterTabModel)this.model.TabInfo.Tabs[tabname];
                     filters.Add(tab.FilterArray[idx].Clone());
                 }
                 if (selectedTabs.Length == 1 && selectedTabs[0].TabName == tabname) return;
@@ -1361,7 +1361,7 @@ namespace OpenTween.Presenter
                 {
                     if (ListFilters.GetSelected(idx))
                     {
-                        var tab = (FilterTabModel)_sts.Tabs[ListTabs.SelectedItem.ToString()];
+                        var tab = (FilterTabModel)this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()];
                         tab.RemoveFilter((PostFilterRule)ListFilters.Items[idx]);
                         ListFilters.Items.RemoveAt(idx);
                     }

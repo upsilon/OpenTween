@@ -133,6 +133,7 @@
       <DependentUpon>EventViewerDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
+    <Compile Include="Models\FilterDialog.cs" />
     <Compile Include="Presenter\FilterDialogView.cs">
       <SubType>Form</SubType>
     </Compile>
