@@ -90,6 +90,19 @@ namespace OpenTween.Presenter
         public FilterDialogView()
         {
             InitializeComponent();
+
+            this.model.SelectedTabChanged += this.SelectedTabChanged;
+        }
+
+        private void SelectedTabChanged(object sender, EventArgs e)
+        {
+            var tab = this.model.SelectedTab;
+            if (tab == null)
+            {
+                this.ListFilters.Items.Clear();
+                return;
+            }
+            this.SetFilters(tab.TabName);
         }
 
         private void SetFilters(string tabName)
@@ -973,10 +986,7 @@ namespace OpenTween.Presenter
 
         private void ListTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1)
-                SetFilters(ListTabs.SelectedItem.ToString());
-            else
-                ListFilters.Items.Clear();
+            this.model.SetSelectedTabName(this.ListTabs.SelectedItem?.ToString());
         }
 
         private async void ButtonAddTab_Click(object sender, EventArgs e)
