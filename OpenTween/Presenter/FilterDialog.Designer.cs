@@ -1,4 +1,4 @@
-﻿namespace OpenTween
+﻿namespace OpenTween.Presenter
 {
     partial class FilterDialog
     {

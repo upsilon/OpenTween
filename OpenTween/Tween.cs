@@ -52,6 +52,7 @@ using OpenTween.Api.DataModel;
 using OpenTween.Connection;
 using OpenTween.Models;
 using OpenTween.OpenTweenCustomControl;
+using OpenTween.Presenter;
 using OpenTween.Setting;
 using OpenTween.Thumbnail;
 

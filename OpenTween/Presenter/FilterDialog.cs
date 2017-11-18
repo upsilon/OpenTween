@@ -38,7 +38,7 @@ using System.IO;
 using System.Collections.Specialized;
 using OpenTween.Models;
 
-namespace OpenTween
+namespace OpenTween.Presenter
 {
     public partial class FilterDialog : OTBaseForm
     {

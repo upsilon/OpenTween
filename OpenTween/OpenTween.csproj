@@ -133,10 +133,10 @@
       <DependentUpon>EventViewerDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="FilterDialog.cs">
+    <Compile Include="Presenter\FilterDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FilterDialog.Designer.cs">
+    <Compile Include="Presenter\FilterDialog.Designer.cs">
       <DependentUpon>FilterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="IndexedSortedSet.cs" />
@@ -466,10 +466,10 @@
     <EmbeddedResource Include="EventViewerDialog.resx">
       <DependentUpon>EventViewerDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FilterDialog.en.resx">
+    <EmbeddedResource Include="Presenter\FilterDialog.en.resx">
       <DependentUpon>FilterDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FilterDialog.resx">
+    <EmbeddedResource Include="Presenter\FilterDialog.resx">
       <DependentUpon>FilterDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HashtagManage.en.resx">
