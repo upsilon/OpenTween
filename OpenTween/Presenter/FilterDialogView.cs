@@ -72,6 +72,8 @@ namespace OpenTween.Presenter
             this.ListFilters.OnSelectedIndexChanged(x => this.model.SetSelectedFiltersIndex(x));
             this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
             this.RadioExAnd.OnCheckedChanged(x => this.model.SetExcludeRuleComplex(x));
+
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
@@ -311,8 +313,6 @@ namespace OpenTween.Presenter
 
             this.UpdateTabSettings(tabName);
             this.UpdateTabFilters(tabName);
-
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
 
         public void SetCurrent(string TabName)
