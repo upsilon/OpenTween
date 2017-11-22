@@ -154,21 +154,9 @@ namespace OpenTween.Presenter
             }
         }
 
-        private void SetFilters(string tabName)
+        private void UpdateTabSettings(string tabName)
         {
-            if (ListTabs.Items.Count == 0) return;
-
-            ListFilters.Items.Clear();
-
             var tab = this.model.TabInfo.Tabs[tabName];
-
-            if (tab is FilterTabModel filterTab)
-                ListFilters.Items.AddRange(filterTab.GetFilters());
-
-            if (ListFilters.Items.Count > 0)
-                ListFilters.SelectedIndex = 0;
-            else
-                ShowDetail();
 
             if (tab.IsDefaultTabType)
             {
@@ -188,61 +176,17 @@ namespace OpenTween.Presenter
             if (idx == -1) idx = 0;
             ComboSound.SelectedIndex = idx;
 
-            if (_directAdd) return;
-
             if (tab.TabType == MyCommon.TabUsageType.Mute)
             {
                 this.CheckManageRead.Enabled = false;
                 this.CheckNotifyNew.Enabled = false;
                 this.ComboSound.Enabled = false;
-
-                this.GroupBox1.Visible = false;
-                this.labelMuteTab.Visible = true;
             }
             else
             {
                 this.CheckManageRead.Enabled = true;
                 this.CheckNotifyNew.Enabled = true;
                 this.ComboSound.Enabled = true;
-
-                this.GroupBox1.Visible = true;
-                this.labelMuteTab.Visible = false;
-            }
-
-            if (tab.IsDistributableTabType)
-            {
-                ButtonNew.Enabled = true;
-                if (ListFilters.SelectedIndex > -1)
-                {
-                    ButtonEdit.Enabled = true;
-                    ButtonDelete.Enabled = true;
-                    ButtonRuleUp.Enabled = true;
-                    ButtonRuleDown.Enabled = true;
-                    ButtonRuleCopy.Enabled = true;
-                    ButtonRuleMove.Enabled = true;
-                    buttonRuleToggleEnabled.Enabled = true;
-                }
-                else
-                {
-                    ButtonEdit.Enabled = false;
-                    ButtonDelete.Enabled = false;
-                    ButtonRuleUp.Enabled = false;
-                    ButtonRuleDown.Enabled = false;
-                    ButtonRuleCopy.Enabled = false;
-                    ButtonRuleMove.Enabled = false;
-                    buttonRuleToggleEnabled.Enabled = false;
-                }
-            }
-            else
-            {
-                ButtonNew.Enabled = false;
-                ButtonEdit.Enabled = false;
-                ButtonDelete.Enabled = false;
-                ButtonRuleUp.Enabled = false;
-                ButtonRuleDown.Enabled = false;
-                ButtonRuleCopy.Enabled = false;
-                ButtonRuleMove.Enabled = false;
-                buttonRuleToggleEnabled.Enabled = false;
             }
 
             switch (tab.TabType)
@@ -293,6 +237,80 @@ namespace OpenTween.Presenter
             {
                 ButtonDeleteTab.Enabled = true;
             }
+        }
+
+        private void UpdateTabFilters(string tabName)
+        {
+            var tab = this.model.TabInfo.Tabs[tabName];
+
+            PostFilterRule[] filters;
+            if (tab is FilterTabModel filterTab)
+                filters = filterTab.GetFilters();
+            else
+                filters = new PostFilterRule[0];
+
+            ListFilters.Items.Clear();
+            ListFilters.Items.AddRange(filters);
+
+            if (filters.Length > 0)
+                ListFilters.SelectedIndex = 0;
+            else
+                ShowDetail();
+
+            if (tab.TabType == MyCommon.TabUsageType.Mute)
+            {
+                this.GroupBox1.Visible = false;
+                this.labelMuteTab.Visible = true;
+            }
+            else
+            {
+                this.GroupBox1.Visible = true;
+                this.labelMuteTab.Visible = false;
+            }
+
+            if (tab.IsDistributableTabType)
+            {
+                ButtonNew.Enabled = true;
+                if (ListFilters.SelectedIndex > -1)
+                {
+                    ButtonEdit.Enabled = true;
+                    ButtonDelete.Enabled = true;
+                    ButtonRuleUp.Enabled = true;
+                    ButtonRuleDown.Enabled = true;
+                    ButtonRuleCopy.Enabled = true;
+                    ButtonRuleMove.Enabled = true;
+                    buttonRuleToggleEnabled.Enabled = true;
+                }
+                else
+                {
+                    ButtonEdit.Enabled = false;
+                    ButtonDelete.Enabled = false;
+                    ButtonRuleUp.Enabled = false;
+                    ButtonRuleDown.Enabled = false;
+                    ButtonRuleCopy.Enabled = false;
+                    ButtonRuleMove.Enabled = false;
+                    buttonRuleToggleEnabled.Enabled = false;
+                }
+            }
+            else
+            {
+                ButtonNew.Enabled = false;
+                ButtonEdit.Enabled = false;
+                ButtonDelete.Enabled = false;
+                ButtonRuleUp.Enabled = false;
+                ButtonRuleDown.Enabled = false;
+                ButtonRuleCopy.Enabled = false;
+                ButtonRuleMove.Enabled = false;
+                buttonRuleToggleEnabled.Enabled = false;
+            }
+        }
+
+        private void SetFilters(string tabName)
+        {
+            if (ListTabs.Items.Count == 0) return;
+
+            this.UpdateTabSettings(tabName);
+            this.UpdateTabFilters(tabName);
 
             this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
