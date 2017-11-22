@@ -88,6 +88,11 @@ namespace OpenTween.Presenter
             this.model.FilterEditModeChanged += this.FilterEditModeChanged;
             this.model.MatchRuleComplexChanged += this.MatchRuleComplexChanged;
             this.model.ExcludeRuleComplexChanged += this.ExcludeRuleComplexChanged;
+
+            this.ListTabs.OnSelectedIndexChanged(_ => this.model.SetSelectedTabName(this.ListTabs.SelectedItem?.ToString()));
+            this.ListFilters.OnSelectedIndexChanged(x => this.model.SetSelectedFiltersIndex(x));
+            this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
+            this.RadioExAnd.OnCheckedChanged(x => this.model.SetExcludeRuleComplex(x));
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
@@ -560,11 +565,6 @@ namespace OpenTween.Presenter
             }
         }
 
-        private void RadioAND_CheckedChanged(object sender, EventArgs e)
-        {
-            this.model.SetMatchRuleComplex(this.RadioAND.Checked);
-        }
-
         private void ButtonOK_Click(object sender, EventArgs e)
         {
             //入力チェック
@@ -828,11 +828,6 @@ namespace OpenTween.Presenter
             return true;
         }
 
-        private void ListFilters_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.model.SetSelectedFiltersIndex(this.ListFilters.SelectedIndices.Cast<int>());
-        }
-
         private void ButtonClose_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -921,11 +916,6 @@ namespace OpenTween.Presenter
             }
 
             this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
-        }
-
-        private void ListTabs_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.model.SetSelectedTabName(this.ListTabs.SelectedItem?.ToString());
         }
 
         private async void ButtonAddTab_Click(object sender, EventArgs e)
@@ -1143,11 +1133,6 @@ namespace OpenTween.Presenter
                 filename = ComboSound.SelectedItem.ToString();
 
             selectedTab.SoundFile = filename;
-        }
-
-        private void RadioExAnd_CheckedChanged(object sender, EventArgs e)
-        {
-            this.model.SetExcludeRuleComplex(this.RadioExAnd.Checked);
         }
 
         private void OptMove_CheckedChanged(object sender, EventArgs e)

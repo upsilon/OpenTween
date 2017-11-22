@@ -206,7 +206,6 @@
             this.RadioAND.Name = "RadioAND";
             this.RadioAND.TabStop = true;
             this.RadioAND.UseVisualStyleBackColor = true;
-            this.RadioAND.CheckedChanged += new System.EventHandler(this.RadioAND_CheckedChanged);
             // 
             // Label8
             // 
@@ -248,7 +247,6 @@
             this.ListTabs.FormattingEnabled = true;
             resources.ApplyResources(this.ListTabs, "ListTabs");
             this.ListTabs.Name = "ListTabs";
-            this.ListTabs.SelectedIndexChanged += new System.EventHandler(this.ListTabs_SelectedIndexChanged);
             // 
             // ButtonDown
             // 
@@ -380,7 +378,6 @@
             this.ListFilters.Name = "ListFilters";
             this.ListFilters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.ListFilters.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.ListFilters_DrawItem);
-            this.ListFilters.SelectedIndexChanged += new System.EventHandler(this.ListFilters_SelectedIndexChanged);
             this.ListFilters.DoubleClick += new System.EventHandler(this.ListFilters_DoubleClick);
             this.ListFilters.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListFilters_KeyDown);
             // 
@@ -479,7 +476,6 @@
             this.RadioExAnd.Name = "RadioExAnd";
             this.RadioExAnd.TabStop = true;
             this.RadioExAnd.UseVisualStyleBackColor = true;
-            this.RadioExAnd.CheckedChanged += new System.EventHandler(this.RadioExAnd_CheckedChanged);
             // 
             // Label1
             // 
