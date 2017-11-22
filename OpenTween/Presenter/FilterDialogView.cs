@@ -293,6 +293,8 @@ namespace OpenTween.Presenter
             {
                 ButtonDeleteTab.Enabled = true;
             }
+
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
 
         public void SetCurrent(string TabName)
@@ -899,8 +901,6 @@ namespace OpenTween.Presenter
                     }
                 }
             }
-
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
 
         private async void ButtonAddTab_Click(object sender, EventArgs e)
