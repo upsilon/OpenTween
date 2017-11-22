@@ -39,6 +39,7 @@ namespace OpenTween.Models
 
         public TabModel SelectedTab { get; private set; }
         public PostFilterRule[] SelectedFilters { get; private set; }
+        public PostFilterRule EditingFilter { get; private set; }
         public EDITMODE FilterEditMode { get; private set; }
         public bool MatchRuleComplex { get; private set; }
         public bool ExcludeRuleComplex { get; private set; }
@@ -46,6 +47,7 @@ namespace OpenTween.Models
 
         public event EventHandler SelectedTabChanged;
         public event EventHandler SelectedFiltersChanged;
+        public event EventHandler EditingFilterChanged;
         public event EventHandler FilterEditModeChanged;
         public event EventHandler MatchRuleComplexChanged;
         public event EventHandler ExcludeRuleComplexChanged;
@@ -85,7 +87,18 @@ namespace OpenTween.Models
                 this.SetFilterEnabledButtonState(EnabledButtonState.NotSelected);
             else
                 this.SetFilterEnabledButtonState(firstFilter.Enabled ? EnabledButtonState.Disable : EnabledButtonState.Enable);
+
+            this.SetEditingFilter(firstFilter);
         }
+
+        public void SetEditingFilter(PostFilterRule filter)
+        {
+            this.EditingFilter = filter;
+            this.EditingFilterChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void RestoreEditingFilter()
+            => this.SetEditingFilter(this.SelectedFilters.FirstOrDefault());
 
         public void SetFilterEditMode(EDITMODE editMode)
         {
