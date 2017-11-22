@@ -84,7 +84,9 @@ namespace OpenTween.Presenter
                 this.ListFilters.Items.Clear();
                 return;
             }
-            this.SetFilters(tab.TabName);
+
+            this.UpdateTabSettings();
+            this.UpdateTabFilters();
         }
 
         private void SelectedFiltersChanged(object sender, EventArgs e)
@@ -156,9 +158,9 @@ namespace OpenTween.Presenter
             }
         }
 
-        private void UpdateTabSettings(string tabName)
+        private void UpdateTabSettings()
         {
-            var tab = this.model.TabInfo.Tabs[tabName];
+            var tab = this.model.SelectedTab;
 
             if (tab.IsDefaultTabType)
             {
@@ -241,9 +243,9 @@ namespace OpenTween.Presenter
             }
         }
 
-        private void UpdateTabFilters(string tabName)
+        private void UpdateTabFilters()
         {
-            var tab = this.model.TabInfo.Tabs[tabName];
+            var tab = this.model.SelectedTab;
 
             PostFilterRule[] filters;
             if (tab is FilterTabModel filterTab)
@@ -305,14 +307,6 @@ namespace OpenTween.Presenter
                 ButtonRuleMove.Enabled = false;
                 buttonRuleToggleEnabled.Enabled = false;
             }
-        }
-
-        private void SetFilters(string tabName)
-        {
-            if (ListTabs.Items.Count == 0) return;
-
-            this.UpdateTabSettings(tabName);
-            this.UpdateTabFilters(tabName);
         }
 
         public void SetCurrent(string TabName)
@@ -680,7 +674,8 @@ namespace OpenTween.Presenter
                     MessageBox.Show(Properties.Resources.ButtonOK_ClickText4, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            SetFilters(tab.TabName);
+            this.UpdateTabFilters();
+
             ListFilters.SelectedIndex = -1;
             if (this.model.FilterEditMode == FilterDialog.EDITMODE.AddNew)
             {
@@ -1268,7 +1263,8 @@ namespace OpenTween.Presenter
                             tb.AddFilter(flt.Clone());
                     }
                 }
-                SetFilters(selectedTab.TabName);
+
+                this.UpdateTabFilters();
             }
         }
 
@@ -1313,7 +1309,8 @@ namespace OpenTween.Presenter
                         ListFilters.Items.RemoveAt(idx);
                     }
                 }
-                SetFilters(selectedTab.TabName);
+
+                this.UpdateTabFilters();
             }
         }
 
