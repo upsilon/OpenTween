@@ -604,7 +604,7 @@
             resources.ApplyResources(this.labelMuteTab, "labelMuteTab");
             this.labelMuteTab.Name = "labelMuteTab";
             // 
-            // FilterDialog
+            // FilterDialogView
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -617,7 +617,7 @@
             this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "FilterDialog";
+            this.Name = "FilterDialogView";
             this.ShowInTaskbar = false;
             this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FilterDialog_FormClosed);

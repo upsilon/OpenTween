@@ -1966,7 +1966,7 @@
     <value>振り分けルール</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>FilterDialog</value>
+    <value>FilterDialogView</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>OpenTween.OTBaseForm, OpenTween, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null</value>
