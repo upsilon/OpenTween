@@ -51,11 +51,16 @@ namespace OpenTween.Models
 
         public void SetSelectedTabName(string selectedTabName)
         {
-            var tab = this.TabInfo.GetTabByName(selectedTabName);
-            if (tab == null)
-                return;
+            if (selectedTabName == null)
+            {
+                this.SelectedTab = null;
+            }
+            else
+            {
+                var tab = this.TabInfo.GetTabByName(selectedTabName) ?? throw new ArgumentException();
+                this.SelectedTab = tab;
+            }
 
-            this.SelectedTab = tab;
             this.SelectedTabChanged?.Invoke(this, EventArgs.Empty);
         }
 
