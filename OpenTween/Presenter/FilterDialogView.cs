@@ -417,7 +417,7 @@ namespace OpenTween.Presenter
             if (rslt == DialogResult.Cancel) return;
 
             var indices = ListFilters.SelectedIndices.Cast<int>().Reverse().ToArray();  // 後ろの要素から削除
-            var tab = (FilterTabModel)this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()];
+            var tab = (FilterTabModel)this.model.SelectedTab;
 
             using (ControlTransaction.Update(ListFilters))
             {
@@ -623,7 +623,7 @@ namespace OpenTween.Presenter
                 return;
             }
 
-            var tab = (FilterTabModel)this.model.TabInfo.Tabs[(string)this.ListTabs.SelectedItem];
+            var tab = (FilterTabModel)this.model.SelectedTab;
             int i = ListFilters.SelectedIndex;
 
             PostFilterRule ft;
@@ -1076,11 +1076,11 @@ namespace OpenTween.Presenter
 
         private void ButtonDeleteTab_Click(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
+            var tab = this.model.SelectedTab;
+            if (tab != null)
             {
-                string tb = ListTabs.SelectedItem.ToString();
                 int idx = ListTabs.SelectedIndex;
-                if (((TweenMain)this.Owner).RemoveSpecifiedTab(tb, true))
+                if (((TweenMain)this.Owner).RemoveSpecifiedTab(tab.TabName, true))
                 {
                     ListTabs.Items.RemoveAt(idx);
                     idx -= 1;
@@ -1092,11 +1092,12 @@ namespace OpenTween.Presenter
 
         private void ButtonRenameTab_Click(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
+            var tab = this.model.SelectedTab;
+            if (tab != null)
             {
                 int idx = ListTabs.SelectedIndex;
 
-                var origTabName = (string)this.ListTabs.SelectedItem;
+                var origTabName = tab.TabName;
                 if (((TweenMain)this.Owner).TabRename(origTabName, out var newTabName))
                 {
                     ListTabs.Items.RemoveAt(idx);
@@ -1108,21 +1109,25 @@ namespace OpenTween.Presenter
 
         private void CheckManageRead_CheckedChanged(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
+            var tab = this.model.SelectedTab;
+            if (tab != null)
             {
                 ((TweenMain)this.Owner).ChangeTabUnreadManage(
-                    ListTabs.SelectedItem.ToString(),
+                    tab.TabName,
                     CheckManageRead.Checked);
             }
         }
 
         private void ButtonUp_Click(object sender, EventArgs e)
         {
-            if (this.ListTabs.SelectedIndex == -1 || this.ListTabs.SelectedIndex == 0)
+            var selectedTab = this.model.SelectedTab;
+            if (selectedTab == null)
                 return;
 
-            var selectedTabName = (string)this.ListTabs.SelectedItem;
-            var selectedTab = this.model.TabInfo.Tabs[selectedTabName];
+            if (this.ListTabs.SelectedIndex == 0)
+                return;
+
+            var selectedTabName = selectedTab.TabName;
 
             var targetTabName = (string)this.ListTabs.Items[this.ListTabs.SelectedIndex - 1];
             var targetTab = this.model.TabInfo.Tabs[targetTabName];
@@ -1143,11 +1148,14 @@ namespace OpenTween.Presenter
 
         private void ButtonDown_Click(object sender, EventArgs e)
         {
-            if (this.ListTabs.SelectedIndex == -1 || this.ListTabs.SelectedIndex == this.ListTabs.Items.Count - 1)
+            var selectedTab = this.model.SelectedTab;
+            if (selectedTab == null)
                 return;
 
-            var selectedTabName = (string)this.ListTabs.SelectedItem;
-            var selectedTab = this.model.TabInfo.Tabs[selectedTabName];
+            if (this.ListTabs.SelectedIndex == this.ListTabs.Items.Count - 1)
+                return;
+
+            var selectedTabName = selectedTab.TabName;
 
             var targetTabName = (string)this.ListTabs.Items[this.ListTabs.SelectedIndex + 1];
             var targetTab = this.model.TabInfo.Tabs[targetTabName];
@@ -1168,29 +1176,34 @@ namespace OpenTween.Presenter
 
         private void CheckLocked_CheckedChanged(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
-            {
-                this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()].Protected = CheckProtected.Checked;
-                ButtonDeleteTab.Enabled = !CheckProtected.Checked;
-            }
+            var selectedTab = this.model.SelectedTab;
+            if (selectedTab == null)
+                return;
+
+            selectedTab.Protected = CheckProtected.Checked;
+            ButtonDeleteTab.Enabled = !CheckProtected.Checked;
         }
 
         private void CheckNotifyNew_CheckedChanged(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && !string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
-            {
-                this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()].Notify = CheckNotifyNew.Checked;
-            }
+            var selectedTab = this.model.SelectedTab;
+            if (selectedTab == null)
+                return;
+
+            selectedTab.Notify = CheckNotifyNew.Checked;
         }
 
         private void ComboSound_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && string.IsNullOrEmpty(ListTabs.SelectedItem.ToString()))
-            {
-                string filename = "";
-                if (ComboSound.SelectedIndex > -1) filename = ComboSound.SelectedItem.ToString();
-                this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()].SoundFile = filename;
-            }
+            var selectedTab = this.model.SelectedTab;
+            if (selectedTab == null)
+                return;
+
+            string filename = "";
+            if (ComboSound.SelectedIndex > -1)
+                filename = ComboSound.SelectedItem.ToString();
+
+            selectedTab.SoundFile = filename;
         }
 
         private void RadioExAnd_CheckedChanged(object sender, EventArgs e)
@@ -1218,9 +1231,12 @@ namespace OpenTween.Presenter
 
         private void MoveSelectedRules(bool up)
         {
-            var tabIdx = ListTabs.SelectedIndex;
-            if (tabIdx == -1 ||
-                ListFilters.SelectedIndices.Count == 0) return;
+            var tab = (FilterTabModel)this.model.SelectedTab;
+            if (tab == null)
+                return;
+
+            if (ListFilters.SelectedIndices.Count == 0)
+                return;
 
             var indices = ListFilters.SelectedIndices.Cast<int>().ToArray();
 
@@ -1238,7 +1254,6 @@ namespace OpenTween.Presenter
             }
 
             var lastSelIdx = indices[0] + diff;
-            var tab = (FilterTabModel)this.model.TabInfo.Tabs[ListTabs.Items[tabIdx].ToString()];
 
             try
             {
@@ -1299,9 +1314,10 @@ namespace OpenTween.Presenter
 
         private void ButtonRuleCopy_Click(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && ListFilters.SelectedItem != null)
+            var selectedTab = (FilterTabModel)this.model.SelectedTab;
+            if (selectedTab != null && ListFilters.SelectedItem != null)
             {
-                TabModel[] selectedTabs;
+                TabModel[] copyDestTabs;
                 using (TabsDialog dialog = new TabsDialog(this.model.TabInfo))
                 {
                     dialog.MultiSelect = true;
@@ -1309,20 +1325,18 @@ namespace OpenTween.Presenter
 
                     if (dialog.ShowDialog(this) == DialogResult.Cancel) return;
 
-                    selectedTabs = dialog.SelectedTabs;
+                    copyDestTabs = dialog.SelectedTabs;
                 }
 
-                string tabname = ListTabs.SelectedItem.ToString();
                 List<PostFilterRule> filters = new List<PostFilterRule>();
 
                 foreach (int idx in ListFilters.SelectedIndices)
                 {
-                    var tab = (FilterTabModel)this.model.TabInfo.Tabs[tabname];
-                    filters.Add(tab.FilterArray[idx].Clone());
+                    filters.Add(selectedTab.FilterArray[idx].Clone());
                 }
-                foreach (var tb in selectedTabs.Cast<FilterTabModel>())
+                foreach (var tb in copyDestTabs.Cast<FilterTabModel>())
                 {
-                    if (tb.TabName == tabname) continue;
+                    if (tb.TabName == selectedTab.TabName) continue;
 
                     foreach (PostFilterRule flt in filters)
                     {
@@ -1330,15 +1344,16 @@ namespace OpenTween.Presenter
                             tb.AddFilter(flt.Clone());
                     }
                 }
-                SetFilters(tabname);
+                SetFilters(selectedTab.TabName);
             }
         }
 
         private void ButtonRuleMove_Click(object sender, EventArgs e)
         {
-            if (ListTabs.SelectedIndex > -1 && ListFilters.SelectedItem != null)
+            var selectedTab = (FilterTabModel)this.model.SelectedTab;
+            if (selectedTab != null && ListFilters.SelectedItem != null)
             {
-                TabModel[] selectedTabs;
+                TabModel[] moveDestTabs;
                 using (var dialog = new TabsDialog(this.model.TabInfo))
                 {
                     dialog.MultiSelect = true;
@@ -1346,20 +1361,19 @@ namespace OpenTween.Presenter
 
                     if (dialog.ShowDialog(this) == DialogResult.Cancel) return;
 
-                    selectedTabs = dialog.SelectedTabs;
+                    moveDestTabs = dialog.SelectedTabs;
                 }
-                string tabname = ListTabs.SelectedItem.ToString();
+
                 List<PostFilterRule> filters = new List<PostFilterRule>();
 
                 foreach (int idx in ListFilters.SelectedIndices)
                 {
-                    var tab = (FilterTabModel)this.model.TabInfo.Tabs[tabname];
-                    filters.Add(tab.FilterArray[idx].Clone());
+                    filters.Add(selectedTab.FilterArray[idx].Clone());
                 }
-                if (selectedTabs.Length == 1 && selectedTabs[0].TabName == tabname) return;
-                foreach (var tb in selectedTabs.Cast<FilterTabModel>())
+                if (moveDestTabs.Length == 1 && moveDestTabs[0].TabName == selectedTab.TabName) return;
+                foreach (var tb in moveDestTabs.Cast<FilterTabModel>())
                 {
-                    if (tb.TabName == tabname) continue;
+                    if (tb.TabName == selectedTab.TabName) continue;
 
                     foreach (PostFilterRule flt in filters)
                     {
@@ -1371,12 +1385,11 @@ namespace OpenTween.Presenter
                 {
                     if (ListFilters.GetSelected(idx))
                     {
-                        var tab = (FilterTabModel)this.model.TabInfo.Tabs[ListTabs.SelectedItem.ToString()];
-                        tab.RemoveFilter((PostFilterRule)ListFilters.Items[idx]);
+                        selectedTab.RemoveFilter((PostFilterRule)ListFilters.Items[idx]);
                         ListFilters.Items.RemoveAt(idx);
                     }
                 }
-                SetFilters(tabname);
+                SetFilters(selectedTab.TabName);
             }
         }
 
