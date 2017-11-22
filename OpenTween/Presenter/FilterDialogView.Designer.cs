@@ -67,8 +67,9 @@
             this.ButtonEdit = new System.Windows.Forms.Button();
             this.ButtonDelete = new System.Windows.Forms.Button();
             this.GroupBox2 = new System.Windows.Forms.GroupBox();
-            this.buttonRuleToggleEnabled = new System.Windows.Forms.Button();
             this.ListFilters = new System.Windows.Forms.ListBox();
+            this.FilterButtonsPanel = new System.Windows.Forms.Panel();
+            this.buttonRuleToggleEnabled = new System.Windows.Forms.Button();
             this.EditFilterGroup = new System.Windows.Forms.GroupBox();
             this.Label11 = new System.Windows.Forms.Label();
             this.GroupExclude = new System.Windows.Forms.GroupBox();
@@ -99,6 +100,7 @@
             this.labelMuteTab = new System.Windows.Forms.Label();
             this.GroupTab.SuspendLayout();
             this.GroupBox2.SuspendLayout();
+            this.FilterButtonsPanel.SuspendLayout();
             this.EditFilterGroup.SuspendLayout();
             this.GroupExclude.SuspendLayout();
             this.GroupMatch.SuspendLayout();
@@ -243,8 +245,8 @@
             // 
             // ListTabs
             // 
-            resources.ApplyResources(this.ListTabs, "ListTabs");
             this.ListTabs.FormattingEnabled = true;
+            resources.ApplyResources(this.ListTabs, "ListTabs");
             this.ListTabs.Name = "ListTabs";
             this.ListTabs.SelectedIndexChanged += new System.EventHandler(this.ListTabs_SelectedIndexChanged);
             // 
@@ -297,7 +299,6 @@
             // 
             // GroupTab
             // 
-            resources.ApplyResources(this.GroupTab, "GroupTab");
             this.GroupTab.Controls.Add(this.CheckProtected);
             this.GroupTab.Controls.Add(this.LabelTabType);
             this.GroupTab.Controls.Add(this.Label13);
@@ -311,6 +312,7 @@
             this.GroupTab.Controls.Add(this.ComboSound);
             this.GroupTab.Controls.Add(this.CheckManageRead);
             this.GroupTab.Controls.Add(this.CheckNotifyNew);
+            resources.ApplyResources(this.GroupTab, "GroupTab");
             this.GroupTab.Name = "GroupTab";
             this.GroupTab.TabStop = false;
             // 
@@ -364,18 +366,36 @@
             // GroupBox2
             // 
             resources.ApplyResources(this.GroupBox2, "GroupBox2");
-            this.GroupBox2.Controls.Add(this.buttonRuleToggleEnabled);
-            this.GroupBox2.Controls.Add(this.ButtonRuleMove);
-            this.GroupBox2.Controls.Add(this.ButtonRuleCopy);
-            this.GroupBox2.Controls.Add(this.ButtonRuleDown);
-            this.GroupBox2.Controls.Add(this.ButtonRuleUp);
             this.GroupBox2.Controls.Add(this.ListFilters);
-            this.GroupBox2.Controls.Add(this.ButtonEdit);
-            this.GroupBox2.Controls.Add(this.ButtonDelete);
-            this.GroupBox2.Controls.Add(this.ButtonNew);
+            this.GroupBox2.Controls.Add(this.FilterButtonsPanel);
             this.GroupBox2.Controls.Add(this.EditFilterGroup);
             this.GroupBox2.Name = "GroupBox2";
             this.GroupBox2.TabStop = false;
+            // 
+            // ListFilters
+            // 
+            this.ListFilters.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.ListFilters.FormattingEnabled = true;
+            resources.ApplyResources(this.ListFilters, "ListFilters");
+            this.ListFilters.Name = "ListFilters";
+            this.ListFilters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.ListFilters.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.ListFilters_DrawItem);
+            this.ListFilters.SelectedIndexChanged += new System.EventHandler(this.ListFilters_SelectedIndexChanged);
+            this.ListFilters.DoubleClick += new System.EventHandler(this.ListFilters_DoubleClick);
+            this.ListFilters.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListFilters_KeyDown);
+            // 
+            // FilterButtonsPanel
+            // 
+            this.FilterButtonsPanel.Controls.Add(this.buttonRuleToggleEnabled);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonNew);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonRuleMove);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonDelete);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonRuleCopy);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonEdit);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonRuleDown);
+            this.FilterButtonsPanel.Controls.Add(this.ButtonRuleUp);
+            resources.ApplyResources(this.FilterButtonsPanel, "FilterButtonsPanel");
+            this.FilterButtonsPanel.Name = "FilterButtonsPanel";
             // 
             // buttonRuleToggleEnabled
             // 
@@ -383,18 +403,6 @@
             this.buttonRuleToggleEnabled.Name = "buttonRuleToggleEnabled";
             this.buttonRuleToggleEnabled.UseVisualStyleBackColor = true;
             this.buttonRuleToggleEnabled.Click += new System.EventHandler(this.buttonRuleToggleEnabled_Click);
-            // 
-            // ListFilters
-            // 
-            this.ListFilters.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            resources.ApplyResources(this.ListFilters, "ListFilters");
-            this.ListFilters.FormattingEnabled = true;
-            this.ListFilters.Name = "ListFilters";
-            this.ListFilters.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.ListFilters.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.ListFilters_DrawItem);
-            this.ListFilters.SelectedIndexChanged += new System.EventHandler(this.ListFilters_SelectedIndexChanged);
-            this.ListFilters.DoubleClick += new System.EventHandler(this.ListFilters_DoubleClick);
-            this.ListFilters.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListFilters_KeyDown);
             // 
             // EditFilterGroup
             // 
@@ -416,7 +424,6 @@
             // 
             // GroupExclude
             // 
-            resources.ApplyResources(this.GroupExclude, "GroupExclude");
             this.GroupExclude.Controls.Add(this.CheckExLambDa);
             this.GroupExclude.Controls.Add(this.TextExSource);
             this.GroupExclude.Controls.Add(this.Label12);
@@ -433,6 +440,7 @@
             this.GroupExclude.Controls.Add(this.ExUID);
             this.GroupExclude.Controls.Add(this.ExMSG1);
             this.GroupExclude.Controls.Add(this.ExMSG2);
+            resources.ApplyResources(this.GroupExclude, "GroupExclude");
             this.GroupExclude.Name = "GroupExclude";
             this.GroupExclude.TabStop = false;
             // 
@@ -513,9 +521,9 @@
             // 
             // ExUID
             // 
-            resources.ApplyResources(this.ExUID, "ExUID");
             this.ExUID.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.ExUID.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            resources.ApplyResources(this.ExUID, "ExUID");
             this.ExUID.Name = "ExUID";
             // 
             // ExMSG1
@@ -534,7 +542,6 @@
             // 
             // GroupMatch
             // 
-            resources.ApplyResources(this.GroupMatch, "GroupMatch");
             this.GroupMatch.Controls.Add(this.CheckLambda);
             this.GroupMatch.Controls.Add(this.TextSource);
             this.GroupMatch.Controls.Add(this.Label5);
@@ -551,6 +558,7 @@
             this.GroupMatch.Controls.Add(this.UID);
             this.GroupMatch.Controls.Add(this.MSG1);
             this.GroupMatch.Controls.Add(this.MSG2);
+            resources.ApplyResources(this.GroupMatch, "GroupMatch");
             this.GroupMatch.Name = "GroupMatch";
             this.GroupMatch.TabStop = false;
             // 
@@ -571,9 +579,9 @@
             // 
             // UID
             // 
-            resources.ApplyResources(this.UID, "UID");
             this.UID.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.UID.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            resources.ApplyResources(this.UID, "UID");
             this.UID.Name = "UID";
             // 
             // MSG1
@@ -592,10 +600,10 @@
             // 
             // GroupBox1
             // 
-            resources.ApplyResources(this.GroupBox1, "GroupBox1");
             this.GroupBox1.Controls.Add(this.CheckMark);
             this.GroupBox1.Controls.Add(this.OptCopy);
             this.GroupBox1.Controls.Add(this.OptMove);
+            resources.ApplyResources(this.GroupBox1, "GroupBox1");
             this.GroupBox1.Name = "GroupBox1";
             this.GroupBox1.TabStop = false;
             // 
@@ -626,6 +634,7 @@
             this.GroupTab.ResumeLayout(false);
             this.GroupTab.PerformLayout();
             this.GroupBox2.ResumeLayout(false);
+            this.FilterButtonsPanel.ResumeLayout(false);
             this.EditFilterGroup.ResumeLayout(false);
             this.GroupExclude.ResumeLayout(false);
             this.GroupExclude.PerformLayout();
@@ -707,5 +716,6 @@
         internal System.Windows.Forms.CheckBox CheckProtected;
         private System.Windows.Forms.Label labelMuteTab;
         private System.Windows.Forms.Button buttonRuleToggleEnabled;
+        private System.Windows.Forms.Panel FilterButtonsPanel;
     }
 }
