@@ -123,6 +123,27 @@ namespace OpenTween.Presenter
 
         private void FilterEditModeChanged(object sender, EventArgs e)
         {
+            switch (this.model.FilterEditMode)
+            {
+                case FilterDialog.EDITMODE.AddNew:
+                case FilterDialog.EDITMODE.Edit:
+                    ListTabs.Enabled = false;
+                    GroupTab.Enabled = false;
+                    ListFilters.Enabled = false;
+                    FilterButtonsPanel.Enabled = false;
+                    EditFilterGroup.Enabled = true;
+                    ButtonClose.Enabled = false;
+                    break;
+                case FilterDialog.EDITMODE.None:
+                default:
+                    ListTabs.Enabled = true;
+                    GroupTab.Enabled = true;
+                    ListFilters.Enabled = true;
+                    FilterButtonsPanel.Enabled = true;
+                    EditFilterGroup.Enabled = false;
+                    ButtonClose.Enabled = true;
+                    break;
+            }
         }
 
         private void SetFilters(string tabName)
@@ -179,11 +200,6 @@ namespace OpenTween.Presenter
                 this.GroupBox1.Visible = true;
                 this.labelMuteTab.Visible = false;
             }
-
-            ListTabs.Enabled = true;
-            GroupTab.Enabled = true;
-            ListFilters.Enabled = true;
-            EditFilterGroup.Enabled = false;
 
             if (tab.IsDistributableTabType)
             {
@@ -269,7 +285,6 @@ namespace OpenTween.Presenter
             {
                 ButtonDeleteTab.Enabled = true;
             }
-            ButtonClose.Enabled = true;
         }
 
         public void SetCurrent(string TabName)
@@ -280,20 +295,6 @@ namespace OpenTween.Presenter
         public void AddNewFilter(string id, string msg)
         {
             //元フォームから直接呼ばれる
-            ButtonNew.Enabled = false;
-            ButtonEdit.Enabled = false;
-            ButtonRuleUp.Enabled = false;
-            ButtonRuleDown.Enabled = false;
-            ButtonRuleCopy.Enabled = false;
-            ButtonRuleMove.Enabled = false;
-            buttonRuleToggleEnabled.Enabled = false;
-            ButtonDelete.Enabled = false;
-            ButtonClose.Enabled = false;
-            EditFilterGroup.Enabled = true;
-            ListTabs.Enabled = false;
-            GroupTab.Enabled = false;
-            ListFilters.Enabled = false;
-
             RadioAND.Checked = true;
             RadioPLUS.Checked = false;
             UID.Text = id;
@@ -340,21 +341,6 @@ namespace OpenTween.Presenter
 
         private void ButtonNew_Click(object sender, EventArgs e)
         {
-            ButtonNew.Enabled = false;
-            ButtonEdit.Enabled = false;
-            ButtonClose.Enabled = false;
-            ButtonRuleUp.Enabled = false;
-            ButtonRuleDown.Enabled = false;
-            ButtonRuleCopy.Enabled = false;
-            ButtonRuleMove.Enabled = false;
-            buttonRuleToggleEnabled.Enabled = false;
-            ButtonDelete.Enabled = false;
-            ButtonClose.Enabled = false;
-            EditFilterGroup.Enabled = true;
-            ListTabs.Enabled = false;
-            GroupTab.Enabled = false;
-            ListFilters.Enabled = false;
-
             RadioAND.Checked = true;
             RadioPLUS.Checked = false;
             UID.Text = "";
@@ -401,20 +387,6 @@ namespace OpenTween.Presenter
             int idx = ListFilters.SelectedIndex;
             ListFilters.SelectedIndex = -1;
             ListFilters.SelectedIndex = idx;
-            ListFilters.Enabled = false;
-
-            ButtonNew.Enabled = false;
-            ButtonEdit.Enabled = false;
-            ButtonDelete.Enabled = false;
-            ButtonClose.Enabled = false;
-            ButtonRuleUp.Enabled = false;
-            ButtonRuleDown.Enabled = false;
-            ButtonRuleCopy.Enabled = false;
-            ButtonRuleMove.Enabled = false;
-            buttonRuleToggleEnabled.Enabled = false;
-            EditFilterGroup.Enabled = true;
-            ListTabs.Enabled = false;
-            GroupTab.Enabled = false;
 
             this.model.SetFilterEditMode(FilterDialog.EDITMODE.Edit);
         }
@@ -453,37 +425,13 @@ namespace OpenTween.Presenter
 
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
-            ListTabs.Enabled = true;
-            GroupTab.Enabled = true;
-            ListFilters.Enabled = true;
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
+
             ListFilters.Focus();
             if (ListFilters.SelectedIndex != -1)
             {
                 ShowDetail();
             }
-            EditFilterGroup.Enabled = false;
-            ButtonNew.Enabled = true;
-            if (ListFilters.SelectedIndex > -1)
-            {
-                ButtonEdit.Enabled = true;
-                ButtonDelete.Enabled = true;
-                ButtonRuleUp.Enabled = true;
-                ButtonRuleDown.Enabled = true;
-                ButtonRuleCopy.Enabled = true;
-                ButtonRuleMove.Enabled = true;
-                buttonRuleToggleEnabled.Enabled = true;
-            }
-            else
-            {
-                ButtonEdit.Enabled = false;
-                ButtonDelete.Enabled = false;
-                ButtonRuleUp.Enabled = false;
-                ButtonRuleDown.Enabled = false;
-                ButtonRuleCopy.Enabled = false;
-                ButtonRuleMove.Enabled = false;
-                buttonRuleToggleEnabled.Enabled = false;
-            }
-            ButtonClose.Enabled = true;
             if (_directAdd)
             {
                 this.Close();
@@ -914,7 +862,7 @@ namespace OpenTween.Presenter
         {
             if (e.KeyCode == Keys.Escape)
             {
-                if (EditFilterGroup.Enabled)
+                if (this.model.FilterEditMode != FilterDialog.EDITMODE.None)
                     ButtonCancel_Click(null, null);
                 else
                     ButtonClose_Click(null, null);
@@ -986,6 +934,8 @@ namespace OpenTween.Presenter
                     }
                 }
             }
+
+            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
 
         private void ListTabs_SelectedIndexChanged(object sender, EventArgs e)
