@@ -42,6 +42,7 @@ namespace OpenTween.Presenter
 {
     public partial class FilterDialogView : OTBaseForm
     {
+        private TweenMain tweenMain;
         private FilterDialog model = new FilterDialog();
 
         private bool _directAdd;
@@ -57,8 +58,10 @@ namespace OpenTween.Presenter
             SelectAll = 2,
         }
 
-        public FilterDialogView()
+        public FilterDialogView(TweenMain tweenMain)
         {
+            this.tweenMain = tweenMain;
+
             InitializeComponent();
 
             this.model.SelectedTabChanged += this.SelectedTabChanged;
@@ -481,12 +484,11 @@ namespace OpenTween.Presenter
             if (this.model.MatchRuleComplex)
             {
                 ft.FilterName = UID.Text;
-                TweenMain owner = (TweenMain)this.Owner;
-                int cnt = owner.AtIdSupl.ItemCount;
-                owner.AtIdSupl.AddItem("@" + ft.FilterName);
-                if (cnt != owner.AtIdSupl.ItemCount)
+                int cnt = this.tweenMain.AtIdSupl.ItemCount;
+                this.tweenMain.AtIdSupl.AddItem("@" + ft.FilterName);
+                if (cnt != this.tweenMain.AtIdSupl.ItemCount)
                 {
-                    owner.ModifySettingAtId = true;
+                    this.tweenMain.ModifySettingAtId = true;
                 }
                 ft.UseNameField = true;
                 bdy = MSG1.Text;
@@ -768,7 +770,7 @@ namespace OpenTween.Presenter
             }
 
             idlist.Clear();
-            foreach (string tmp in ((TweenMain)this.Owner).AtIdSupl.GetItemList())
+            foreach (string tmp in this.tweenMain.AtIdSupl.GetItemList())
             {
                 idlist.Add(tmp.Remove(0, 1));  // @文字削除
             }
@@ -821,7 +823,7 @@ namespace OpenTween.Presenter
                         {
                             var cancellationToken = dialog.EnableCancellation();
 
-                            var task = ((TweenMain)this.Owner).TwitterInstance.GetListsApi();
+                            var task = this.tweenMain.TwitterInstance.GetListsApi();
                             await dialog.WaitForAsync(this, task);
 
                             cancellationToken.ThrowIfCancellationRequested();
@@ -856,7 +858,7 @@ namespace OpenTween.Presenter
                         return;
                 }
 
-                if (!this.model.TabInfo.AddTab(tab) || !((TweenMain)this.Owner).AddNewTab(tab, startup: false))
+                if (!this.model.TabInfo.AddTab(tab) || !this.tweenMain.AddNewTab(tab, startup: false))
                 {
                     string tmp = string.Format(Properties.Resources.AddTabMenuItem_ClickText1, tabName);
                     MessageBox.Show(tmp, Properties.Resources.AddTabMenuItem_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -887,7 +889,7 @@ namespace OpenTween.Presenter
             if (tab != null)
             {
                 int idx = ListTabs.SelectedIndex;
-                if (((TweenMain)this.Owner).RemoveSpecifiedTab(tab.TabName, true))
+                if (this.tweenMain.RemoveSpecifiedTab(tab.TabName, true))
                 {
                     ListTabs.Items.RemoveAt(idx);
                     idx -= 1;
@@ -905,7 +907,7 @@ namespace OpenTween.Presenter
                 int idx = ListTabs.SelectedIndex;
 
                 var origTabName = tab.TabName;
-                if (((TweenMain)this.Owner).TabRename(origTabName, out var newTabName))
+                if (this.tweenMain.TabRename(origTabName, out var newTabName))
                 {
                     ListTabs.Items.RemoveAt(idx);
                     ListTabs.Items.Insert(idx, newTabName);
@@ -919,7 +921,7 @@ namespace OpenTween.Presenter
             var tab = this.model.SelectedTab;
             if (tab != null)
             {
-                ((TweenMain)this.Owner).ChangeTabUnreadManage(
+                this.tweenMain.ChangeTabUnreadManage(
                     tab.TabName,
                     CheckManageRead.Checked);
             }
@@ -943,8 +945,7 @@ namespace OpenTween.Presenter
             if (selectedTab.TabType == MyCommon.TabUsageType.Mute || targetTab.TabType == MyCommon.TabUsageType.Mute)
                 return;
 
-            var tweenMain = (TweenMain)this.Owner;
-            tweenMain.ReOrderTab(selectedTabName, targetTabName, true);
+            this.tweenMain.ReOrderTab(selectedTabName, targetTabName, true);
 
             // ListTab のアイテム並び替え
             // 選択が解除されてしまうのを防ぐため SelectedIndex のアイテムは操作せず前後のアイテムを移動する
@@ -971,8 +972,7 @@ namespace OpenTween.Presenter
             if (selectedTab.TabType == MyCommon.TabUsageType.Mute || targetTab.TabType == MyCommon.TabUsageType.Mute)
                 return;
 
-            var tweenMain = (TweenMain)this.Owner;
-            tweenMain.ReOrderTab(selectedTabName, targetTabName, false);
+            this.tweenMain.ReOrderTab(selectedTabName, targetTabName, false);
 
             // ListTab のアイテム並び替え
             // 選択が解除されてしまうのを防ぐため SelectedIndex のアイテムは操作せず前後のアイテムを移動する
@@ -1198,7 +1198,6 @@ namespace OpenTween.Presenter
         {
             if (e.KeyCode == Keys.Space && e.Modifiers == (Keys.Shift | Keys.Control))
             {
-                TweenMain main = (TweenMain)this.Owner;
                 TextBox tbox = (TextBox)sender;
                 if (tbox.SelectionStart > 0)
                 {
@@ -1214,12 +1213,12 @@ namespace OpenTween.Presenter
                         if (c == '@')
                         {
                             startstr = tbox.Text.Substring(i + 1, endidx - i);
-                            main.ShowSuplDialog(tbox, main.AtIdSupl, startstr.Length + 1, startstr);
+                            this.tweenMain.ShowSuplDialog(tbox, this.tweenMain.AtIdSupl, startstr.Length + 1, startstr);
                         }
                         else if (c == '#')
                         {
                             startstr = tbox.Text.Substring(i + 1, endidx - i);
-                            main.ShowSuplDialog(tbox, main.HashSupl, startstr.Length + 1, startstr);
+                            this.tweenMain.ShowSuplDialog(tbox, this.tweenMain.HashSupl, startstr.Length + 1, startstr);
                         }
                         else
                         {
@@ -1233,19 +1232,18 @@ namespace OpenTween.Presenter
 
         private void FilterTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            TweenMain main = (TweenMain)this.Owner;
             TextBox tbox = (TextBox)sender;
             if (e.KeyChar == '@')
             {
                 //if (!SettingDialog.UseAtIdSupplement) return;
                 //@マーク
-                main.ShowSuplDialog(tbox, main.AtIdSupl);
+                this.tweenMain.ShowSuplDialog(tbox, this.tweenMain.AtIdSupl);
                 e.Handled = true;
             }
             else if (e.KeyChar == '#')
             {
                 //if (!SettingDialog.UseHashSupplement) return;
-                main.ShowSuplDialog(tbox, main.HashSupl);
+                this.tweenMain.ShowSuplDialog(tbox, this.tweenMain.HashSupl);
                 e.Handled = true;
             }
         }

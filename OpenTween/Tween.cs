@@ -8244,9 +8244,8 @@ namespace OpenTween
         {
             if (string.IsNullOrEmpty(_rclickTabName)) _rclickTabName = _statuses.GetTabByType(MyCommon.TabUsageType.Home).TabName;
 
-            using (var fltDialog = new FilterDialogView())
+            using (var fltDialog = new FilterDialogView(this))
             {
-                fltDialog.Owner = this;
                 fltDialog.SetCurrent(_rclickTabName);
                 fltDialog.ShowDialog(this);
             }
@@ -8326,10 +8325,8 @@ namespace OpenTween
 
         private void TabMenuItem_Click(object sender, EventArgs e)
         {
-            using (var fltDialog = new FilterDialogView())
+            using (var fltDialog = new FilterDialogView(this))
             {
-                fltDialog.Owner = this;
-
                 //選択発言を元にフィルタ追加
                 foreach (int idx in _curList.SelectedIndices)
                 {
