@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,12 @@ namespace OpenTween.Models
         public TabInformations TabInfo
             => TabInformations.GetInstance();
 
-        public TabModel SelectedTab { get; private set; }
+        public BindingList<TabModel> Tabs => this.tabs;
+
+        public TabModel SelectedTab
+            => this.SelectedTabIndex != -1 ? this.tabs[this.SelectedTabIndex] : null;
+
+        public int SelectedTabIndex { get; private set; }
         public PostFilterRule[] SelectedFilters { get; private set; }
         public PostFilterRule EditingFilter { get; private set; }
         public EDITMODE FilterEditMode { get; private set; }
@@ -53,18 +59,30 @@ namespace OpenTween.Models
         public event EventHandler ExcludeRuleComplexChanged;
         public event EventHandler FilterEnabledButtonStateChanged;
 
-        public void SetSelectedTabName(string selectedTabName)
-        {
-            if (selectedTabName == null)
-            {
-                this.SelectedTab = null;
-            }
-            else
-            {
-                var tab = this.TabInfo.GetTabByName(selectedTabName) ?? throw new ArgumentException();
-                this.SelectedTab = tab;
-            }
+        private BindingList<TabModel> tabs;
 
+        public FilterDialog()
+        {
+            this.InitializeTabs();
+        }
+
+        private void InitializeTabs()
+        {
+            var tabs = this.TabInfo.Tabs.Values
+                .Where(x => x.TabType != MyCommon.TabUsageType.Mute)
+                .ToList();
+
+            // ミュートタブは末尾に追加する
+            var muteTab = this.TabInfo.GetTabByType(MyCommon.TabUsageType.Mute);
+            if (muteTab != null)
+                tabs.Add(muteTab);
+
+            this.tabs = new BindingList<TabModel>(tabs);
+        }
+
+        public void SetSelectedTabIndex(int selectedTabIndex)
+        {
+            this.SelectedTabIndex = selectedTabIndex;
             this.SelectedTabChanged?.Invoke(this, EventArgs.Empty);
         }
 

@@ -64,6 +64,9 @@ namespace OpenTween.Presenter
 
             InitializeComponent();
 
+            this.ListTabs.DataSource = this.model.Tabs;
+            this.ListTabs.DisplayMember = nameof(TabModel.TabName);
+
             this.model.SelectedTabChanged += this.SelectedTabChanged;
             this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
             this.model.EditingFilterChanged += this.EditingFilterChanged;
@@ -72,7 +75,7 @@ namespace OpenTween.Presenter
             this.model.ExcludeRuleComplexChanged += this.ExcludeRuleComplexChanged;
             this.model.FilterEnabledButtonStateChanged += this.FilterEnabledButtonStateChanged;
 
-            this.ListTabs.OnSelectedIndexChanged(_ => this.model.SetSelectedTabName(this.ListTabs.SelectedItem?.ToString()));
+            this.ListTabs.OnSelectedIndexChanged(x => this.model.SetSelectedTabIndex(x));
             this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
             this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
             this.RadioExAnd.OnCheckedChanged(x => this.model.SetExcludeRuleComplex(x));
@@ -744,19 +747,6 @@ namespace OpenTween.Presenter
 
         private void FilterDialog_Shown(object sender, EventArgs e)
         {
-            ListTabs.Items.Clear();
-            foreach (var tab in this.model.TabInfo.Tabs.Values)
-            {
-                if (tab.TabType == MyCommon.TabUsageType.Mute)
-                    continue;
-
-                this.ListTabs.Items.Add(tab.TabName);
-            }
-
-            var muteTab = this.model.TabInfo.GetTabByType(MyCommon.TabUsageType.Mute);
-            if (muteTab != null)
-                this.ListTabs.Items.Add(muteTab.TabName);
-
             ComboSound.Items.Clear();
             ComboSound.Items.Add("");
             DirectoryInfo oDir = new DirectoryInfo(Application.StartupPath + Path.DirectorySeparatorChar);
