@@ -867,31 +867,7 @@ namespace OpenTween.Presenter
         }
 
         private void ButtonUp_Click(object sender, EventArgs e)
-        {
-            var selectedTab = this.model.SelectedTab;
-            if (selectedTab == null)
-                return;
-
-            if (this.ListTabs.SelectedIndex == 0)
-                return;
-
-            var selectedTabName = selectedTab.TabName;
-
-            var targetTabName = (string)this.ListTabs.Items[this.ListTabs.SelectedIndex - 1];
-            var targetTab = this.model.TabInfo.Tabs[targetTabName];
-
-            // ミュートタブは移動禁止
-            if (selectedTab.TabType == MyCommon.TabUsageType.Mute || targetTab.TabType == MyCommon.TabUsageType.Mute)
-                return;
-
-            this.tweenMain.ReOrderTab(selectedTabName, targetTabName, true);
-
-            // ListTab のアイテム並び替え
-            // 選択が解除されてしまうのを防ぐため SelectedIndex のアイテムは操作せず前後のアイテムを移動する
-            var idx = this.ListTabs.SelectedIndex;
-            this.ListTabs.Items.RemoveAt(idx - 1);
-            this.ListTabs.Items.Insert(idx, targetTabName);
-        }
+            => this.model.ActionMoveUpSelectedTab(this.tweenMain);
 
         private void ButtonDown_Click(object sender, EventArgs e)
         {

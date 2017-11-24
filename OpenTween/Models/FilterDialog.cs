@@ -212,6 +212,36 @@ namespace OpenTween.Models
             this.tabs.ResetItem(index);
         }
 
+        public void ActionMoveUpSelectedTab(TweenMain tweenMain)
+        {
+            var selectedTab = this.SelectedTab;
+            if (selectedTab == null)
+                return;
+
+            // 先頭のタブは上に移動できない
+            var selectedIndex = this.SelectedTabIndex;
+            if (selectedIndex == 0)
+                return;
+
+            var selectedTabName = selectedTab.TabName;
+
+            var targetTab = this.tabs[selectedIndex - 1];
+            var targetTabName = targetTab.TabName;
+
+            // ミュートタブは移動禁止
+            if (selectedTab.TabType == MyCommon.TabUsageType.Mute || targetTab.TabType == MyCommon.TabUsageType.Mute)
+                return;
+
+            tweenMain.ReOrderTab(selectedTab.TabName, targetTab.TabName, true);
+
+            // アイテム並び替え
+            this.tabs.RemoveAt(selectedIndex - 1);
+            this.tabs.Insert(selectedIndex, targetTab);
+
+            // 移動前と同じタブが選択された状態にする
+            this.SetSelectedTabIndex(selectedIndex - 1);
+        }
+
         public enum EDITMODE
         {
             AddNew,
