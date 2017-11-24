@@ -853,21 +853,7 @@ namespace OpenTween.Presenter
             => this.model.ActionRemoveSelectedTab(this.tweenMain);
 
         private void ButtonRenameTab_Click(object sender, EventArgs e)
-        {
-            var tab = this.model.SelectedTab;
-            if (tab != null)
-            {
-                int idx = ListTabs.SelectedIndex;
-
-                var origTabName = tab.TabName;
-                if (this.tweenMain.TabRename(origTabName, out var newTabName))
-                {
-                    ListTabs.Items.RemoveAt(idx);
-                    ListTabs.Items.Insert(idx, newTabName);
-                    ListTabs.SelectedIndex = idx;
-                }
-            }
-        }
+            => this.model.ActionRenameSelectedTab(this.tweenMain);
 
         private void CheckManageRead_CheckedChanged(object sender, EventArgs e)
         {

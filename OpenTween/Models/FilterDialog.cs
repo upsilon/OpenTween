@@ -195,6 +195,23 @@ namespace OpenTween.Models
             this.SetSelectedTabIndex(Math.Max(0, index - 1));
         }
 
+        public void ActionRenameSelectedTab(TweenMain tweenMain)
+        {
+            var tab = this.SelectedTab;
+            if (tab == null)
+                return;
+
+            var origTabName = tab.TabName;
+
+            if (!tweenMain.TabRename(origTabName, out var newTabName))
+                return;
+
+            tab.TabName = newTabName;
+
+            var index = this.SelectedTabIndex;
+            this.tabs.ResetItem(index);
+        }
+
         public enum EDITMODE
         {
             AddNew,
