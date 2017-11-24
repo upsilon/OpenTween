@@ -41,7 +41,16 @@ namespace OpenTween.Presenter
     /// </remarks>
     public static class ControlEventExtension
     {
-        public static void OnSelectedIndexChanged(this ListBox listbox, Action<IEnumerable<int>> callback)
+        public static void OnSelectedIndexChanged(this ListBox listbox, Action<int> callback)
+        {
+            void handler(object sender, EventArgs e)
+                => callback(listbox.SelectedIndex);
+
+            listbox.SelectedIndexChanged += handler;
+            handler(listbox, EventArgs.Empty);
+        }
+
+        public static void OnSelectedIndicesChanged(this ListBox listbox, Action<IEnumerable<int>> callback)
         {
             void handler(object sender, EventArgs e)
                 => callback(listbox.SelectedIndices.Cast<int>());

@@ -73,7 +73,7 @@ namespace OpenTween.Presenter
             this.model.FilterEnabledButtonStateChanged += this.FilterEnabledButtonStateChanged;
 
             this.ListTabs.OnSelectedIndexChanged(_ => this.model.SetSelectedTabName(this.ListTabs.SelectedItem?.ToString()));
-            this.ListFilters.OnSelectedIndexChanged(x => this.model.SetSelectedFiltersIndex(x));
+            this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
             this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
             this.RadioExAnd.OnCheckedChanged(x => this.model.SetExcludeRuleComplex(x));
 
