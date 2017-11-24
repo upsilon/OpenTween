@@ -75,6 +75,8 @@ namespace OpenTween.Presenter
             this.model.ExcludeRuleComplexChanged += this.ExcludeRuleComplexChanged;
             this.model.FilterEnabledButtonStateChanged += this.FilterEnabledButtonStateChanged;
 
+            this.model.AddNewTabFailed += this.AddNewTabFailed;
+
             this.ListTabs.OnSelectedIndexChanged(x => this.model.SetSelectedTabIndex(x));
             this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
             this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
@@ -832,45 +834,17 @@ namespace OpenTween.Presenter
                     }
                 }
 
-                TabModel tab;
-                switch (tabType)
-                {
-                    case MyCommon.TabUsageType.UserDefined:
-                        tab = new FilterTabModel(tabName);
-                        break;
-                    case MyCommon.TabUsageType.PublicSearch:
-                        tab = new PublicSearchTabModel(tabName);
-                        break;
-                    case MyCommon.TabUsageType.Lists:
-                        tab = new ListTimelineTabModel(tabName, list);
-                        break;
-                    default:
-                        return;
-                }
+                this.model.ActionAddNewTab(tabName, tabType, list);
 
-                if (!this.model.TabInfo.AddTab(tab) || !this.tweenMain.AddNewTab(tab, startup: false))
-                {
-                    string tmp = string.Format(Properties.Resources.AddTabMenuItem_ClickText1, tabName);
-                    MessageBox.Show(tmp, Properties.Resources.AddTabMenuItem_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                }
-                else
-                {
-                    // タブ作成成功
-
-                    // 末尾のタブを取得する
-                    var lastIdx = this.ListTabs.Items.Count - 1;
-                    var lastTab = lastIdx != -1
-                        ? this.model.TabInfo.Tabs[(string)this.ListTabs.Items[lastIdx]]
-                        : null;
-
-                    // 末尾がミュートタブであればその手前に追加する
-                    if (lastTab != null && lastTab.TabType == MyCommon.TabUsageType.Mute)
-                        this.ListTabs.Items.Insert(lastIdx, tabName);
-                    else
-                        this.ListTabs.Items.Add(tabName);
-                }
+                var tab = this.model.TabInfo.Tabs[tabName];
+                this.tweenMain.AddNewTab(tab, startup: false);
             }
+        }
+
+        private void AddNewTabFailed(object sender, FilterDialog.AddNewTabFailedEventArgs e)
+        {
+            var message = string.Format(Properties.Resources.AddTabMenuItem_ClickText1, e.TabName);
+            MessageBox.Show(message, Properties.Resources.AddTabMenuItem_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
         private void ButtonDeleteTab_Click(object sender, EventArgs e)

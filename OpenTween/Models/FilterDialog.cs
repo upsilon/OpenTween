@@ -59,6 +59,8 @@ namespace OpenTween.Models
         public event EventHandler ExcludeRuleComplexChanged;
         public event EventHandler FilterEnabledButtonStateChanged;
 
+        public event EventHandler<AddNewTabFailedEventArgs> AddNewTabFailed;
+
         private BindingList<TabModel> tabs;
 
         public FilterDialog()
@@ -142,6 +144,39 @@ namespace OpenTween.Models
             this.FilterEnabledButtonStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        public void ActionAddNewTab(string tabName, MyCommon.TabUsageType tabType, ListElement list = null)
+        {
+            TabModel tab;
+            switch (tabType)
+            {
+                case MyCommon.TabUsageType.UserDefined:
+                    tab = new FilterTabModel(tabName);
+                    break;
+                case MyCommon.TabUsageType.PublicSearch:
+                    tab = new PublicSearchTabModel(tabName);
+                    break;
+                case MyCommon.TabUsageType.Lists:
+                    tab = new ListTimelineTabModel(tabName, list);
+                    break;
+                default:
+                    throw new InvalidEnumArgumentException(nameof(tabType), (int)tabType, typeof(MyCommon.TabUsageType));
+            }
+
+            if (!this.TabInfo.AddTab(tab))
+            {
+                this.AddNewTabFailed?.Invoke(this, new AddNewTabFailedEventArgs(tabName));
+                return;
+            }
+
+            var lastTab = this.tabs.LastOrDefault();
+
+            // 末尾がミュートタブであればその手前に追加する
+            if (lastTab != null && lastTab.TabType == MyCommon.TabUsageType.Mute)
+                this.tabs.Insert(this.tabs.Count - 1, tab);
+            else
+                this.tabs.Add(tab);
+        }
+
         public enum EDITMODE
         {
             AddNew,
@@ -154,6 +189,14 @@ namespace OpenTween.Models
             NotSelected,
             Enable,
             Disable,
+        }
+
+        public class AddNewTabFailedEventArgs : EventArgs
+        {
+            public string TabName { get; }
+
+            public AddNewTabFailedEventArgs(string tabName)
+                => this.TabName = tabName;
         }
     }
 }
