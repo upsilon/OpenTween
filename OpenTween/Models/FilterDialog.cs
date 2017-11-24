@@ -269,6 +269,12 @@ namespace OpenTween.Models
             this.SetSelectedTabIndex(selectedIndex + 1);
         }
 
+        public void ActionNewFilter()
+        {
+            this.SetEditingFilter(new PostFilterRule());
+            this.SetFilterEditMode(EDITMODE.AddNew);
+        }
+
         public enum EDITMODE
         {
             AddNew,

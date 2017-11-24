@@ -395,10 +395,7 @@ namespace OpenTween.Presenter
         }
 
         private void ButtonNew_Click(object sender, EventArgs e)
-        {
-            this.model.SetEditingFilter(new PostFilterRule());
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.AddNew);
-        }
+            => this.model.ActionNewFilter();
 
         private void ButtonEdit_Click(object sender, EventArgs e)
         {
