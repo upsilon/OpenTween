@@ -443,13 +443,10 @@ namespace OpenTween.Presenter
 
         private void ButtonCancel_Click(object sender, EventArgs e)
         {
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
+            this.model.ActionEditFilterCancel();
 
-            ListFilters.Focus();
-            if (ListFilters.SelectedIndex != -1)
-            {
-                this.model.RestoreEditingFilter();
-            }
+            this.ListFilters.Focus();
+
             if (_directAdd)
             {
                 this.Close();
