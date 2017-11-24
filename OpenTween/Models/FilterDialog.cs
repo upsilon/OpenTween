@@ -168,13 +168,16 @@ namespace OpenTween.Models
                 return;
             }
 
-            var lastTab = this.tabs.LastOrDefault();
+            var insertIndex = this.tabs.Count;
 
             // 末尾がミュートタブであればその手前に追加する
+            var lastTab = this.tabs.LastOrDefault();
             if (lastTab != null && lastTab.TabType == MyCommon.TabUsageType.Mute)
-                this.tabs.Insert(this.tabs.Count - 1, tab);
-            else
-                this.tabs.Add(tab);
+                insertIndex--;
+
+            this.tabs.Insert(insertIndex, tab);
+
+            this.SetSelectedTabIndex(insertIndex);
         }
 
         public enum EDITMODE

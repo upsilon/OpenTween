@@ -94,6 +94,8 @@ namespace OpenTween.Presenter
                 return;
             }
 
+            this.ListTabs.SelectedIndex = this.model.SelectedTabIndex;
+
             this.UpdateTabSettings();
             this.UpdateTabFilters();
         }
