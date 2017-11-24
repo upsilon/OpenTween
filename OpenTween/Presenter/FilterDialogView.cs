@@ -850,20 +850,7 @@ namespace OpenTween.Presenter
         }
 
         private void ButtonDeleteTab_Click(object sender, EventArgs e)
-        {
-            var tab = this.model.SelectedTab;
-            if (tab != null)
-            {
-                int idx = ListTabs.SelectedIndex;
-                if (this.tweenMain.RemoveSpecifiedTab(tab.TabName, true))
-                {
-                    ListTabs.Items.RemoveAt(idx);
-                    idx -= 1;
-                    if (idx < 0) idx = 0;
-                    ListTabs.SelectedIndex = idx;
-                }
-            }
-        }
+            => this.model.ActionRemoveSelectedTab(this.tweenMain);
 
         private void ButtonRenameTab_Click(object sender, EventArgs e)
         {

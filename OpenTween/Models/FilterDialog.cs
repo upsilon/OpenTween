@@ -180,6 +180,21 @@ namespace OpenTween.Models
             this.SetSelectedTabIndex(insertIndex);
         }
 
+        public void ActionRemoveSelectedTab(TweenMain tweenMain)
+        {
+            var tab = this.SelectedTab;
+            if (tab == null)
+                return;
+
+            if (!tweenMain.RemoveSpecifiedTab(tab.TabName, true))
+                return;
+
+            var index = this.SelectedTabIndex;
+            this.tabs.RemoveAt(index);
+
+            this.SetSelectedTabIndex(Math.Max(0, index - 1));
+        }
+
         public enum EDITMODE
         {
             AddNew,
