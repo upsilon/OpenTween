@@ -407,15 +407,7 @@ namespace OpenTween.Presenter
             => this.model.ActionNewFilter();
 
         private void ButtonEdit_Click(object sender, EventArgs e)
-        {
-            if (ListFilters.SelectedIndex == -1) return;
-
-            int idx = ListFilters.SelectedIndex;
-            ListFilters.SelectedIndex = -1;
-            ListFilters.SelectedIndex = idx;
-
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.Edit);
-        }
+            => this.model.ActionEditSelectedFilter();
 
         private void ButtonDelete_Click(object sender, EventArgs e)
         {

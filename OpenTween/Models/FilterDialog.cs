@@ -286,6 +286,20 @@ namespace OpenTween.Models
             this.SetFilterEditMode(EDITMODE.AddNew);
         }
 
+        public void ActionEditSelectedFilter()
+        {
+            // 複数のフィルタが選択されている場合は先頭の1つのみ選択する
+            if (this.SelectedFilterIndices.Length > 1)
+                this.SetSelectedFiltersIndex(new[] { this.SelectedFilterIndices[0] });
+
+            var filter = this.SelectedFilters.SingleOrDefault();
+            if (filter == null)
+                return;
+
+            this.SetEditingFilter(filter);
+            this.SetFilterEditMode(FilterDialog.EDITMODE.Edit);
+        }
+
         public enum EDITMODE
         {
             AddNew,
