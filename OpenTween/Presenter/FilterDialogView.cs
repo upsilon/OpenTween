@@ -118,12 +118,15 @@ namespace OpenTween.Presenter
         private void SelectedFiltersChanged(object sender, EventArgs e)
         {
             var listboxSelection = this.ListFilters.SelectedIndices;
-            if (!listboxSelection.Cast<int>().SequenceEqual(this.model.SelectedFilterIndices))
+            var newSelection = this.model.SelectedFilterIndices.ToArray();
+            if (!listboxSelection.Cast<int>().SequenceEqual(newSelection))
             {
                 listboxSelection.Clear();
-                foreach (var index in this.model.SelectedFilterIndices)
+                foreach (var index in newSelection)
                     listboxSelection.Add(index);
             }
+
+            this.UpdateTabFilters();
         }
 
         private void EditingFilterChanged(object sender, EventArgs e)
@@ -347,7 +350,7 @@ namespace OpenTween.Presenter
             if (tab.IsDistributableTabType)
             {
                 ButtonNew.Enabled = true;
-                if (ListFilters.SelectedIndex > -1)
+                if (this.model.SelectedFilterIndices.Length > 0)
                 {
                     ButtonEdit.Enabled = true;
                     ButtonDelete.Enabled = true;
