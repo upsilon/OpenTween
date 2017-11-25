@@ -469,7 +469,7 @@ namespace OpenTween.Presenter
             var tab = (FilterTabModel)this.model.SelectedTab;
             int i = ListFilters.SelectedIndex;
 
-            var ft= this.model.EditingFilter;
+            var ft = this.model.EditingFilter;
 
             if (tab.TabType != MyCommon.TabUsageType.Mute)
             {
