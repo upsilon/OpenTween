@@ -276,12 +276,18 @@ namespace OpenTween.Presenter
                 this.CheckManageRead.Enabled = false;
                 this.CheckNotifyNew.Enabled = false;
                 this.ComboSound.Enabled = false;
+
+                this.GroupBox1.Visible = false;
+                this.labelMuteTab.Visible = true;
             }
             else
             {
                 this.CheckManageRead.Enabled = true;
                 this.CheckNotifyNew.Enabled = true;
                 this.ComboSound.Enabled = true;
+
+                this.GroupBox1.Visible = true;
+                this.labelMuteTab.Visible = false;
             }
 
             switch (tab.TabType)
@@ -337,17 +343,6 @@ namespace OpenTween.Presenter
         private void UpdateTabFilters()
         {
             var tab = this.model.SelectedTab;
-
-            if (tab.TabType == MyCommon.TabUsageType.Mute)
-            {
-                this.GroupBox1.Visible = false;
-                this.labelMuteTab.Visible = true;
-            }
-            else
-            {
-                this.GroupBox1.Visible = true;
-                this.labelMuteTab.Visible = false;
-            }
 
             if (tab.IsDistributableTabType)
             {
