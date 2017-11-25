@@ -80,6 +80,7 @@ namespace OpenTween.Presenter
             }
 
             this.model.SelectedTabChanged += this.SelectedTabChanged;
+            this.model.FiltersChanged += this.FiltersChanged;
             this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
             this.model.EditingFilterChanged += this.EditingFilterChanged;
             this.model.FilterEditModeChanged += this.FilterEditModeChanged;
@@ -99,21 +100,30 @@ namespace OpenTween.Presenter
 
         private void SelectedTabChanged(object sender, EventArgs e)
         {
-            var tab = this.model.SelectedTab;
-            if (tab == null)
-            {
-                this.ListFilters.Items.Clear();
-                return;
-            }
-
             this.ListTabs.SelectedIndex = this.model.SelectedTabIndex;
+
+            if (this.model.SelectedTabIndex == -1)
+                return;
 
             this.UpdateTabSettings();
             this.UpdateTabFilters();
         }
 
+        private void FiltersChanged(object sender, EventArgs e)
+        {
+            this.ListFilters.DataSource = this.model.Filters;
+            this.ListFilters.DisplayMember = nameof(PostFilterRule.SummaryText);
+        }
+
         private void SelectedFiltersChanged(object sender, EventArgs e)
         {
+            var listboxSelection = this.ListFilters.SelectedIndices;
+            if (!listboxSelection.Cast<int>().SequenceEqual(this.model.SelectedFilterIndices))
+            {
+                listboxSelection.Clear();
+                foreach (var index in this.model.SelectedFilterIndices)
+                    listboxSelection.Add(index);
+            }
         }
 
         private void EditingFilterChanged(object sender, EventArgs e)
@@ -327,17 +337,6 @@ namespace OpenTween.Presenter
         private void UpdateTabFilters()
         {
             var tab = this.model.SelectedTab;
-
-            PostFilterRule[] filters;
-            if (tab is FilterTabModel filterTab)
-                filters = filterTab.GetFilters();
-            else
-                filters = new PostFilterRule[0];
-
-            ListFilters.Items.Clear();
-            ListFilters.Items.AddRange(filters);
-
-            ListFilters.SelectedIndex = filters.Length > 0 ? 0 : -1;
 
             if (tab.TabType == MyCommon.TabUsageType.Mute)
             {

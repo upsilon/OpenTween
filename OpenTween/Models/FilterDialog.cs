@@ -39,12 +39,16 @@ namespace OpenTween.Models
             => TabInformations.GetInstance();
 
         public BindingList<TabModel> Tabs => this.tabs;
+        public BindingList<PostFilterRule> Filters => this.filters;
 
         public TabModel SelectedTab
             => this.SelectedTabIndex != -1 ? this.tabs[this.SelectedTabIndex] : null;
 
+        public IEnumerable<PostFilterRule> SelectedFilters
+            => this.SelectedFilterIndices.Select(x => this.filters[x]);
+
         public int SelectedTabIndex { get; private set; }
-        public PostFilterRule[] SelectedFilters { get; private set; }
+        public int[] SelectedFilterIndices { get; private set; } = new int[0];
         public PostFilterRule EditingFilter { get; private set; }
         public EDITMODE FilterEditMode { get; private set; }
         public bool MatchRuleComplex { get; private set; }
@@ -52,6 +56,7 @@ namespace OpenTween.Models
         public EnabledButtonState FilterEnabledButtonState { get; private set; }
 
         public event EventHandler SelectedTabChanged;
+        public event EventHandler FiltersChanged;
         public event EventHandler SelectedFiltersChanged;
         public event EventHandler EditingFilterChanged;
         public event EventHandler FilterEditModeChanged;
@@ -62,6 +67,7 @@ namespace OpenTween.Models
         public event EventHandler<AddNewTabFailedEventArgs> AddNewTabFailed;
 
         private BindingList<TabModel> tabs;
+        private BindingList<PostFilterRule> filters;
 
         public FilterDialog()
         {
@@ -86,20 +92,25 @@ namespace OpenTween.Models
         {
             this.SelectedTabIndex = selectedTabIndex;
             this.SelectedTabChanged?.Invoke(this, EventArgs.Empty);
+
+            var tab = this.SelectedTab;
+
+            PostFilterRule[] filters;
+            if (tab is FilterTabModel filterTab)
+                filters = filterTab.GetFilters();
+            else
+                filters = new PostFilterRule[0];
+
+            this.filters = new BindingList<PostFilterRule>(filters);
+            this.FiltersChanged?.Invoke(this, EventArgs.Empty);
+
+            var selectedIndices = this.filters.Count != 0 ? new[] { 0 } : new int[0];
+            this.SetSelectedFiltersIndex(selectedIndices);
         }
 
         public void SetSelectedFiltersIndex(IEnumerable<int> selectedIndexes)
         {
-            if (this.SelectedTab is FilterTabModel filterTab)
-            {
-                var filters = filterTab.FilterArray;
-                this.SelectedFilters = selectedIndexes.Select(x => filters[x]).ToArray();
-            }
-            else
-            {
-                this.SelectedFilters = new PostFilterRule[0];
-            }
-
+            this.SelectedFilterIndices = selectedIndexes.ToArray();
             this.SelectedFiltersChanged?.Invoke(this, EventArgs.Empty);
 
             var firstFilter = this.SelectedFilters.FirstOrDefault();
