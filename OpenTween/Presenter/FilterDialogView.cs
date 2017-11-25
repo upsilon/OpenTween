@@ -67,6 +67,18 @@ namespace OpenTween.Presenter
             this.ListTabs.DataSource = this.model.Tabs;
             this.ListTabs.DisplayMember = nameof(TabModel.TabName);
 
+            ComboSound.Items.Clear();
+            ComboSound.Items.Add("");
+            DirectoryInfo oDir = new DirectoryInfo(Application.StartupPath + Path.DirectorySeparatorChar);
+            if (Directory.Exists(Path.Combine(Application.StartupPath, "Sounds")))
+            {
+                oDir = oDir.GetDirectories("Sounds")[0];
+            }
+            foreach (FileInfo oFile in oDir.GetFiles("*.wav"))
+            {
+                ComboSound.Items.Add(oFile.Name);
+            }
+
             this.model.SelectedTabChanged += this.SelectedTabChanged;
             this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
             this.model.EditingFilterChanged += this.EditingFilterChanged;
@@ -748,18 +760,6 @@ namespace OpenTween.Presenter
 
         private void FilterDialog_Shown(object sender, EventArgs e)
         {
-            ComboSound.Items.Clear();
-            ComboSound.Items.Add("");
-            DirectoryInfo oDir = new DirectoryInfo(Application.StartupPath + Path.DirectorySeparatorChar);
-            if (Directory.Exists(Path.Combine(Application.StartupPath, "Sounds")))
-            {
-                oDir = oDir.GetDirectories("Sounds")[0];
-            }
-            foreach (FileInfo oFile in oDir.GetFiles("*.wav"))
-            {
-                ComboSound.Items.Add(oFile.Name);
-            }
-
             idlist.Clear();
             foreach (string tmp in this.tweenMain.AtIdSupl.GetItemList())
             {
