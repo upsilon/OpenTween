@@ -300,7 +300,7 @@ namespace OpenTween.Models
 
         public void ActionEditFilterCancel()
         {
-            this.SetFilterEditMode(FilterDialog.EDITMODE.None);
+            this.SetFilterEditMode(EDITMODE.None);
             this.RestoreEditingFilter();
         }
 
