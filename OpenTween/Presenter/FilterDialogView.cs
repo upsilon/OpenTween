@@ -740,26 +740,7 @@ namespace OpenTween.Presenter
             => this.model.ActionMoveDownSelectedFilters();
 
         private void buttonRuleToggleEnabled_Click(object sender, EventArgs e)
-        {
-            if (this.model.FilterEnabledButtonState == FilterDialog.EnabledButtonState.NotSelected)
-                return;
-
-            var enabled = this.model.FilterEnabledButtonState == FilterDialog.EnabledButtonState.Enable;
-
-            foreach (var idx in this.ListFilters.SelectedIndices.Cast<int>())
-            {
-                var filter = (PostFilterRule)this.ListFilters.Items[idx];
-                if (filter.Enabled != enabled)
-                {
-                    filter.Enabled = enabled;
-
-                    var itemRect = this.ListFilters.GetItemRectangle(idx);
-                    this.ListFilters.Invalidate(itemRect);
-                }
-            }
-
-            this.model.SetFilterEnabledButtonState(enabled ? FilterDialog.EnabledButtonState.Disable : FilterDialog.EnabledButtonState.Enable);
-        }
+            => this.model.ActionToggleEnabledSelectedFilters();
 
         private void ButtonRuleCopy_Click(object sender, EventArgs e)
         {

@@ -443,6 +443,21 @@ namespace OpenTween.Models
             this.SetSelectedFiltersIndex(indices.Select(x => x + diffIndex));
         }
 
+        public void ActionToggleEnabledSelectedFilters()
+        {
+            if (this.FilterEnabledButtonState == EnabledButtonState.NotSelected)
+                return;
+
+            var indices = this.SelectedFilterIndices;
+            var enabled = this.FilterEnabledButtonState == EnabledButtonState.Enable;
+
+            foreach (var index in indices)
+                this.filters[index].Enabled = enabled;
+
+            this.SetSelectedFiltersIndex(indices);
+            this.SetFilterEnabledButtonState(enabled ? EnabledButtonState.Disable : EnabledButtonState.Enable);
+        }
+
         public bool IsFilterBlank(PostFilterRule filter)
         {
             if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))
