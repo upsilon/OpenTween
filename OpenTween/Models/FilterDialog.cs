@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OpenTween.Models
@@ -65,6 +66,8 @@ namespace OpenTween.Models
         public event EventHandler FilterEnabledButtonStateChanged;
 
         public event EventHandler<AddNewTabFailedEventArgs> AddNewTabFailed;
+        public event EventHandler<FilterEditErrorEventArgs> FilterEditError;
+        public event EventHandler FilterEditSuccessed;
 
         private BindingList<TabModel> tabs;
         private BindingList<PostFilterRule> filters;
@@ -304,6 +307,182 @@ namespace OpenTween.Models
             this.RestoreEditingFilter();
         }
 
+        public void ActionEditFilterComplete(TweenMain tweenMain)
+        {
+            var filter = this.EditingFilter;
+
+            //入力チェック
+            if (this.IsFilterBlank(filter))
+            {
+                this.FilterEditError?.Invoke(this, new FilterEditErrorEventArgs(FilterEditErrorType.BlankRule));
+                return;
+            }
+
+            if (!this.IsFilterRegexValid(filter, out var regexError))
+            {
+                this.FilterEditError?.Invoke(this, new FilterEditErrorEventArgs(FilterEditErrorType.InvalidRegex, regexError));
+                return;
+            }
+
+            if (!this.IsFilterLambdaExpValid(filter, out var lambdaExpError))
+            {
+                this.FilterEditError?.Invoke(this, new FilterEditErrorEventArgs(FilterEditErrorType.InvalidLambdaExp, lambdaExpError));
+                return;
+            }
+
+            if (this.MatchRuleComplex)
+            {
+                int cnt = tweenMain.AtIdSupl.ItemCount;
+                tweenMain.AtIdSupl.AddItem("@" + filter.FilterName);
+                if (cnt != tweenMain.AtIdSupl.ItemCount)
+                {
+                    tweenMain.ModifySettingAtId = true;
+                }
+            }
+
+            var tab = (FilterTabModel)this.SelectedTab;
+            int newSelectedIndex;
+
+            if (this.FilterEditMode == EDITMODE.AddNew)
+            {
+                if (!tab.AddFilter(filter))
+                {
+                    this.FilterEditError?.Invoke(this, new FilterEditErrorEventArgs(FilterEditErrorType.Duplicated));
+                    return;
+                }
+
+                this.filters.Add(filter);
+                newSelectedIndex = this.filters.Count - 1;
+            }
+            else
+            {
+                var selectedIndex = this.SelectedFilterIndices.Single();
+                var tabFilter = tab.GetFilters()[selectedIndex];
+
+                tabFilter.FilterName = filter.FilterName;
+                tabFilter.FilterBody = filter.FilterBody;
+                tabFilter.FilterSource = filter.FilterSource;
+                tabFilter.UseNameField = filter.UseNameField;
+                tabFilter.UseRegex = filter.UseRegex;
+                tabFilter.UseLambda = filter.UseLambda;
+
+                tabFilter.ExFilterName = filter.ExFilterName;
+                tabFilter.ExFilterBody = filter.ExFilterBody;
+                tabFilter.ExFilterSource = filter.ExFilterSource;
+                tabFilter.ExUseNameField = filter.ExUseNameField;
+                tabFilter.ExUseRegex = filter.ExUseRegex;
+                tabFilter.ExUseLambda = filter.ExUseLambda;
+
+                this.filters[selectedIndex] = tabFilter;
+                newSelectedIndex = selectedIndex;
+            }
+
+            this.SetSelectedFiltersIndex(new[] { newSelectedIndex });
+            this.SetFilterEditMode(EDITMODE.None);
+
+            this.FilterEditSuccessed?.Invoke(this, EventArgs.Empty);
+        }
+
+        public bool IsFilterBlank(PostFilterRule filter)
+        {
+            if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))
+                return false;
+
+            if (filter.FilterBody.Any(x => !string.IsNullOrEmpty(x)))
+                return false;
+
+            if (!string.IsNullOrEmpty(filter.FilterSource))
+                return false;
+
+            if (filter.FilterRt)
+                return false;
+
+            if (filter.ExUseNameField && !string.IsNullOrEmpty(filter.ExFilterName))
+                return false;
+
+            if (filter.ExFilterBody.Any(x => !string.IsNullOrEmpty(x)))
+                return false;
+
+            if (!string.IsNullOrEmpty(filter.ExFilterSource))
+                return false;
+
+            if (filter.ExFilterRt)
+                return false;
+
+            return true;
+        }
+
+        public bool IsFilterRegexValid(PostFilterRule filter, out string errorMessage)
+        {
+            if (filter.UseRegex)
+            {
+                if (filter.UseNameField)
+                {
+                    if (!this.IsRegexValid(filter.FilterName, out errorMessage))
+                        return false;
+                }
+
+                foreach (var bodyItem in filter.FilterBody)
+                {
+                    if (!this.IsRegexValid(bodyItem, out errorMessage))
+                        return false;
+                }
+
+                if (!this.IsRegexValid(filter.FilterSource, out errorMessage))
+                    return false;
+            }
+
+            if (filter.ExUseRegex)
+            {
+                if (filter.ExUseNameField)
+                {
+                    if (!this.IsRegexValid(filter.ExFilterName, out errorMessage))
+                        return false;
+                }
+
+                foreach (var bodyItem in filter.ExFilterBody)
+                {
+                    if (!this.IsRegexValid(bodyItem, out errorMessage))
+                        return false;
+                }
+
+                if (!this.IsRegexValid(filter.ExFilterSource, out errorMessage))
+                    return false;
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
+        private bool IsRegexValid(string text, out string errorMessage)
+        {
+            try
+            {
+                new Regex(text);
+
+                errorMessage = "";
+                return true;
+            }
+            catch (ArgumentException ex)
+            {
+                errorMessage = ex.Message;
+                return false;
+            }
+        }
+
+        public bool IsFilterLambdaExpValid(PostFilterRule filter, out string errorMessage)
+        {
+            if (filter.UseLambda || filter.ExUseLambda)
+            {
+                // TODO: DynamicQuery相当のGPLv3互換なライブラリで置換する
+                errorMessage = "ラムダ式は非対応のため使用できません";
+                return false;
+            }
+
+            errorMessage = "";
+            return true;
+        }
+
         public enum EDITMODE
         {
             AddNew,
@@ -318,12 +497,32 @@ namespace OpenTween.Models
             Disable,
         }
 
+        public enum FilterEditErrorType
+        {
+            InvalidRegex,
+            InvalidLambdaExp,
+            BlankRule,
+            Duplicated,
+        }
+
         public class AddNewTabFailedEventArgs : EventArgs
         {
             public string TabName { get; }
 
             public AddNewTabFailedEventArgs(string tabName)
                 => this.TabName = tabName;
+        }
+
+        public class FilterEditErrorEventArgs : EventArgs
+        {
+            public FilterEditErrorType ErrorType { get; }
+            public string Message { get; }
+
+            public FilterEditErrorEventArgs(FilterEditErrorType errorType)
+                => this.ErrorType = errorType;
+
+            public FilterEditErrorEventArgs(FilterEditErrorType errorType, string message)
+                => (this.ErrorType, this.Message) = (errorType, message);
         }
     }
 }

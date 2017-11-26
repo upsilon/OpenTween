@@ -89,6 +89,8 @@ namespace OpenTween.Presenter
             this.model.FilterEnabledButtonStateChanged += this.FilterEnabledButtonStateChanged;
 
             this.model.AddNewTabFailed += this.AddNewTabFailed;
+            this.model.FilterEditError += this.FilterEditError;
+            this.model.FilterEditSuccessed += this.FilterEditSuccessed;
 
             this.ListTabs.OnSelectedIndexChanged(x => this.model.SetSelectedTabIndex(x));
             this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
@@ -456,260 +458,117 @@ namespace OpenTween.Presenter
         private void ButtonOK_Click(object sender, EventArgs e)
         {
             //入力チェック
-            if (!CheckMatchRule(out var isBlankMatch) || !CheckExcludeRule(out var isBlankExclude))
-            {
-                return;
-            }
-            if (isBlankMatch && isBlankExclude)
-            {
-                MessageBox.Show(Properties.Resources.ButtonOK_ClickText1, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            var tab = (FilterTabModel)this.model.SelectedTab;
-            int i = ListFilters.SelectedIndex;
-
-            var ft = this.model.EditingFilter;
+            var tab = this.model.SelectedTab;
+            var filter = this.model.EditingFilter;
 
             if (tab.TabType != MyCommon.TabUsageType.Mute)
             {
-                ft.MoveMatches = OptMove.Checked;
-                ft.MarkMatches = CheckMark.Checked;
+                filter.MoveMatches = OptMove.Checked;
+                filter.MarkMatches = CheckMark.Checked;
             }
             else
             {
-                ft.MoveMatches = true;
-                ft.MarkMatches = false;
+                filter.MoveMatches = true;
+                filter.MarkMatches = false;
             }
 
-            string bdy = "";
+            string body;
             if (this.model.MatchRuleComplex)
             {
-                ft.FilterName = UID.Text;
-                int cnt = this.tweenMain.AtIdSupl.ItemCount;
-                this.tweenMain.AtIdSupl.AddItem("@" + ft.FilterName);
-                if (cnt != this.tweenMain.AtIdSupl.ItemCount)
-                {
-                    this.tweenMain.ModifySettingAtId = true;
-                }
-                ft.UseNameField = true;
-                bdy = MSG1.Text;
+                filter.UseNameField = true;
+                filter.FilterName = UID.Text;
+                body = MSG1.Text;
             }
             else
             {
-                ft.FilterName = "";
-                ft.UseNameField = false;
-                bdy = MSG2.Text;
+                filter.FilterName = "";
+                filter.UseNameField = false;
+                body = MSG2.Text;
             }
-            ft.FilterSource = TextSource.Text;
+            filter.FilterSource = TextSource.Text;
 
             if (CheckRegex.Checked || CheckLambda.Checked)
             {
-                ft.FilterBody = new[] { bdy };
+                filter.FilterBody = new[] { body };
             }
             else
             {
-                ft.FilterBody = bdy.Split(' ', '　')
+                filter.FilterBody = body.Split(' ', '　')
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
             }
 
-            ft.UseRegex = CheckRegex.Checked;
-            ft.FilterByUrl = CheckURL.Checked;
-            ft.CaseSensitive = CheckCaseSensitive.Checked;
-            ft.FilterRt = CheckRetweet.Checked;
-            ft.UseLambda = CheckLambda.Checked;
+            filter.UseRegex = CheckRegex.Checked;
+            filter.FilterByUrl = CheckURL.Checked;
+            filter.CaseSensitive = CheckCaseSensitive.Checked;
+            filter.FilterRt = CheckRetweet.Checked;
+            filter.UseLambda = CheckLambda.Checked;
 
-            bdy = "";
+            string exBody;
             if (this.model.ExcludeRuleComplex)
             {
-                ft.ExFilterName = ExUID.Text;
-                ft.ExUseNameField = true;
-                bdy = ExMSG1.Text;
+                filter.ExFilterName = ExUID.Text;
+                filter.ExUseNameField = true;
+                exBody = ExMSG1.Text;
             }
             else
             {
-                ft.ExFilterName = "";
-                ft.ExUseNameField = false;
-                bdy = ExMSG2.Text;
+                filter.ExFilterName = "";
+                filter.ExUseNameField = false;
+                exBody = ExMSG2.Text;
             }
-            ft.ExFilterSource = TextExSource.Text;
+            filter.ExFilterSource = TextExSource.Text;
 
             if (CheckExRegex.Checked || CheckExLambDa.Checked)
             {
-                ft.ExFilterBody = new[] { bdy };
+                filter.ExFilterBody = new[] { exBody };
             }
             else
             {
-                ft.ExFilterBody = bdy.Split(' ', '　')
+                filter.ExFilterBody = exBody.Split(' ', '　')
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToArray();
             }
 
-            ft.ExUseRegex = CheckExRegex.Checked;
-            ft.ExFilterByUrl = CheckExURL.Checked;
-            ft.ExCaseSensitive = CheckExCaseSensitive.Checked;
-            ft.ExFilterRt = CheckExRetweet.Checked;
-            ft.ExUseLambda = CheckExLambDa.Checked;
+            filter.ExUseRegex = CheckExRegex.Checked;
+            filter.ExFilterByUrl = CheckExURL.Checked;
+            filter.ExCaseSensitive = CheckExCaseSensitive.Checked;
+            filter.ExFilterRt = CheckExRetweet.Checked;
+            filter.ExUseLambda = CheckExLambDa.Checked;
 
-            if (this.model.FilterEditMode == FilterDialog.EDITMODE.AddNew)
+            this.model.ActionEditFilterComplete(this.tweenMain);
+        }
+
+        private void FilterEditError(object sender, FilterDialog.FilterEditErrorEventArgs e)
+        {
+            string message;
+            switch (e.ErrorType)
             {
-                if (!tab.AddFilter(ft))
-                    MessageBox.Show(Properties.Resources.ButtonOK_ClickText4, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                case FilterDialog.FilterEditErrorType.BlankRule:
+                    message = Properties.Resources.ButtonOK_ClickText1;
+                    break;
+                case FilterDialog.FilterEditErrorType.InvalidRegex:
+                    message = Properties.Resources.ButtonOK_ClickText3 + e.Message;
+                    break;
+                case FilterDialog.FilterEditErrorType.InvalidLambdaExp:
+                    message = Properties.Resources.IsValidLambdaExpText2 + Environment.NewLine +
+                        Properties.Resources.IsValidLambdaExpText1 + e.Message;
+                    break;
+                case FilterDialog.FilterEditErrorType.Duplicated:
+                    message = Properties.Resources.ButtonOK_ClickText4;
+                    break;
+                default:
+                    throw new InvalidEnumArgumentException();
             }
 
-            this.UpdateTabFilters();
+            MessageBox.Show(message, Properties.Resources.ButtonOK_ClickText2,
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
 
-            ListFilters.SelectedIndex = -1;
-            if (this.model.FilterEditMode == FilterDialog.EDITMODE.AddNew)
-            {
-                ListFilters.SelectedIndex = ListFilters.Items.Count - 1;
-            }
-            else
-            {
-                ListFilters.SelectedIndex = i;
-            }
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
-
-            if (_directAdd)
-            {
+        private void FilterEditSuccessed(object sender, EventArgs e)
+        {
+            if (this._directAdd)
                 this.Close();
-            }
-        }
-
-        private bool IsValidLambdaExp(string text)
-        {
-            return false;
-            // TODO DynamicQuery相当のGPLv3互換なライブラリで置換する
-        }
-
-        private bool IsValidRegexp(string text)
-        {
-            try
-            {
-                new Regex(text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(Properties.Resources.ButtonOK_ClickText3 + ex.Message, Properties.Resources.ButtonOK_ClickText2, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return false;
-            }
-            return true;
-        }
-
-        private bool CheckMatchRule(out bool isBlank)
-        {
-            isBlank = false;
-            if (this.model.MatchRuleComplex)
-            {
-                if (string.IsNullOrEmpty(UID.Text) && string.IsNullOrEmpty(MSG1.Text) && string.IsNullOrEmpty(TextSource.Text) && CheckRetweet.Checked == false)
-                {
-                    isBlank = true;
-                    return true;
-                }
-                if (CheckLambda.Checked)
-                {
-                    if (!IsValidLambdaExp(UID.Text))
-                    {
-                        return false;
-                    }
-                    if (!IsValidLambdaExp(MSG1.Text))
-                    {
-                        return false;
-                    }
-                }
-                else if (CheckRegex.Checked)
-                {
-                    if (!IsValidRegexp(UID.Text))
-                    {
-                        return false;
-                    }
-                    if (!IsValidRegexp(MSG1.Text))
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(MSG2.Text) && string.IsNullOrEmpty(TextSource.Text) && CheckRetweet.Checked == false)
-                {
-                    isBlank = true;
-                    return true;
-                }
-                if (CheckLambda.Checked && !IsValidLambdaExp(MSG2.Text))
-                {
-                    return false;
-                }
-                else if (CheckRegex.Checked && !IsValidRegexp(MSG2.Text))
-                {
-                    return false;
-                }
-            }
-
-            if (CheckRegex.Checked && !IsValidRegexp(TextSource.Text))
-            {
-                return false;
-            }
-            return true;
-        }
-
-        private bool CheckExcludeRule(out bool isBlank)
-        {
-            isBlank = false;
-            if (this.model.ExcludeRuleComplex)
-            {
-                if (string.IsNullOrEmpty(ExUID.Text) && string.IsNullOrEmpty(ExMSG1.Text) && string.IsNullOrEmpty(TextExSource.Text) && CheckExRetweet.Checked == false)
-                {
-                    isBlank = true;
-                    return true;
-                }
-                if (CheckExLambDa.Checked)
-                {
-                    if (!IsValidLambdaExp(ExUID.Text))
-                    {
-                        return false;
-                    }
-                    if (!IsValidLambdaExp(ExMSG1.Text))
-                    {
-                        return false;
-                    }
-                }
-                else if (CheckExRegex.Checked)
-                {
-                    if (!IsValidRegexp(ExUID.Text))
-                    {
-                        return false;
-                    }
-                    if (!IsValidRegexp(ExMSG1.Text))
-                    {
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(ExMSG2.Text) && string.IsNullOrEmpty(TextExSource.Text) && CheckExRetweet.Checked == false)
-                {
-                    isBlank = true;
-                    return true;
-                }
-                if (CheckExLambDa.Checked && !IsValidLambdaExp(ExMSG2.Text))
-                {
-                    return false;
-                }
-                else if (CheckExRegex.Checked && !IsValidRegexp(ExMSG2.Text))
-                {
-                    return false;
-                }
-            }
-
-            if (CheckExRegex.Checked && !IsValidRegexp(TextExSource.Text))
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void ButtonClose_Click(object sender, EventArgs e)
