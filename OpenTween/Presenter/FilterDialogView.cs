@@ -189,7 +189,11 @@ namespace OpenTween.Presenter
             CheckExRetweet.Checked = filter.ExFilterRt;
             CheckExLambDa.Checked = filter.ExUseLambda;
 
-            OptMove.Checked = filter.MoveMatches;
+            if (filter.MoveMatches)
+                OptMove.Checked = true;
+            else
+                OptCopy.Checked = true;
+
             CheckMark.Checked = filter.MarkMatches;
         }
 
