@@ -96,8 +96,6 @@ namespace OpenTween.Presenter
             this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
             this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
             this.RadioExAnd.OnCheckedChanged(x => this.model.SetExcludeRuleComplex(x));
-
-            this.model.SetFilterEditMode(FilterDialog.EDITMODE.None);
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
