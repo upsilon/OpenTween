@@ -745,38 +745,22 @@ namespace OpenTween.Presenter
         private void ButtonRuleCopy_Click(object sender, EventArgs e)
         {
             var selectedTab = (FilterTabModel)this.model.SelectedTab;
-            if (selectedTab != null && ListFilters.SelectedItem != null)
+            if (selectedTab == null || this.model.SelectedFilterIndices.Length == 0)
+                return;
+
+            TabModel[] destTabs;
+            using (var dialog = new TabsDialog(this.model.TabInfo))
             {
-                TabModel[] copyDestTabs;
-                using (TabsDialog dialog = new TabsDialog(this.model.TabInfo))
-                {
-                    dialog.MultiSelect = true;
-                    dialog.Text = Properties.Resources.ButtonRuleCopy_ClickText1;
+                dialog.MultiSelect = true;
+                dialog.Text = Properties.Resources.ButtonRuleCopy_ClickText1;
 
-                    if (dialog.ShowDialog(this) == DialogResult.Cancel) return;
+                if (dialog.ShowDialog(this) == DialogResult.Cancel)
+                    return;
 
-                    copyDestTabs = dialog.SelectedTabs;
-                }
-
-                List<PostFilterRule> filters = new List<PostFilterRule>();
-
-                foreach (int idx in ListFilters.SelectedIndices)
-                {
-                    filters.Add(selectedTab.FilterArray[idx].Clone());
-                }
-                foreach (var tb in copyDestTabs.Cast<FilterTabModel>())
-                {
-                    if (tb.TabName == selectedTab.TabName) continue;
-
-                    foreach (PostFilterRule flt in filters)
-                    {
-                        if (!tb.FilterArray.Contains(flt))
-                            tb.AddFilter(flt.Clone());
-                    }
-                }
-
-                this.UpdateTabFilters();
+                destTabs = dialog.SelectedTabs;
             }
+
+            this.model.ActionCopyFiltersToAnotherTab(destTabs.OfType<FilterTabModel>());
         }
 
         private void ButtonRuleMove_Click(object sender, EventArgs e)

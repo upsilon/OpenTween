@@ -458,6 +458,21 @@ namespace OpenTween.Models
             this.SetFilterEnabledButtonState(enabled ? EnabledButtonState.Disable : EnabledButtonState.Enable);
         }
 
+        public void ActionCopyFiltersToAnotherTab(IEnumerable<FilterTabModel> destTabs)
+        {
+            var currentTab = this.SelectedTab;
+            var filters = this.SelectedFilters;
+
+            foreach (var destTab in destTabs)
+            {
+                if (destTab.TabName == currentTab.TabName)
+                    continue;
+
+                foreach (var filter in filters)
+                    destTab.AddFilter(filter.Clone());
+            }
+        }
+
         public bool IsFilterBlank(PostFilterRule filter)
         {
             if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))
