@@ -83,14 +83,14 @@ namespace OpenTween.Presenter
             this.model.FiltersChanged += this.FiltersChanged;
             this.model.SelectedFiltersChanged += this.SelectedFiltersChanged;
             this.model.EditingFilterChanged += this.EditingFilterChanged;
-            this.model.FilterEditModeChanged += this.FilterEditModeChanged;
+            this.model.FilterEditModeEnter += this.FilterEditModeEnter;
+            this.model.FilterEditModeExit += this.FilterEditModeExit;
             this.model.MatchRuleComplexChanged += this.MatchRuleComplexChanged;
             this.model.ExcludeRuleComplexChanged += this.ExcludeRuleComplexChanged;
             this.model.FilterEnabledButtonStateChanged += this.FilterEnabledButtonStateChanged;
 
             this.model.AddNewTabFailed += this.AddNewTabFailed;
             this.model.FilterEditError += this.FilterEditError;
-            this.model.FilterEditSuccessed += this.FilterEditSuccessed;
 
             this.ListTabs.OnSelectedIndexChanged(x => this.model.SetSelectedTabIndex(x));
             this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
@@ -195,29 +195,29 @@ namespace OpenTween.Presenter
             CheckMark.Checked = filter.MarkMatches;
         }
 
-        private void FilterEditModeChanged(object sender, EventArgs e)
+        private void FilterEditModeEnter(object sender, EventArgs e)
         {
-            switch (this.model.FilterEditMode)
-            {
-                case FilterDialog.EDITMODE.AddNew:
-                case FilterDialog.EDITMODE.Edit:
-                    ListTabs.Enabled = false;
-                    GroupTab.Enabled = false;
-                    ListFilters.Enabled = false;
-                    FilterButtonsPanel.Enabled = false;
-                    EditFilterGroup.Enabled = true;
-                    ButtonClose.Enabled = false;
-                    break;
-                case FilterDialog.EDITMODE.None:
-                default:
-                    ListTabs.Enabled = true;
-                    GroupTab.Enabled = true;
-                    ListFilters.Enabled = true;
-                    FilterButtonsPanel.Enabled = true;
-                    EditFilterGroup.Enabled = false;
-                    ButtonClose.Enabled = true;
-                    break;
-            }
+            ListTabs.Enabled = false;
+            GroupTab.Enabled = false;
+            ListFilters.Enabled = false;
+            FilterButtonsPanel.Enabled = false;
+            EditFilterGroup.Enabled = true;
+            ButtonClose.Enabled = false;
+        }
+
+        private void FilterEditModeExit(object sender, EventArgs e)
+        {
+            ListTabs.Enabled = true;
+            GroupTab.Enabled = true;
+            ListFilters.Enabled = true;
+            FilterButtonsPanel.Enabled = true;
+            EditFilterGroup.Enabled = false;
+            ButtonClose.Enabled = true;
+
+            this.ListFilters.Focus();
+
+            if (this._directAdd)
+                this.Close();
         }
 
         private void MatchRuleComplexChanged(object sender, EventArgs e)
@@ -441,16 +441,7 @@ namespace OpenTween.Presenter
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)
-        {
-            this.model.ActionEditFilterCancel();
-
-            this.ListFilters.Focus();
-
-            if (_directAdd)
-            {
-                this.Close();
-            }
-        }
+            => this.model.ActionEditFilterCancel();
 
         private void ButtonOK_Click(object sender, EventArgs e)
         {
@@ -560,12 +551,6 @@ namespace OpenTween.Presenter
 
             MessageBox.Show(message, Properties.Resources.ButtonOK_ClickText2,
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        private void FilterEditSuccessed(object sender, EventArgs e)
-        {
-            if (this._directAdd)
-                this.Close();
         }
 
         private void ButtonClose_Click(object sender, EventArgs e)

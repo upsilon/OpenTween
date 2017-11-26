@@ -60,14 +60,14 @@ namespace OpenTween.Models
         public event EventHandler FiltersChanged;
         public event EventHandler SelectedFiltersChanged;
         public event EventHandler EditingFilterChanged;
-        public event EventHandler FilterEditModeChanged;
+        public event EventHandler FilterEditModeEnter;
+        public event EventHandler FilterEditModeExit;
         public event EventHandler MatchRuleComplexChanged;
         public event EventHandler ExcludeRuleComplexChanged;
         public event EventHandler FilterEnabledButtonStateChanged;
 
         public event EventHandler<AddNewTabFailedEventArgs> AddNewTabFailed;
         public event EventHandler<FilterEditErrorEventArgs> FilterEditError;
-        public event EventHandler FilterEditSuccessed;
 
         private BindingList<TabModel> tabs;
         private BindingList<PostFilterRule> filters;
@@ -133,10 +133,7 @@ namespace OpenTween.Models
             => this.SetEditingFilter(this.SelectedFilters.FirstOrDefault());
 
         public void SetFilterEditMode(EDITMODE editMode)
-        {
-            this.FilterEditMode = editMode;
-            this.FilterEditModeChanged?.Invoke(this, EventArgs.Empty);
-        }
+            => this.FilterEditMode = editMode;
 
         public void SetMatchRuleComplex(bool isComplex)
         {
@@ -285,6 +282,8 @@ namespace OpenTween.Models
         {
             this.SetEditingFilter(new PostFilterRule());
             this.SetFilterEditMode(EDITMODE.AddNew);
+
+            this.FilterEditModeEnter?.Invoke(this, EventArgs.Empty);
         }
 
         public void ActionEditSelectedFilter()
@@ -299,12 +298,16 @@ namespace OpenTween.Models
 
             this.SetEditingFilter(filter);
             this.SetFilterEditMode(EDITMODE.Edit);
+
+            this.FilterEditModeEnter?.Invoke(this, EventArgs.Empty);
         }
 
         public void ActionEditFilterCancel()
         {
             this.SetFilterEditMode(EDITMODE.None);
             this.RestoreEditingFilter();
+
+            this.FilterEditModeExit?.Invoke(this, EventArgs.Empty);
         }
 
         public void ActionEditFilterComplete(TweenMain tweenMain)
@@ -380,7 +383,7 @@ namespace OpenTween.Models
             this.SetSelectedFiltersIndex(new[] { newSelectedIndex });
             this.SetFilterEditMode(EDITMODE.None);
 
-            this.FilterEditSuccessed?.Invoke(this, EventArgs.Empty);
+            this.FilterEditModeExit?.Invoke(this, EventArgs.Empty);
         }
 
         public void ActionDeleteSelectedFilters()
