@@ -771,47 +771,22 @@ namespace OpenTween.Presenter
         private void ButtonRuleMove_Click(object sender, EventArgs e)
         {
             var selectedTab = (FilterTabModel)this.model.SelectedTab;
-            if (selectedTab != null && ListFilters.SelectedItem != null)
+            if (selectedTab == null || this.model.SelectedFilterIndices.Length == 0)
+                return;
+
+            TabModel[] destTabs;
+            using (var dialog = new TabsDialog(this.model.TabInfo))
             {
-                TabModel[] moveDestTabs;
-                using (var dialog = new TabsDialog(this.model.TabInfo))
-                {
-                    dialog.MultiSelect = true;
-                    dialog.Text = Properties.Resources.ButtonRuleMove_ClickText1;
+                dialog.MultiSelect = true;
+                dialog.Text = Properties.Resources.ButtonRuleMove_ClickText1;
 
-                    if (dialog.ShowDialog(this) == DialogResult.Cancel) return;
+                if (dialog.ShowDialog(this) == DialogResult.Cancel)
+                    return;
 
-                    moveDestTabs = dialog.SelectedTabs;
-                }
-
-                List<PostFilterRule> filters = new List<PostFilterRule>();
-
-                foreach (int idx in ListFilters.SelectedIndices)
-                {
-                    filters.Add(selectedTab.FilterArray[idx].Clone());
-                }
-                if (moveDestTabs.Length == 1 && moveDestTabs[0].TabName == selectedTab.TabName) return;
-                foreach (var tb in moveDestTabs.Cast<FilterTabModel>())
-                {
-                    if (tb.TabName == selectedTab.TabName) continue;
-
-                    foreach (PostFilterRule flt in filters)
-                    {
-                        if (!tb.FilterArray.Contains(flt))
-                            tb.AddFilter(flt.Clone());
-                    }
-                }
-                for (int idx = ListFilters.Items.Count - 1; idx >= 0; idx--)
-                {
-                    if (ListFilters.GetSelected(idx))
-                    {
-                        selectedTab.RemoveFilter((PostFilterRule)ListFilters.Items[idx]);
-                        ListFilters.Items.RemoveAt(idx);
-                    }
-                }
-
-                this.UpdateTabFilters();
+                destTabs = dialog.SelectedTabs;
             }
+
+            this.model.ActionMoveFiltersToAnotherTab(destTabs.OfType<FilterTabModel>());
         }
 
         private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)

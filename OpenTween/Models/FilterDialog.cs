@@ -473,6 +473,18 @@ namespace OpenTween.Models
             }
         }
 
+        public void ActionMoveFiltersToAnotherTab(IEnumerable<FilterTabModel> destTabs)
+        {
+            var currentTab = (FilterTabModel)this.SelectedTab;
+            var destTabArray = destTabs.ToArray();
+
+            if (destTabArray.All(x => x.TabName == currentTab.TabName))
+                return;
+
+            this.ActionCopyFiltersToAnotherTab(destTabArray);
+            this.ActionDeleteSelectedFilters();
+        }
+
         public bool IsFilterBlank(PostFilterRule filter)
         {
             if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))
