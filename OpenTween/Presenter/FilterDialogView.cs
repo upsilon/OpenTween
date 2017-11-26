@@ -119,11 +119,15 @@ namespace OpenTween.Presenter
         {
             var listboxSelection = this.ListFilters.SelectedIndices;
             var newSelection = this.model.SelectedFilterIndices.ToArray();
+
             if (!listboxSelection.Cast<int>().SequenceEqual(newSelection))
             {
-                listboxSelection.Clear();
-                foreach (var index in newSelection)
-                    listboxSelection.Add(index);
+                using (ControlTransaction.Update(this.ListFilters))
+                {
+                    listboxSelection.Clear();
+                    foreach (var index in newSelection)
+                        listboxSelection.Add(index);
+                }
             }
 
             this.UpdateTabFilters();
