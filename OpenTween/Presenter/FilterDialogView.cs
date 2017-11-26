@@ -137,66 +137,67 @@ namespace OpenTween.Presenter
         {
             var filter = this.model.EditingFilter ?? new PostFilterRule();
 
-            if (filter.UseNameField)
+            using (ControlTransaction.Update(this.EditFilterGroup))
             {
-                RadioAND.Checked = true;
-                RadioPLUS.Checked = false;
-                UID.Text = filter.FilterName;
-                UID.SelectAll();
-                MSG1.Text = string.Join(" ", filter.FilterBody);
-                MSG1.SelectAll();
-                MSG2.Text = "";
+                if (filter.UseNameField)
+                {
+                    RadioAND.Checked = true;
+                    UID.Text = filter.FilterName;
+                    UID.SelectAll();
+                    MSG1.Text = string.Join(" ", filter.FilterBody);
+                    MSG1.SelectAll();
+                    MSG2.Text = "";
+                }
+                else
+                {
+                    RadioPLUS.Checked = true;
+                    UID.Text = "";
+                    MSG1.Text = "";
+                    MSG2.Text = string.Join(" ", filter.FilterBody);
+                    MSG2.SelectAll();
+                }
+
+                TextSource.Text = filter.FilterSource;
+                CheckRegex.Checked = filter.UseRegex;
+                CheckURL.Checked = filter.FilterByUrl;
+                CheckCaseSensitive.Checked = filter.CaseSensitive;
+                CheckRetweet.Checked = filter.FilterRt;
+                CheckLambda.Checked = filter.UseLambda;
+
+                if (filter.ExUseNameField)
+                {
+                    RadioExAnd.Checked = true;
+                    RadioExPLUS.Checked = false;
+                    ExUID.Text = filter.ExFilterName;
+                    ExUID.SelectAll();
+                    ExMSG1.Text = string.Join(" ", filter.ExFilterBody);
+                    ExMSG1.SelectAll();
+                    ExMSG2.Text = "";
+                }
+                else
+                {
+                    RadioExPLUS.Checked = true;
+                    RadioExAnd.Checked = false;
+                    ExUID.Text = "";
+                    ExMSG1.Text = "";
+                    ExMSG2.Text = string.Join(" ", filter.ExFilterBody);
+                    ExMSG2.SelectAll();
+                }
+
+                TextExSource.Text = filter.ExFilterSource;
+                CheckExRegex.Checked = filter.ExUseRegex;
+                CheckExURL.Checked = filter.ExFilterByUrl;
+                CheckExCaseSensitive.Checked = filter.ExCaseSensitive;
+                CheckExRetweet.Checked = filter.ExFilterRt;
+                CheckExLambDa.Checked = filter.ExUseLambda;
+
+                if (filter.MoveMatches)
+                    OptMove.Checked = true;
+                else
+                    OptCopy.Checked = true;
+
+                CheckMark.Checked = filter.MarkMatches;
             }
-            else
-            {
-                RadioPLUS.Checked = true;
-                RadioAND.Checked = false;
-                UID.Text = "";
-                MSG1.Text = "";
-                MSG2.Text = string.Join(" ", filter.FilterBody);
-                MSG2.SelectAll();
-            }
-
-            TextSource.Text = filter.FilterSource;
-            CheckRegex.Checked = filter.UseRegex;
-            CheckURL.Checked = filter.FilterByUrl;
-            CheckCaseSensitive.Checked = filter.CaseSensitive;
-            CheckRetweet.Checked = filter.FilterRt;
-            CheckLambda.Checked = filter.UseLambda;
-
-            if (filter.ExUseNameField)
-            {
-                RadioExAnd.Checked = true;
-                RadioExPLUS.Checked = false;
-                ExUID.Text = filter.ExFilterName;
-                ExUID.SelectAll();
-                ExMSG1.Text = string.Join(" ", filter.ExFilterBody);
-                ExMSG1.SelectAll();
-                ExMSG2.Text = "";
-            }
-            else
-            {
-                RadioExPLUS.Checked = true;
-                RadioExAnd.Checked = false;
-                ExUID.Text = "";
-                ExMSG1.Text = "";
-                ExMSG2.Text = string.Join(" ", filter.ExFilterBody);
-                ExMSG2.SelectAll();
-            }
-
-            TextExSource.Text = filter.ExFilterSource;
-            CheckExRegex.Checked = filter.ExUseRegex;
-            CheckExURL.Checked = filter.ExFilterByUrl;
-            CheckExCaseSensitive.Checked = filter.ExCaseSensitive;
-            CheckExRetweet.Checked = filter.ExFilterRt;
-            CheckExLambDa.Checked = filter.ExUseLambda;
-
-            if (filter.MoveMatches)
-                OptMove.Checked = true;
-            else
-                OptCopy.Checked = true;
-
-            CheckMark.Checked = filter.MarkMatches;
         }
 
         private void FilterEditModeEnter(object sender, EventArgs e)
