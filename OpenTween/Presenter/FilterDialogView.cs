@@ -582,7 +582,7 @@ namespace OpenTween.Presenter
             var midx = ListFilters.IndexFromPoint(ListFilters.PointToClient(Control.MousePosition));
             if (midx == ListBox.NoMatches || idx != midx) return;
 
-            ButtonEdit_Click(sender, e);
+            this.model.ActionEditSelectedFilter();
         }
 
         private void FilterDialog_Shown(object sender, EventArgs e)
