@@ -95,11 +95,9 @@ namespace OpenTween.Models
 
             var tab = this.SelectedTab;
 
-            PostFilterRule[] filters;
+            var filters = new List<PostFilterRule>();
             if (tab is FilterTabModel filterTab)
-                filters = filterTab.GetFilters();
-            else
-                filters = new PostFilterRule[0];
+                filters.AddRange(filterTab.GetFilters());
 
             this.filters = new BindingList<PostFilterRule>(filters);
             this.FiltersChanged?.Invoke(this, EventArgs.Empty);
