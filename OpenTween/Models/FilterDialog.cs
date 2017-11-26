@@ -295,7 +295,7 @@ namespace OpenTween.Models
                 return;
 
             this.SetEditingFilter(filter);
-            this.SetFilterEditMode(FilterDialog.EDITMODE.Edit);
+            this.SetFilterEditMode(EDITMODE.Edit);
         }
 
         public void ActionEditFilterCancel()
