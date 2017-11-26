@@ -48,7 +48,7 @@ namespace OpenTween.Models
         public IEnumerable<PostFilterRule> SelectedFilters
             => this.SelectedFilterIndices.Select(x => this.filters[x]);
 
-        public int SelectedTabIndex { get; private set; }
+        public int SelectedTabIndex { get; private set; } = -1;
         public int[] SelectedFilterIndices { get; private set; } = new int[0];
         public PostFilterRule EditingFilter { get; private set; }
         public EDITMODE FilterEditMode { get; private set; }
