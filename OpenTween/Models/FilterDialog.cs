@@ -122,7 +122,7 @@ namespace OpenTween.Models
 
         public void SetEditingFilter(PostFilterRule filter)
         {
-            this.EditingFilter = filter;
+            this.EditingFilter = filter.Clone();
             this.EditingFilterChanged?.Invoke(this, EventArgs.Empty);
         }
 
