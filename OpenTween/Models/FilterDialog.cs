@@ -383,6 +383,21 @@ namespace OpenTween.Models
             this.FilterEditSuccessed?.Invoke(this, EventArgs.Empty);
         }
 
+        public void ActionDeleteSelectedFilters()
+        {
+            var tab = (FilterTabModel)this.SelectedTab;
+
+            // インデックスの指す要素がずれないように降順に削除する
+            var selectedIndices = this.SelectedFilterIndices.OrderByDescending(x => x);
+
+            foreach (var index in selectedIndices)
+            {
+                var filter = this.filters[index];
+                tab.RemoveFilter(filter);
+                this.filters.RemoveAt(index);
+            }
+        }
+
         public bool IsFilterBlank(PostFilterRule filter)
         {
             if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))

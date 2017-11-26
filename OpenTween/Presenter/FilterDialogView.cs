@@ -413,34 +413,29 @@ namespace OpenTween.Presenter
 
         private void ButtonDelete_Click(object sender, EventArgs e)
         {
-            var selectedCount = ListFilters.SelectedIndices.Count;
-            if (selectedCount == 0) return;
+            var selectedCount = this.model.SelectedFilterIndices.Length;
+            if (selectedCount == 0)
+                return;
 
-            string tmp;
-
+            string confirmMessage;
             if (selectedCount == 1)
             {
-                tmp = string.Format(Properties.Resources.ButtonDelete_ClickText1, Environment.NewLine, ListFilters.SelectedItem);
+                confirmMessage = string.Format(Properties.Resources.ButtonDelete_ClickText1,
+                    Environment.NewLine, ListFilters.SelectedItem);
             }
             else
             {
-                tmp = string.Format(Properties.Resources.ButtonDelete_ClickText3, selectedCount);
+                confirmMessage = string.Format(Properties.Resources.ButtonDelete_ClickText3,
+                    selectedCount);
             }
 
-            var rslt = MessageBox.Show(tmp, Properties.Resources.ButtonDelete_ClickText2, MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-            if (rslt == DialogResult.Cancel) return;
+            var confirmResult = MessageBox.Show(confirmMessage, Properties.Resources.ButtonDelete_ClickText2,
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 
-            var indices = ListFilters.SelectedIndices.Cast<int>().Reverse().ToArray();  // 後ろの要素から削除
-            var tab = (FilterTabModel)this.model.SelectedTab;
+            if (confirmResult == DialogResult.Cancel)
+                return;
 
-            using (ControlTransaction.Update(ListFilters))
-            {
-                foreach (var idx in indices)
-                {
-                    tab.RemoveFilter((PostFilterRule)ListFilters.Items[idx]);
-                    ListFilters.Items.RemoveAt(idx);
-                }
-            }
+            this.model.ActionDeleteSelectedFilters();
         }
 
         private void ButtonCancel_Click(object sender, EventArgs e)
