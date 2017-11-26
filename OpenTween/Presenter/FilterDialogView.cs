@@ -734,75 +734,10 @@ namespace OpenTween.Presenter
         }
 
         private void ButtonRuleUp_Click(object sender, EventArgs e)
-        {
-            MoveSelectedRules(up: true);
-        }
+            => this.model.ActionMoveUpSelectedFilters();
 
         private void ButtonRuleDown_Click(object sender, EventArgs e)
-        {
-            MoveSelectedRules(up: false);
-        }
-
-        private void MoveSelectedRules(bool up)
-        {
-            var tab = (FilterTabModel)this.model.SelectedTab;
-            if (tab == null)
-                return;
-
-            if (ListFilters.SelectedIndices.Count == 0)
-                return;
-
-            var indices = ListFilters.SelectedIndices.Cast<int>().ToArray();
-
-            int diff;
-            if (up)
-            {
-                if (indices[0] <= 0) return;
-                diff = -1;
-            }
-            else
-            {
-                if (indices[indices.Length - 1] >= ListFilters.Items.Count - 1) return;
-                diff = +1;
-                Array.Reverse(indices);  // 逆順にして、下にある要素から処理する
-            }
-
-            var lastSelIdx = indices[0] + diff;
-
-            try
-            {
-                _multiSelState |= MultiSelectionState.MoveSelected;
-
-                using (ControlTransaction.Update(ListFilters))
-                {
-                    ListFilters.SelectedIndices.Clear();
-
-                    foreach (var idx in indices)
-                    {
-                        var tidx = idx + diff;
-                        var target = (PostFilterRule)ListFilters.Items[tidx];
-
-                        // 移動先にある要素と位置を入れ替える
-                        ListFilters.Items.RemoveAt(tidx);
-                        ListFilters.Items.Insert(idx, target);
-
-                        // 移動方向の先頭要素以外なら選択する
-                        if (tidx != lastSelIdx)
-                            ListFilters.SelectedIndex = tidx;
-                    }
-
-                    tab.FilterArray = ListFilters.Items.Cast<PostFilterRule>().ToArray();
-
-                    // 移動方向の先頭要素は最後に選択する
-                    // ※移動方向への自動スクロール目的
-                    ListFilters.SelectedIndex = lastSelIdx;
-                }
-            }
-            finally
-            {
-                _multiSelState &= ~MultiSelectionState.MoveSelected;
-            }
-        }
+            => this.model.ActionMoveDownSelectedFilters();
 
         private void buttonRuleToggleEnabled_Click(object sender, EventArgs e)
         {

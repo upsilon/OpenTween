@@ -401,6 +401,48 @@ namespace OpenTween.Models
             }
         }
 
+        public void ActionMoveUpSelectedFilters()
+            => this.ActionMoveUpDownSelectedFilters(diffIndex: -1);
+
+        public void ActionMoveDownSelectedFilters()
+            => this.ActionMoveUpDownSelectedFilters(diffIndex: 1);
+
+        public void ActionMoveUpDownSelectedFilters(int diffIndex)
+        {
+            var indices = this.SelectedFilterIndices;
+            if (indices.Length == 0)
+                return;
+
+            // 移動後のインデックスが要素数を超えないかチェック
+            if (diffIndex < 0)
+            {
+                indices = indices.OrderBy(x => x).ToArray();
+
+                if (indices[0] + diffIndex < 0)
+                    return;
+            }
+            else
+            {
+                // インデックスの指す要素がずれないように降順に処理する
+                indices = indices.OrderByDescending(x => x).ToArray();
+
+                if (indices[0] + diffIndex > this.filters.Count - 1)
+                    return;
+            }
+
+            foreach (var index in indices)
+            {
+                var filter = this.filters[index];
+                this.filters.RemoveAt(index);
+                this.filters.Insert(index + diffIndex, filter);
+            }
+
+            var tab = (FilterTabModel)this.SelectedTab;
+            tab.FilterArray = this.filters.ToArray();
+
+            this.SetSelectedFiltersIndex(indices.Select(x => x + diffIndex));
+        }
+
         public bool IsFilterBlank(PostFilterRule filter)
         {
             if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))
