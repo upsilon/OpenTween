@@ -51,7 +51,7 @@ namespace OpenTween.Models
         public int SelectedTabIndex { get; private set; } = -1;
         public int[] SelectedFilterIndices { get; private set; } = new int[0];
         public PostFilterRule EditingFilter { get; private set; }
-        public EDITMODE FilterEditMode { get; private set; }
+        public EDITMODE FilterEditMode { get; private set; } = EDITMODE.None;
         public bool MatchRuleComplex { get; private set; }
         public bool ExcludeRuleComplex { get; private set; }
         public EnabledButtonState FilterEnabledButtonState { get; private set; }
