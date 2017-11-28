@@ -485,6 +485,16 @@ namespace OpenTween.Models
             this.ActionDeleteSelectedFilters();
         }
 
+        public void ActionSelectAllFilters()
+        {
+            var tab = this.SelectedTab as FilterTabModel;
+            if (tab == null)
+                return;
+
+            var indices = Enumerable.Range(0, this.filters.Count);
+            this.SetSelectedFiltersIndex(indices);
+        }
+
         public bool IsFilterBlank(PostFilterRule filter)
         {
             if (filter.UseNameField && !string.IsNullOrEmpty(filter.FilterName))

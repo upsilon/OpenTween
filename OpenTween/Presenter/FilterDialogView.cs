@@ -869,32 +869,7 @@ namespace OpenTween.Presenter
         private void ListFilters_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Control && e.KeyCode == Keys.A)
-            {
-                var itemCount = this.ListFilters.Items.Count;
-                if (itemCount == 0) return;
-
-                using (ControlTransaction.Update(this.ListFilters))
-                {
-                    if (itemCount > 1)
-                    {
-                        try
-                        {
-                            _multiSelState |= MultiSelectionState.SelectAll;
-
-                            for (int i = 1; i < itemCount; i++)
-                            {
-                                this.ListFilters.SetSelected(i, true);
-                            }
-                        }
-                        finally
-                        {
-                            _multiSelState &= ~MultiSelectionState.SelectAll;
-                        }
-                    }
-
-                    this.ListFilters.SetSelected(0, true);
-                }
-            }
+                this.model.ActionSelectAllFilters();
         }
 
         protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
