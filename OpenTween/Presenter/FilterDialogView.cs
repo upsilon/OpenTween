@@ -43,6 +43,9 @@ namespace OpenTween.Presenter
     public partial class FilterDialogView : OTBaseForm
     {
         private TweenMain tweenMain;
+
+        private BindingSource bindingListTab;
+
         private FilterDialog model = new FilterDialog();
 
         private bool _directAdd;
@@ -63,9 +66,7 @@ namespace OpenTween.Presenter
             this.tweenMain = tweenMain;
 
             InitializeComponent();
-
-            this.ListTabs.DataSource = this.model.Tabs;
-            this.ListTabs.DisplayMember = nameof(TabModel.TabName);
+            InitializeBinding();
 
             ComboSound.Items.Clear();
             ComboSound.Items.Add("");
@@ -96,6 +97,17 @@ namespace OpenTween.Presenter
             this.ListFilters.OnSelectedIndicesChanged(x => this.model.SetSelectedFiltersIndex(x));
             this.RadioAND.OnCheckedChanged(x => this.model.SetMatchRuleComplex(x));
             this.RadioExAnd.OnCheckedChanged(x => this.model.SetExcludeRuleComplex(x));
+        }
+
+        private void InitializeBinding()
+        {
+            this.bindingListTab = new BindingSource
+            {
+                DataSource = this.model.Tabs,
+            };
+
+            this.ListTabs.DataSource = this.bindingListTab;
+            this.ListTabs.DisplayMember = nameof(TabModel.TabName);
         }
 
         private void SelectedTabChanged(object sender, EventArgs e)
