@@ -11853,9 +11853,23 @@ namespace OpenTween
 
         private async Task OpenThumbnailPicture(ThumbnailInfo thumbnail)
         {
-            var url = thumbnail.FullSizeImageUrl ?? thumbnail.MediaPageUrl;
+            var imageUrl = thumbnail.FullSizeImageUrl ?? thumbnail.ThumbnailImageUrl;
 
-            await this.OpenUriInBrowserAsync(url);
+            if (imageUrl != null)
+            {
+                using (var viewer = new MediaViewerLight())
+                using (var viewerDialog = new MediaViewerLightDialog(viewer))
+                {
+                    viewer.ImageUrl = imageUrl;
+                    var loadTask = Task.Run(() => viewer.LoadAsync(CancellationToken.None));
+                    viewerDialog.ShowDialog(this);
+                    await loadTask;
+                }
+            }
+            else
+            {
+                await this.OpenUriInBrowserAsync(thumbnail.MediaPageUrl);
+            }
         }
 
         private async void TwitterApiStatusToolStripMenuItem_Click(object sender, EventArgs e)
