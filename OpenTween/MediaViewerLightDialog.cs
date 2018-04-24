@@ -115,5 +115,8 @@ namespace OpenTween
             if (e.KeyData == Keys.Escape)
                 this.Close();
         }
+
+        private void MediaViewerLightDialog_FormClosing(object sender, FormClosingEventArgs e)
+            => this.model.AbortLoad();
     }
 }

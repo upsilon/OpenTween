@@ -34,7 +34,7 @@ namespace OpenTween.Models
         public string ImageUrl
         {
             get => this._imageUrl;
-            set => this.SetProperty(ref this._imageUrl, value);
+            private set => this.SetProperty(ref this._imageUrl, value);
         }
         private string _imageUrl;
 
@@ -66,6 +66,8 @@ namespace OpenTween.Models
         }
         private long? _receivedSize;
 
+        private CancellationTokenSource cts;
+
         public enum LoadStateEnum
         {
             BeforeLoad = 0,
@@ -77,10 +79,25 @@ namespace OpenTween.Models
         public void SetFromThubnailInfo(ThumbnailInfo thumb)
             => this.ImageUrl = thumb.FullSizeImageUrl ?? thumb.ThumbnailImageUrl;
 
-        public async Task LoadAsync(CancellationToken cancellationToken)
+        public async Task LoadAsync(string imageUrl)
+        {
+            var newCts = new CancellationTokenSource();
+            var oldCts = Interlocked.Exchange(ref this.cts, newCts);
+            if (oldCts != null)
+            {
+                oldCts.Cancel();
+                oldCts.Dispose();
+            }
+
+            await this.LoadAsync(imageUrl, newCts.Token);
+        }
+
+        internal async Task LoadAsync(string imageUrl, CancellationToken cancellationToken)
         {
             try
             {
+                this.ImageUrl = imageUrl;
+                this.Image = null;
                 this.ImageSize = null;
                 this.ReceivedSize = null;
                 this.LoadState = LoadStateEnum.BeforeLoad;
@@ -133,7 +150,20 @@ namespace OpenTween.Models
             }
         }
 
+        public void AbortLoad()
+        {
+            var oldCts = Interlocked.Exchange(ref this.cts, null);
+            if (oldCts != null)
+            {
+                oldCts.Cancel();
+                oldCts.Dispose();
+            }
+        }
+
         public void Dispose()
-            => this.Image?.Dispose();
+        {
+            this.cts?.Dispose();
+            this.Image?.Dispose();
+        }
     }
 }
