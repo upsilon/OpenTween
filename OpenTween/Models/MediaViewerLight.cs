@@ -31,6 +31,20 @@ namespace OpenTween.Models
 {
     public sealed class MediaViewerLight : NotifyPropertyChangedBase, IDisposable
     {
+        public ThumbnailInfo[] MediaItems
+        {
+            get => this._mediaItems;
+            private set => this.SetProperty(ref this._mediaItems, value);
+        }
+        private ThumbnailInfo[] _mediaItems;
+
+        public int DisplayMediaIndex
+        {
+            get => this._displayMediaIndex;
+            private set => this.SetProperty(ref this._displayMediaIndex, value);
+        }
+        private int _displayMediaIndex;
+
         public string ImageUrl
         {
             get => this._imageUrl;
@@ -76,10 +90,39 @@ namespace OpenTween.Models
             LoadError = 3,
         }
 
-        public void SetFromThubnailInfo(ThumbnailInfo thumb)
-            => this.ImageUrl = thumb.FullSizeImageUrl ?? thumb.ThumbnailImageUrl;
+        public void SetMediaItems(ThumbnailInfo[] thumbnails)
+        {
+            this.DisplayMediaIndex = 0;
+            this.MediaItems = thumbnails;
+        }
 
-        public async Task LoadAsync(string imageUrl)
+        public async Task SelectMedia(int displayIndex)
+        {
+            this.DisplayMediaIndex = displayIndex;
+
+            var media = this.MediaItems[displayIndex];
+            await this.LoadAsync(media);
+        }
+
+        public async Task SelectPreviousMedia()
+        {
+            var currentIndex = this.DisplayMediaIndex;
+            if (currentIndex == 0)
+                return;
+
+            await this.SelectMedia(currentIndex - 1);
+        }
+
+        public async Task SelectNextMedia()
+        {
+            var currentIndex = this.DisplayMediaIndex;
+            if (currentIndex == this.MediaItems.Length - 1)
+                return;
+
+            await this.SelectMedia(currentIndex + 1);
+        }
+
+        internal async Task LoadAsync(ThumbnailInfo media)
         {
             var newCts = new CancellationTokenSource();
             var oldCts = Interlocked.Exchange(ref this.cts, newCts);
@@ -89,7 +132,15 @@ namespace OpenTween.Models
                 oldCts.Dispose();
             }
 
-            await this.LoadAsync(imageUrl, newCts.Token);
+            var imageUrl = media.FullSizeImageUrl ?? media.ThumbnailImageUrl;
+            if (imageUrl != null)
+            {
+                await this.LoadAsync(imageUrl, newCts.Token);
+            }
+            else
+            {
+                await this.LoadAsync(() => media.LoadThumbnailImageAsync(newCts.Token));
+            }
         }
 
         internal async Task LoadAsync(string imageUrl, CancellationToken cancellationToken)
@@ -133,6 +184,36 @@ namespace OpenTween.Models
                     }
                 }
 
+                this.LoadState = LoadStateEnum.LoadSuccessed;
+            }
+            catch (Exception)
+            {
+                this.LoadState = LoadStateEnum.LoadError;
+
+                try
+                {
+                    throw;
+                }
+                catch (HttpRequestException) { }
+                catch (InvalidImageException) { }
+                catch (OperationCanceledException) { }
+                catch (IOException) { }
+            }
+        }
+
+        internal async Task LoadAsync(Func<Task<MemoryImage>> imageTaskFunc)
+        {
+            try
+            {
+                this.ImageUrl = null;
+                this.Image = null;
+                this.ImageSize = null;
+                this.ReceivedSize = null;
+                this.LoadState = LoadStateEnum.BeforeLoad;
+
+                var image = await imageTaskFunc();
+
+                this.Image = image;
                 this.LoadState = LoadStateEnum.LoadSuccessed;
             }
             catch (Exception)

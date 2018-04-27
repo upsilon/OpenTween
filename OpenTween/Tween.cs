@@ -6254,7 +6254,7 @@ namespace OpenTween
                 ShortcutCommand.Create(Keys.Alt | Keys.Shift | Keys.Enter)
                     .FocusedOn(FocusedControl.ListTab)
                     .OnlyWhen(() => !this.SplitContainer3.Panel2Collapsed)
-                    .Do(() => this.OpenThumbnailPicture(this.tweetThumbnail1.Thumbnail)),
+                    .Do(() => this.OpenMediaViewer()),
             };
         }
 
@@ -11846,28 +11846,23 @@ namespace OpenTween
             => this.SplitContainer3.Panel2Collapsed = false;
 
         private async void tweetThumbnail1_ThumbnailDoubleClick(object sender, ThumbnailDoubleClickEventArgs e)
-            => await this.OpenThumbnailPicture(e.Thumbnail);
+            => await this.OpenMediaViewer();
 
         private async void tweetThumbnail1_ThumbnailImageSearchClick(object sender, ThumbnailImageSearchEventArgs e)
             => await this.OpenUriInBrowserAsync(e.ImageUrl);
 
-        private async Task OpenThumbnailPicture(ThumbnailInfo thumbnail)
-        {
-            var imageUrl = thumbnail.FullSizeImageUrl ?? thumbnail.ThumbnailImageUrl;
+        private Task OpenMediaViewer()
+            => this.OpenMediaViewer(this.tweetThumbnail1.Thumbnails, this.tweetThumbnail1.DisplayThumbnailIndex);
 
-            if (imageUrl != null)
+        private async Task OpenMediaViewer(ThumbnailInfo[] thumbnails, int displayIndex)
+        {
+            using (var viewer = new MediaViewerLight())
+            using (var viewerDialog = new MediaViewerLightDialog(viewer))
             {
-                using (var viewer = new MediaViewerLight())
-                using (var viewerDialog = new MediaViewerLightDialog(viewer))
-                {
-                    var loadTask = Task.Run(() => viewer.LoadAsync(imageUrl));
-                    viewerDialog.ShowDialog(this);
-                    await loadTask;
-                }
-            }
-            else
-            {
-                await this.OpenUriInBrowserAsync(thumbnail.MediaPageUrl);
+                viewer.SetMediaItems(thumbnails);
+                var loadTask = Task.Run(() => viewer.SelectMedia(displayIndex));
+                viewerDialog.ShowDialog(this);
+                await loadTask;
             }
         }
 
