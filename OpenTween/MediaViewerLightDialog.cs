@@ -20,13 +20,17 @@
 // Boston, MA 02110-1301, USA.
 
 using OpenTween.Models;
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OpenTween
 {
     public partial class MediaViewerLightDialog : OTBaseForm
     {
+        public Func<string, Task> OpenInBrowser;
+
         private readonly MediaViewerLight model;
 
         public MediaViewerLightDialog(MediaViewerLight model)
@@ -139,6 +143,10 @@ namespace OpenTween
                 case Keys.Down:
                 case Keys.Right:
                     await this.model.SelectNextMedia();
+                    break;
+                case Keys.Enter:
+                    this.Close();
+                    await this.OpenInBrowser?.Invoke(this.model.DisplayMedia.MediaPageUrl);
                     break;
                 case Keys.Escape:
                     this.Close();

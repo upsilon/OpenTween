@@ -45,6 +45,9 @@ namespace OpenTween.Models
         }
         private int _displayMediaIndex;
 
+        public ThumbnailInfo DisplayMedia
+            => this.MediaItems[this.DisplayMediaIndex];
+
         public string ImageUrl
         {
             get => this._imageUrl;

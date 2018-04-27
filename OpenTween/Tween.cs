@@ -11861,7 +11861,10 @@ namespace OpenTween
             {
                 viewer.SetMediaItems(thumbnails);
                 var loadTask = Task.Run(() => viewer.SelectMedia(displayIndex));
+
+                viewerDialog.OpenInBrowser = x => this.OpenUriInBrowserAsync(x);
                 viewerDialog.ShowDialog(this);
+
                 await loadTask;
             }
         }
