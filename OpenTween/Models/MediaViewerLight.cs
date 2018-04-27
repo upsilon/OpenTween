@@ -36,7 +36,7 @@ namespace OpenTween.Models
             get => this._mediaItems;
             private set => this.SetProperty(ref this._mediaItems, value);
         }
-        private ThumbnailInfo[] _mediaItems;
+        private ThumbnailInfo[] _mediaItems = new ThumbnailInfo[0];
 
         public int DisplayMediaIndex
         {
