@@ -20,12 +20,17 @@
 // Boston, MA 02110-1301, USA.
 
 using OpenTween.Models;
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace OpenTween
 {
     public partial class MediaViewerWebBrowserDialog : OTBaseForm
     {
+        public Func<string, Task> OpenInBrowser;
+
         private readonly MediaViewerWebBrowser model;
 
         public MediaViewerWebBrowserDialog(MediaViewerWebBrowser model)
@@ -81,6 +86,36 @@ namespace OpenTween
         }
 
         private void UpdateHTML()
-            => this.webBrowser.DocumentText = this.model.DisplayHTML;
+        {
+            using (ControlTransaction.Update(this.webBrowser))
+                this.webBrowser.DocumentText = this.model.DisplayHTML;
+        }
+
+        private async void WebBrowser_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            e.IsInputKey = true;
+
+            switch (e.KeyData)
+            {
+                case Keys.Up:
+                case Keys.Left:
+                    this.model.SelectPreviousMedia();
+                    break;
+                case Keys.Down:
+                case Keys.Right:
+                    this.model.SelectNextMedia();
+                    break;
+                case Keys.Enter:
+                    this.Close();
+                    await this.OpenInBrowser?.Invoke(this.model.DisplayMedia.MediaPageUrl);
+                    break;
+                case Keys.Escape:
+                    this.Close();
+                    break;
+                default:
+                    e.IsInputKey = false;
+                    break;
+            }
+        }
     }
 }
