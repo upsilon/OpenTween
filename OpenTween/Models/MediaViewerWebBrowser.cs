@@ -27,12 +27,22 @@ namespace OpenTween.Models
 {
     public class MediaViewerWebBrowser : NotifyPropertyChangedBase
     {
-        public ThumbnailInfo DisplayMedia
+        public ThumbnailInfo[] MediaItems
         {
-            get => this._displayMedia;
-            private set => this.SetProperty(ref this._displayMedia, value);
+            get => this._mediaItems;
+            private set => this.SetProperty(ref this._mediaItems, value);
         }
-        private ThumbnailInfo _displayMedia;
+        private ThumbnailInfo[] _mediaItems = new ThumbnailInfo[0];
+
+        public int DisplayMediaIndex
+        {
+            get => this._displayMediaIndex;
+            private set => this.SetProperty(ref this._displayMediaIndex, value);
+        }
+        private int _displayMediaIndex;
+
+        public ThumbnailInfo DisplayMedia
+            => this.MediaItems[this.DisplayMediaIndex];
 
         public string DisplayHTML
         {
@@ -48,9 +58,17 @@ namespace OpenTween.Models
         }
         private ColorRGB _backColor = new ColorRGB(0, 0, 0);
 
-        public void SetMediaItem(ThumbnailInfo media)
+        public void SetMediaItems(ThumbnailInfo[] thumbnails)
         {
-            this.DisplayMedia = media;
+            this.DisplayMediaIndex = 0;
+            this.MediaItems = thumbnails;
+        }
+
+        public void SelectMedia(int displayIndex)
+        {
+            this.DisplayMediaIndex = displayIndex;
+
+            var media = this.MediaItems[displayIndex];
             this.DisplayHTML = this.CreateDocument();
         }
 
