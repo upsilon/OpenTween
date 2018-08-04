@@ -117,5 +117,8 @@ namespace OpenTween
                     break;
             }
         }
+
+        private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+            => this.webBrowser.Document.GetElementById("currentMedia")?.Focus();
     }
 }
