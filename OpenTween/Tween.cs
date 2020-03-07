@@ -9598,11 +9598,6 @@ namespace OpenTween
 
             if (Index != null)
             {
-                do
-                {
-                    LView.SelectedIndices.Clear();
-                }
-                while (LView.SelectedIndices.Count > 0);
                 LView.SelectItems(Index);
             }
             if (selectionMarkIndex > -1 && LView.VirtualListSize > selectionMarkIndex)
