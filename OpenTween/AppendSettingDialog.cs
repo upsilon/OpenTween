@@ -137,7 +137,7 @@ namespace OpenTween
         {
             if (MyCommon._endingFlag) return;
 
-            if (this.BasedPanel.AuthUserCombo.SelectedIndex == -1 && e.CloseReason == CloseReason.None)
+            if (this.BasedPanel.AuthUserCombo.SelectedIndex == -1 && !this.BasedPanel.HasMastodonCredential && e.CloseReason == CloseReason.None)
             {
                 if (MessageBox.Show(Properties.Resources.Setting_FormClosing1, "Confirm", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.Cancel)
                 {

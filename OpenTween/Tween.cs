@@ -882,8 +882,10 @@ namespace OpenTween
             var firstRun = false;
 
             // 認証情報が未設定なら設定画面を表示（初回起動時など）
-            var primaryAccount = SettingManager.Common.PrimaryAccount;
-            if (primaryAccount == null)
+            bool isAuthenticated()
+                => SettingManager.Common.PrimaryAccount != null || SettingManager.Common.MastodonPrimaryAccount != null;
+
+            if (!isAuthenticated())
             {
                 saveRequired = true;
                 firstRun = true;
@@ -895,10 +897,8 @@ namespace OpenTween
                     return;
                 }
 
-                primaryAccount = SettingManager.Common.PrimaryAccount;
-
                 // 認証情報が未設定ならプログラム終了
-                if (primaryAccount == null)
+                if (!isAuthenticated())
                 {
                     Application.Exit(); // 強制終了
                     return;
@@ -906,7 +906,11 @@ namespace OpenTween
             }
 
             //認証関連
-            tw.Initialize(primaryAccount.AccessToken, primaryAccount.AccessSecretPlain, primaryAccount.Username, primaryAccount.UserId);
+            var twitterAccount = SettingManager.Common.PrimaryAccount;
+            if (twitterAccount != null)
+                tw.Initialize(twitterAccount.AccessToken, twitterAccount.AccessSecretPlain, twitterAccount.Username, twitterAccount.UserId);
+            else
+                tw.Initialize("", "", "", 0L);
 
             var mastodonAccount = SettingManager.Common.MastodonPrimaryAccount;
             if (mastodonAccount != null)
@@ -934,18 +938,6 @@ namespace OpenTween
             ShortUrl.Instance.BitlyAccessToken = SettingManager.Common.BitlyAccessToken;
             ShortUrl.Instance.BitlyId = SettingManager.Common.BilyUser;
             ShortUrl.Instance.BitlyKey = SettingManager.Common.BitlyPwd;
-
-            // アクセストークンが有効であるか確認する
-            // ここが Twitter API への最初のアクセスになるようにすること
-            try
-            {
-                this.tw.VerifyCredentials();
-            }
-            catch (WebApiException ex)
-            {
-                MessageBox.Show(this, string.Format(Properties.Resources.StartupAuthError_Text, ex.Message),
-                    ApplicationSettings.ApplicationName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
 
             //サムネイル関連の初期化
             //プロキシ設定等の通信まわりの初期化が済んでから処理する
